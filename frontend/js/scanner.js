@@ -1,18 +1,31 @@
+
 import { sendPresence } from "./api.js";
 
-window.validerScan = async function () {
+const qrScanner = new Html5Qrcode("reader");
 
-  const apprenantId = document.getElementById("apprenantId").value;
+window.startScan = function () {
 
-  // simulation QR (plus tard vrai scan caméra)
-  const qr = JSON.parse(localStorage.getItem("session"));
+  qrScanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    async (decodedText) => {
 
-  const res = await sendPresence(
-    qr.sessionId,
-    qr.token,
-    apprenantId
+      const session = JSON.parse(decodedText);
+
+      const apprenantId = document.getElementById("apprenantId").value;
+
+      const res = await sendPresence(
+        session.sessionId,
+        session.token,
+        apprenantId
+      );
+
+      document.getElementById("status").innerText =
+        res.status === "ok"
+          ? "Présence enregistrée ✔"
+          : "Erreur ❌";
+
+      qrScanner.stop();
+    }
   );
-
-  document.getElementById("status").innerText =
-    res.status === "ok" ? "Présence enregistrée" : "Erreur";
 };
