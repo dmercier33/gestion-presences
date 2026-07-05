@@ -1,17 +1,54 @@
 import { createSession } from "./api.js";
 
+// stockage session active côté formateur
+let sessionActive = null;
+
+/**
+ * Création d'une nouvelle session + génération QR
+ */
 window.nouvelleSession = async function () {
-  const session = await createSession();
+  try {
+    // 1. appel backend
+    const session = await createSession();
 
-  // sauvegarde session pour scan
-  localStorage.setItem("session", JSON.stringify(session));
+    sessionActive = session;
 
-  // affichage texte
-  document.getElementById("result").innerText =
-    `Session: ${session.sessionId}`;
+    // 2. sauvegarde locale (utile pour debug / scan)
+    localStorage.setItem("session", JSON.stringify(session));
 
-  // QR code réel
-  QRCode.toCanvas(document.getElementById("qr"), JSON.stringify(session), {
-    width: 250
-  });
+    // 3. affichage ID session
+    document.getElementById("result").innerText =
+      `Session créée : ${session.sessionId}`;
+
+    // 4. génération QR code (canvas)
+    const canvas = document.getElementById("qrcode");
+
+    if (!canvas) {
+      console.error("Canvas QR code introuvable");
+      return;
+    }
+
+    // format QR (simple et standard)
+    const qrData = JSON.stringify({
+      sessionId: session.sessionId
+    });
+
+    QRCode.toCanvas(canvas, qrData, function (error) {
+      if (error) console.error(error);
+    });
+
+  } catch (err) {
+    console.error("Erreur création session :", err);
+    document.getElementById("result").innerText =
+      "Erreur création session";
+  }
+};
+
+/**
+ * (optionnel) reset session
+ */
+window.resetSession = function () {
+  sessionActive = null;
+  localStorage.removeItem("session");
+  document.getElementById("result").innerText = "Session réinitialisée";
 };
