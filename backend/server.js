@@ -66,38 +66,62 @@ app.get("/sessions/:id", async (req, res) => {
 
 
 // 🟢 PRESENCE (SCAN QR)
-app.post("/presence", async (req, res) => {
+app.post("/api/presences", async (req, res) => {
+  const { sessionId, apprenantId } = req.body;
 
-  const { sessionId, token, apprenantId } = req.body;
-
-  // 1. vérifier session
-  const { data: session } = await supabase
-    .from("sessions")
-    .select("*")
-    .eq("id", sessionId)
-    .single();
-
-  if (!session || session.token !== token) {
-    return res.status(401).json({ error: "invalid session" });
+  // 1. validation inputs
+  if (!sessionId || !apprenantId) {
+    return res.status(400).json({ error: "Missing sessionId or apprenantId" });
   }
 
-  // 2. insert présence
-  const { error } = await supabase.from("presences").insert([
-    {
-      session_id: sessionId,
-      apprenant_id: apprenantId
+  try {
+    // 2. vérifier que la session existe
+    const { data: session, error: sessionError } = await supabase
+      .from("sessions")
+      .select("id")
+      .eq("id", sessionId)
+      .maybeSingle();
+
+    if (sessionError || !session) {
+      return res.status(404).json({ error: "Session not found" });
     }
-  ]);
 
-  if (error) {
-    return res.status(500).json({ error });
+    // 3. anti double présence
+    const { data: existing } = await supabase
+      .from("presences")
+      .select("id")
+      .eq("session_id", sessionId)
+      .eq("apprenant_id", apprenantId)
+      .maybeSingle();
+
+    if (existing) {
+      return res.status(409).json({ error: "Already registered" });
+    }
+
+    // 4. insertion présence
+    const { data, error } = await supabase
+      .from("presences")
+      .insert([
+        {
+          session_id: sessionId,
+          apprenant_id: apprenantId,
+          created_at: new Date().toISOString()
+        }
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error });
+    }
+
+    // 5. réponse clean
+    res.json({
+      status: "ok",
+      presence: data
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: "server error", details: err.message });
   }
-
-  res.json({ status: "ok" });
-});
-
-
-// 🚀 START
-app.listen(process.env.PORT || 3000, () => {
-  console.log("API running");
 });

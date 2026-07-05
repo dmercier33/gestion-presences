@@ -40,3 +40,13 @@ export async function sendPresence({ sessionId, token, apprenantId }) {
 
     return await res.json();
 }
+
+export async function registerPresence(sessionId, apprenantId) {
+  const res = await fetch("/api/presences", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sessionId, apprenantId })
+  });
+
+  return await res.json();
+}
