@@ -1,3 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scanner Présence</title>
+
+  <!-- Librairie QR -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>📷 Scanner QR Présence</h2>
+
+<div id="reader"></div>
+
+<p id="status">📡 En attente de scan...</p>
+
 <script>
-alert("JS OK");
+window.addEventListener("load", () => {
+
+  const html5QrCode = new Html5Qrcode("reader");
+
+  function onScanSuccess(decodedText) {
+
+    document.getElementById("status").innerText = "QR détecté...";
+
+    let data;
+
+    try {
+      data = JSON.parse(decodedText);
+    } catch (e) {
+      document.getElementById("status").innerText = "❌ QR invalide";
+      return;
+    }
+
+    fetch("/api/presences", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        sessionId: data.sessionId,
+        apprenantId: "mobile-user-1"
+      })
+    })
+    .then(res => res.json())
+    .then(res => {
+      document.getElementById("status").innerText =
+        res.status === "ok"
+          ? "✅ Présence enregistrée"
+          : "⚠️ " + JSON.stringify(res);
+    })
+    .catch(err => {
+      document.getElementById("status").innerText =
+        "❌ Erreur serveur";
+    });
+  }
+
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    onScanSuccess
+  ).catch(err => {
+    document.getElementById("status").innerText =
+      "❌ Caméra inaccessible : " + err;
+  });
+
+});
 </script>
+
+</body>
+</html>
