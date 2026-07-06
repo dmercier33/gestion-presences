@@ -19,8 +19,6 @@ const __dirname = path.dirname(__filename);
 const frontendPath = path.resolve(process.cwd(), "frontend");
 app.use(express.static(frontendPath));
 
-import fs from "fs";
-
 app.get("/check-file", (req, res) => {
   const filePath = path.join(process.cwd(), "frontend", "scanner.html");
 
