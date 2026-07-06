@@ -19,8 +19,15 @@ const __dirname = path.dirname(__filename);
 const frontendPath = path.resolve(process.cwd(), "frontend");
 app.use(express.static(frontendPath));
 
-app.get("/test-front", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/scanner.html"));
+app.get("/check-file", (req, res) => {
+  const filePath = path.join(process.cwd(), "frontend", "scanner.html");
+  const fs = require("fs");
+
+  res.json({
+    cwd: process.cwd(),
+    filePath,
+    exists: fs.existsSync(filePath)
+  });
 });
 
 // 🔗 SUPABASE
@@ -29,20 +36,10 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
-app.get("/debug", (req, res) => {
-  res.json({
-    cwd: process.cwd(),
-    dirname: __dirname,
-    backendFiles: fs.readdirSync(__dirname),
-    parentFiles: fs.readdirSync(path.join(__dirname, ".."))
-  });
-});
-
 // 🟢 HEALTH CHECK
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
-
 
 // 🟢 CREATE SESSION
 app.post("/sessions", async (req, res) => {
