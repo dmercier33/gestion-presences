@@ -138,3 +138,58 @@ app.post("/api/presences", async (req, res) => {
 app.listen(process.env.PORT || 3000, () => {
   console.log("API running on port", process.env.PORT || 3000);
 });
+
+app.post("/apprenants", async (req, res) => {
+  const { nom, prenom, email } = req.body;
+
+  const id = "APP_" + Date.now();
+
+  const { data, error } = await supabase
+    .from("apprenants")
+    .insert([
+      {
+        id,
+        nom,
+        prenom,
+        email
+      }
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    return res.status(500).json({ error });
+  }
+
+  res.json(data);
+});
+
+app.get("/apprenants", async (req, res) => {
+  const { data, error } = await supabase
+    .from("apprenants")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return res.status(500).json({ error });
+  }
+
+  res.json(data);
+});
+
+app.get("/apprenants/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const { data, error } = await supabase
+    .from("apprenants")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    return res.status(404).json({ error });
+  }
+
+  res.json(data);
+});
+
