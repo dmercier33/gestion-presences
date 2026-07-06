@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Scanner Présence</title>
 
-  <!-- librairie QR -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
-
     body {
       font-family: Arial;
       text-align: center;
@@ -21,9 +19,6 @@
       max-width: 400px;
       margin: auto;
     }
-
-    .ok { color: green; }
-    .err { color: red; }
   </style>
 </head>
 
@@ -33,18 +28,10 @@
 
 <div id="reader"></div>
 
-<button id="startBtn">Autoriser caméra</button>
-
 <p id="status">En attente de scan...</p>
 
-<!-- 👇 IMPORTANT : zone caméra -->
-<video id="video" autoplay playsinline></video>
-
-<script src="js/scanner.js"></script>
-
 <script>
-const API_URL = ""; 
-// ⚠️ magique ! plus besoin de changer l'URL quand on déploie, le frontend et le backend sont sur le même serveur
+const API_URL = "";
 
 function onScanSuccess(decodedText) {
   document.getElementById("status").innerText = "QR détecté...";
@@ -53,7 +40,7 @@ function onScanSuccess(decodedText) {
   try {
     data = JSON.parse(decodedText);
   } catch (e) {
-    document.getElementById("status").innerHTML = "❌ QR invalide";
+    document.getElementById("status").innerText = "❌ QR invalide";
     return;
   }
 
@@ -69,17 +56,13 @@ function onScanSuccess(decodedText) {
   })
   .then(res => res.json())
   .then(res => {
-    if (res.status === "ok") {
-      document.getElementById("status").innerHTML =
-        "✅ Présence enregistrée";
-    } else {
-      document.getElementById("status").innerHTML =
-        "⚠️ " + JSON.stringify(res);
-    }
+    document.getElementById("status").innerText =
+      res.status === "ok"
+        ? "✅ Présence enregistrée"
+        : "⚠️ " + JSON.stringify(res);
   })
   .catch(err => {
-    document.getElementById("status").innerHTML =
-      "❌ Erreur serveur";
+    document.getElementById("status").innerText = "❌ Erreur serveur";
   });
 }
 
