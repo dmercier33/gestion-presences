@@ -44,3 +44,21 @@ scanner.start(
     // scan en cours (silencieux)
   }
 );
+
+document.getElementById("startBtn").addEventListener("click", async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+    console.log("CAMERA OK");
+
+    const video = document.getElementById("video");
+    video.srcObject = stream;
+    video.play();
+
+    document.getElementById("status").innerText = "Caméra active";
+
+  } catch (err) {
+    console.log("CAMERA ERROR:", err);
+    document.getElementById("status").innerText = "Erreur caméra";
+  }
+});

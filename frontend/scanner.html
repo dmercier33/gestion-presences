@@ -27,24 +27,20 @@
   </style>
 </head>
 
-<script>
-navigator.mediaDevices.getUserMedia({ video: true })
-  .then(stream => {
-    console.log("DEBUG CAMERA OK");
-    stream.getTracks().forEach(t => t.stop());
-  })
-  .catch(err => {
-    console.log("CAMERA ERROR:", err);
-  });
-  </script>
-
 <body>
 
 <h2>📷 Scanner QR Présence</h2>
 
 <div id="reader"></div>
 
+<button id="startBtn">Autoriser caméra</button>
+
 <p id="status">En attente de scan...</p>
+
+<!-- 👇 IMPORTANT : zone caméra -->
+<video id="video" autoplay playsinline></video>
+
+<script src="js/scanner.js"></script>
 
 <script>
 const API_URL = ""; 
