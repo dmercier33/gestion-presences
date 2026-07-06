@@ -20,10 +20,10 @@ const frontendPath = path.resolve(process.cwd(), "frontend");
 app.use(express.static(frontendPath));
 
 app.get("/check-file", (req, res) => {
-  const filePath = path.join(process.cwd(), "frontend", "scanner.html");
+  const filePath = path.join(__dirname, "../frontend/scanner.html");
 
   res.json({
-    cwd: process.cwd(),
+    dirname: __dirname,
     filePath,
     exists: fs.existsSync(filePath)
   });
