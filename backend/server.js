@@ -25,6 +25,15 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => {
+    console.log("CAMERA OK");
+    stream.getTracks().forEach(t => t.stop());
+  })
+  .catch(err => {
+    console.log("CAMERA ERROR:", err);
+  });
+  
 // 🟢 HEALTH CHECK
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
