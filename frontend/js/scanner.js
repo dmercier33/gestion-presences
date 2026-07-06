@@ -10,17 +10,6 @@ const config = {
 
 const scanner = new Html5Qrcode("reader");
 
-function testCamera() {
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-      console.log("CAMERA OK");
-      stream.getTracks().forEach(t => t.stop());
-    })
-    .catch(err => {
-      console.log("CAMERA ERROR:", err);
-    });
-}
-
 scanner.start(
   { facingMode: "environment" },
   config,

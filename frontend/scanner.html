@@ -9,6 +9,19 @@
   <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
+
+    window.testCamera = function () {
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      console.log("CAMERA OK");
+      stream.getTracks().forEach(t => t.stop());
+    })
+    .catch(err => {
+      console.log("CAMERA ERROR:", err);
+    });
+};
+
+
     body {
       font-family: Arial;
       text-align: center;
@@ -33,8 +46,6 @@
 <div id="reader"></div>
 
 <p id="status">En attente de scan...</p>
-
-<button onclick="testCamera()">Tester caméra</button>
 
 <script>
 const API_URL = ""; 
