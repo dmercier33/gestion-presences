@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scanner Présence</title>
+
+  <!-- librairie QR -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    .ok { color: green; }
+    .err { color: red; }
+  </style>
+</head>
+
+<body>
+
+<h2>📷 Scanner QR Présence</h2>
+
+<div id="reader"></div>
+
+<p id="status">En attente de scan...</p>
+
+<script>
+const API_URL = ""; 
+// ⚠️ magique ! plus besoin de changer l'URL quand on déploie, le frontend et le backend sont sur le même serveur
+
+function onScanSuccess(decodedText) {
+  document.getElementById("status").innerText = "QR détecté...";
+
+  let data;
+  try {
+    data = JSON.parse(decodedText);
+  } catch (e) {
+    document.getElementById("status").innerHTML = "❌ QR invalide";
+    return;
+  }
+
+  fetch(`${API_URL}/api/presences`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      sessionId: data.sessionId,
+      apprenantId: "mobile-user-1"
+    })
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.status === "ok") {
+      document.getElementById("status").innerHTML =
+        "✅ Présence enregistrée";
+    } else {
+      document.getElementById("status").innerHTML =
+        "⚠️ " + JSON.stringify(res);
+    }
+  })
+  .catch(err => {
+    document.getElementById("status").innerHTML =
+      "❌ Erreur serveur";
+  });
+}
+
+const html5QrCode = new Html5Qrcode("reader");
+
+Html5QrCode.start(
+  { facingMode: "environment" },
+  { fps: 10, qrbox: 250 },
+  onScanSuccess
+);
+</script>
+
+</body>
+</html>
