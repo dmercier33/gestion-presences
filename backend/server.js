@@ -18,6 +18,10 @@ const __dirname = path.dirname(__filename);
 // servir le frontend
 app.use(express.static(path.join(__dirname, "../frontend")));
 
+app.get("/test-front", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/scanner.html"));
+});
+
 // 🔗 SUPABASE
 const supabase = createClient(
   process.env.SUPABASE_URL,
