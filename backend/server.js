@@ -15,8 +15,10 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// servir le frontend
-app.use(express.static(path.join(__dirname, "../frontend")));
+app.get("/scanner.html", (req, res) => {
+  console.log("HIT scanner.html route");
+  res.send("ROUTE OK BUT STATIC BYPASSED");
+});
 
 app.get("/test-front", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/scanner.html"));
