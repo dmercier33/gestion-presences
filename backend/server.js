@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -16,14 +17,21 @@ const __dirname = path.dirname(__filename);
 
 // servir le frontend
 app.use(express.static(path.join(__dirname, "../frontend")));
-console.log("LOOKING FOR:", filePath);
-console.log("EXISTS:", fs.existsSync(filePath));
 
 // 🔗 SUPABASE
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
+
+app.get("/debug", (req, res) => {
+  res.json({
+    cwd: process.cwd(),
+    dirname: __dirname,
+    backendFiles: fs.readdirSync(__dirname),
+    parentFiles: fs.readdirSync(path.join(__dirname, ".."))
+  });
+});
 
 // 🟢 HEALTH CHECK
 app.get("/health", (req, res) => {
