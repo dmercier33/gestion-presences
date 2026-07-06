@@ -29,13 +29,13 @@
 
 navigator.mediaDevices.getUserMedia({ video: true })
   .then(stream => {
-    console.log("CAMERA OK");
+    console.log("DEBUG CAMERA OK");
     stream.getTracks().forEach(t => t.stop());
   })
   .catch(err => {
     console.log("CAMERA ERROR:", err);
   });
-  
+
 <body>
 
 <h2>📷 Scanner QR Présence</h2>
