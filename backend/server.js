@@ -16,20 +16,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // servir le frontend
-const frontendPath = path.resolve(process.cwd(), "frontend");
+const frontendPath = path.resolve(process.cwd(), "../frontend");
 app.use(express.static(frontendPath));
-
-app.get("/check-file", (req, res) => {
-  const frontendDir = path.join(__dirname, "../frontend");
-
-  res.json({
-    frontendDir,
-    exists: fs.existsSync(frontendDir),
-    files: fs.existsSync(frontendDir)
-      ? fs.readdirSync(frontendDir)
-      : []
-  });
-});
 
 // 🔗 SUPABASE
 const supabase = createClient(
