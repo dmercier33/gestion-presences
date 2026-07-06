@@ -10,18 +10,6 @@
 
   <style>
 
-    window.testCamera = function () {
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-      console.log("CAMERA OK");
-      stream.getTracks().forEach(t => t.stop());
-    })
-    .catch(err => {
-      console.log("CAMERA ERROR:", err);
-    });
-};
-
-
     body {
       font-family: Arial;
       text-align: center;
@@ -39,6 +27,15 @@
   </style>
 </head>
 
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => {
+    console.log("CAMERA OK");
+    stream.getTracks().forEach(t => t.stop());
+  })
+  .catch(err => {
+    console.log("CAMERA ERROR:", err);
+  });
+  
 <body>
 
 <h2>📷 Scanner QR Présence</h2>
