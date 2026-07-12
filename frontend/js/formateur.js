@@ -47,7 +47,17 @@ window.nouvelleSession = async function () {
 
 
   } catch (err) {
+xxxxxxxxxxxxxxxxxx
+    const qrContainer = document.getElementById("qrCanvas");
 
+qrContainer.innerHTML = "";
+
+new QRCode(qrContainer, {
+  text: qrData,
+  width: 250,
+  height: 250
+});
+yyyyyyyyyyyyyyyyyy
     console.error("Erreur création session :", err);
 
     document.getElementById("sessionInfo").innerText =
