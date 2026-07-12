@@ -1,41 +1,72 @@
 import { createSession } from "./api.js";
 
+// stockage session active côté formateur
 let sessionActive = null;
 
-const btn = document.getElementById("btnNewSession");
 
-btn.addEventListener("click", async () => {
+/**
+ * Création d'une nouvelle session + génération QR
+ */
+window.nouvelleSession = async function () {
 
-    try {
+  try {
 
-        const session = await createSession();
+    // 1. création session backend
+    const session = await createSession();
 
-        sessionActive = session;
+    sessionActive = session;
 
-        localStorage.setItem(
-            "session",
-            JSON.stringify(session)
-        );
+    // 2. sauvegarde locale
+    localStorage.setItem(
+      "session",
+      JSON.stringify(session)
+    );
 
-        document.getElementById("sessionInfo").innerText =
-            `Session créée : ${session.sessionId}`;
+    // 3. affichage information session
+    document.getElementById("sessionInfo").innerText =
+      `Session créée : ${session.sessionId}`;
 
-        const qrContainer = document.getElementById("qrCanvas");
 
-        qrContainer.innerHTML = "";
+    // 4. préparation données QR
+    const qrData = JSON.stringify({
+      sessionId: session.sessionId,
+      token: session.token
+    });
 
-        const qrData = `${session.sessionId}|${session.token}`;
 
-        new QRCode(qrContainer, {
-            text: qrData,
-            width: 250,
-            height: 250
-        });
-    } catch (err) {
+    // 5. génération QR avec qrcodejs
+    const qrContainer = document.getElementById("qrCanvas");
 
-        console.error(err);
+    qrContainer.innerHTML = "";
 
-        document.getElementById("sessionInfo").innerText =
-            "Erreur création session";
-    }
-});
+    new QRCode(qrContainer, {
+      text: qrData,
+      width: 250,
+      height: 250
+    });
+
+
+  } catch (err) {
+
+    console.error("Erreur création session :", err);
+
+    document.getElementById("sessionInfo").innerText =
+      "Erreur création session";
+  }
+};
+
+
+/**
+ * Reset session locale
+ */
+window.resetSession = function () {
+
+  sessionActive = null;
+
+  localStorage.removeItem("session");
+
+  document.getElementById("sessionInfo").innerText =
+    "Aucune session";
+
+  document.getElementById("qrCanvas").innerHTML = "";
+};
