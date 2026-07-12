@@ -95,7 +95,27 @@ app.post("/api/presences", async (req, res) => {
       return res.status(404).json({ error: "Session not found" });
     }
 
-    // 3. anti double présence
+// 3. vérifier que l'apprenant est inscrit à la session
+const { data: allowed, error: allowedError } = await supabase
+  .from("session_apprenants")
+  .select("id")
+  .eq("session_id", sessionId)
+  .eq("apprenant_id", apprenantId)
+  .maybeSingle();
+
+if (allowedError) {
+  return res.status(500).json({
+    error: allowedError.message
+  });
+}
+
+if (!allowed) {
+  return res.status(403).json({
+    error: "Apprenant non autorisé dans cette session"
+  });
+}
+
+    // 4. anti double présence
     const { data: existing } = await supabase
       .from("presences")
       .select("id")
@@ -107,7 +127,7 @@ app.post("/api/presences", async (req, res) => {
       return res.status(409).json({ error: "Already registered" });
     }
 
-    // 4. insertion présence
+    // 5. insertion présence
     const { data, error } = await supabase
       .from("presences")
       .insert([
@@ -124,7 +144,7 @@ app.post("/api/presences", async (req, res) => {
       return res.status(500).json({ error });
     }
 
-    // 5. réponse clean
+    // 6. réponse clean
     res.json({
       status: "ok",
       presence: data
