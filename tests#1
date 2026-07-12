@@ -6,3 +6,11 @@ curl -X POST https://gestion-presences-56vd.onrender.com/session-apprenants -H "
 
 # insérer une présence
 curl -X POST https://gestion-presences-56vd.onrender.com/api/presences -H "Content-Type: application/json" -d "{\"sessionId\":\"SESSION_1783873233815\",\"apprenantId\":\"APP-0001\"}"
+
+# tests robustesse : 
+
+## test chk anti dble-présence : 
+curl -X POST https://gestion-presences-56vd.onrender.com/api/presences -H "Content-Type: application/json" -d "{\"sessionId\":\"SESSION_1783873233815\",\"apprenantId\":\"APP-0001\"}"
+
+## test chk dble scan : 
+curl -X POST https://gestion-presences-56vd.onrender.com/api/presences -H "Content-Type: application/json" -d "{\"sessionId\":\"SESSION_1783873233815\",\"apprenantId\":\"APP-0001\"}"
