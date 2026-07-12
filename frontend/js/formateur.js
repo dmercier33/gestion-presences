@@ -20,22 +20,17 @@ btn.addEventListener("click", async () => {
         document.getElementById("sessionInfo").innerText =
             `Session créée : ${session.sessionId}`;
 
-        const canvas = document.getElementById("qrCanvas");
+        const qrContainer = document.getElementById("qrCanvas");
+
+        qrContainer.innerHTML = "";
 
         const qrData = `${session.sessionId}|${session.token}`;
 
-        console.log("QRCode disponible :", typeof QRCode);
-        
-        QRCode.toCanvas(
-            canvas,
-            qrData,
-            function(error) {
-                if (error) {
-                    console.error(error);
-                }
-            }
-        );
-
+        new QRCode(qrContainer, {
+            text: qrData,
+            width: 250,
+            height: 250
+        });
     } catch (err) {
 
         console.error(err);
