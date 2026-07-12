@@ -71,18 +71,31 @@ function onScanSuccess(decodedText) {
 
   let data;
 
-  try {
-    data = JSON.parse(decodedText);
-  } catch (e) {
-    document.getElementById("status").innerText = "❌ QR invalide";
+  let sessionId;
 
-    setTimeout(() => {
-      isScanning = true;
-      document.getElementById("status").innerText = "📡 En attente de scan...";
-    }, 1500);
+try {
 
-    return;
+  const parts = decodedText.split("|");
+
+  sessionId = parts[0];
+
+  if (!sessionId) {
+    throw new Error("QR invalide");
   }
+
+} catch (e) {
+
+  document.getElementById("status").innerText =
+    "❌ QR invalide";
+
+  setTimeout(() => {
+    isScanning = true;
+    document.getElementById("status").innerText =
+      "📡 En attente de scan...";
+  }, 1500);
+
+  return;
+}
 
   fetch("/api/presences", {
     method: "POST",
@@ -90,9 +103,9 @@ function onScanSuccess(decodedText) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      sessionId: data.sessionId,
-      apprenantId: "mobile-user-1"
-    })
+  sessionId: sessionId,
+  apprenantId: "APP-0001"
+})
   })
   .then(res => res.json())
   .then(res => {
