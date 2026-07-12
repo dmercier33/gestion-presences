@@ -68,5 +68,9 @@ window.resetSession = function () {
   document.getElementById("sessionInfo").innerText =
     "Aucune session";
 
+  document
+  .getElementById("btnNewSession")
+  .addEventListener("click", nouvelleSession);
+
   document.getElementById("qrCanvas").innerHTML = "";
 };
