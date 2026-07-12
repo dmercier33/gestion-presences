@@ -11,6 +11,9 @@ create table if not exists sessions (
   created_at timestamp default now(),
   status text default 'active'
 );
+alter table sessions add column created_by text;
+alter table sessions add column start_time timestamp;
+alter table sessions add column end_time timestamp;
 
 create table if not exists presences (
   id uuid primary key default gen_random_uuid(),
@@ -18,7 +21,10 @@ create table if not exists presences (
   apprenant_id text not null,
   created_at timestamp default now()
 );
+ALTER TABLE presences
+ADD COLUMN created_at timestamptz DEFAULT now();
 
+// =========================================
 // anti doublons (crucial FSE)
 alter table presences
 add constraint unique_presence unique (session_id, apprenant_id);
@@ -33,7 +39,3 @@ alter table presences
 add constraint fk_apprenant
 foreign key (apprenant_id) references apprenants(id)
 on delete cascade;
-
-alter table sessions add column created_by text;
-alter table sessions add column start_time timestamp;
-alter table sessions add column end_time timestamp;
