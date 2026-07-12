@@ -1,7 +1,7 @@
 const API_URL = "https://gestion-presences-56vd.onrender.com";
 
 /**
- * Crée une nouvelle session
+ * Création d'une session côté formateur
  */
 export async function createSession() {
     const res = await fetch(`${API_URL}/sessions`, {
@@ -18,35 +18,22 @@ export async function createSession() {
     return await res.json();
 }
 
+
 /**
- * Enregistre une présence après scan QR
+ * Enregistrement d'une présence après scan QR
  */
-export async function sendPresence({ sessionId, token, apprenantId }) {
-    const res = await fetch(`${API_URL}/presence`, {
+export async function registerPresence(sessionId, apprenantId) {
+
+    const res = await fetch(`${API_URL}/api/presences`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
             sessionId,
-            token,
             apprenantId
         })
     });
 
-    if (!res.ok) {
-        throw new Error("Erreur enregistrement présence");
-    }
-
     return await res.json();
-}
-
-export async function registerPresence(sessionId, apprenantId) {
-  const res = await fetch("/api/presences", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sessionId, apprenantId })
-  });
-
-  return await res.json();
 }
