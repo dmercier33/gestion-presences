@@ -14,3 +14,6 @@ curl -X POST https://gestion-presences-56vd.onrender.com/api/presences -H "Conte
 
 ## test chk dble scan : 
 curl -X POST https://gestion-presences-56vd.onrender.com/api/presences -H "Content-Type: application/json" -d "{\"sessionId\":\"SESSION_1783873233815\",\"apprenantId\":\"APP-0001\"}"
+
+## test qu'un apprenant doit obligatoirement être affecté à la session avant de pouvoir émarger : 
+curl -X POST https://gestion-presences-56vd.onrender.com/api/presences -H "Content-Type: application/json" -d "{\"sessionId\":\"SESSION_1783873233815\",\"apprenantId\":\"APP-0002\"}"
