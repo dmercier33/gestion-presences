@@ -1,0 +1,5 @@
+creer une session : 
+curl -X POST https://gestion-presences-56vd.onrender.com/sessions -H "Content-Type: application/json" -d "{}"
+
+affecter un id apprenant existant à la sessions : 
+curl -X POST https://gestion-presences-56vd.onrender.com/session-apprenants -H "Content-Type: application/json" -d "{\"sessionId\":\"SESSION_1783873233815"\",\"apprenantId\":\"APP-001\"}"
