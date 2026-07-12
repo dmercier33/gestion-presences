@@ -193,3 +193,34 @@ app.get("/apprenants/:id", async (req, res) => {
   res.json(data);
 });
 
+// 🟢 ASSIGN APPRENANT TO SESSION
+app.post("/session-apprenants", async (req, res) => {
+
+  const { sessionId, apprenantId } = req.body;
+
+  if (!sessionId || !apprenantId) {
+    return res.status(400).json({
+      error: "Missing sessionId or apprenantId"
+    });
+  }
+
+  const id = "SA_" + Date.now();
+
+  const { data, error } = await supabase
+    .from("session_apprenants")
+    .insert([
+      {
+        id,
+        session_id: sessionId,
+        apprenant_id: apprenantId
+      }
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    return res.status(500).json({ error });
+  }
+
+  res.json(data);
+});
