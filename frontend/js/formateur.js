@@ -24,6 +24,8 @@ btn.addEventListener("click", async () => {
 
         const qrData = `${session.sessionId}|${session.token}`;
 
+        console.log("QRCode disponible :", typeof QRCode);
+        
         QRCode.toCanvas(
             canvas,
             qrData,
