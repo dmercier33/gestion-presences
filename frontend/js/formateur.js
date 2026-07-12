@@ -29,9 +29,7 @@ window.nouvelleSession = async function () {
     }
 
     // format QR (simple et standard)
-    const qrData = JSON.stringify({
-      sessionId: session.sessionId
-    });
+    const qrData = `${session.sessionId}|${session.token}`;
 
     QRCode.toCanvas(canvas, qrData, function (error) {
       if (error) console.error(error);
