@@ -62,7 +62,7 @@ window.addEventListener("load", () => {
 });
 
 function onScanSuccess(decodedText) {
-
+  console.log("TEXTE QR BRUT :", decodedText);
   if (!isScanning) return;
 
   isScanning = false;
