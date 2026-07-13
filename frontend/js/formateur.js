@@ -95,7 +95,7 @@ async function refreshPresences() {
 
         const presences = await res.json();
 
-
+        console.log("PRESENCES RECUES :", presences);
 
         document.getElementById("presenceCount").innerText =
             `${presences.length} apprenant(s)`;
