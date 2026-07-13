@@ -41,10 +41,12 @@ async function nouvelleSession() {
 
 
         const qrData = JSON.stringify({
+            type: "SESSION",
             sessionId: session.sessionId,
             token: session.token
         });
 
+        console.log("VERSION TEST QR SESSION V0.2");
 
         new QRCode(qrContainer, {
             text: qrData,
@@ -52,6 +54,7 @@ async function nouvelleSession() {
             height: 250
         });
 
+        console.log("QR SESSION généré :", qrData);
 
     } catch (error) {
 

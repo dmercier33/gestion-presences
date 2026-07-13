@@ -37,70 +37,47 @@
 <p id="status">En attente du QR...</p>
 
 
-<script>
+<script type="module">
+
+import { registerPresence } from "./js/api.js";
+
+console.log("scanner.js v0.2 chargé");
+
 
 let isScanning = true;
 
+let apprenantId = null;
 
-const API_URL = "https://gestion-presences-56vd.onrender.com";
-
-
-function onScanSuccess(decodedText) {
-
-  if (!isScanning) return;
-
-  isScanning = false;
+let sessionId = null;
 
 
-  document.getElementById("status").innerText =
-    "QR détecté...";
 
+async function enregistrerPresence() {
 
-  let data;
-
-
-  try {
-
-    data = JSON.parse(decodedText);
-
-  } catch(e) {
-
-    document.getElementById("status").innerText =
-      "QR invalide";
-
-    isScanning = true;
+  if (!sessionId || !apprenantId) {
     return;
   }
 
 
-  console.log("QR lu :", data);
+  console.log(
+    "Enregistrement présence :",
+    sessionId,
+    apprenantId
+  );
 
 
-  fetch(`${API_URL}/api/presences`, {
+  try {
 
-    method: "POST",
-
-    headers: {
-      "Content-Type": "application/json"
-    },
-
-    body: JSON.stringify({
-
-      sessionId: data.sessionId,
-
-      apprenantId: "APP-0001"
-
-    })
-
-  })
+    const result = await registerPresence(
+      sessionId,
+      apprenantId
+    );
 
 
-  .then(res => res.json())
-
-
-  .then(result => {
-
-    console.log("Réponse serveur :", result);
+    console.log(
+      "Réponse serveur :",
+      result
+    );
 
 
     if (result.status === "ok") {
@@ -116,30 +93,122 @@ function onScanSuccess(decodedText) {
     }
 
 
-    setTimeout(() => {
-
-      isScanning = true;
-
-      document.getElementById("status").innerText =
-        "En attente du QR...";
-
-    }, 3000);
-
-  })
+    sessionId = null;
+    apprenantId = null;
 
 
-  .catch(err => {
+  } catch(err) {
 
     console.error(err);
 
     document.getElementById("status").innerText =
       "Erreur serveur";
 
-    isScanning = true;
-
-  });
+  }
 
 }
+
+
+
+function onScanSuccess(decodedText) {
+
+
+  if (!isScanning) return;
+
+
+  isScanning = false;
+
+
+  let data;
+
+
+  try {
+
+    data = JSON.parse(decodedText);
+
+  }
+
+  catch(e) {
+
+    document.getElementById("status").innerText =
+      "QR invalide";
+
+    isScanning = true;
+
+    return;
+  }
+
+
+  console.log("QR lu :", data);
+
+
+
+  // QR APPRENANT
+
+  if (data.type === "APPRENANT") {
+
+
+    apprenantId = data.id;
+
+
+    document.getElementById("status").innerText =
+      "✅ Apprenant reconnu : " + apprenantId;
+
+
+    isScanning = true;
+
+
+    if (sessionId) {
+
+      enregistrerPresence();
+
+    }
+
+
+    return;
+
+  }
+
+
+
+
+  // QR SESSION
+
+  if (data.type === "SESSION") {
+
+
+    sessionId = data.sessionId;
+
+
+    document.getElementById("status").innerText =
+      "✅ Session reconnue";
+
+
+    isScanning = true;
+
+
+    if (apprenantId) {
+
+      enregistrerPresence();
+
+    }
+
+
+    return;
+
+  }
+
+
+
+  document.getElementById("status").innerText =
+    "QR inconnu";
+
+
+  isScanning = true;
+
+
+}
+
 
 
 
@@ -165,6 +234,7 @@ html5QrCode.start(
     "Erreur caméra : " + err;
 
 });
+
 
 </script>
 
