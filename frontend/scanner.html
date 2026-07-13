@@ -165,6 +165,12 @@ function onScanSuccess(decodedText) {
 
     apprenantId = data.id;
 
+      console.log(
+    "DEBUG avant présence => sessionId:",
+    sessionId,
+    "apprenantId:",
+    apprenantId
+);
 
     document.getElementById("status").innerText =
       "✅ Apprenant reconnu : " + apprenantId;
