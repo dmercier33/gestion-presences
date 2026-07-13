@@ -56,21 +56,46 @@ app.post("/sessions", async (req, res) => {
 
 
 // 🟢 GET SESSION
-app.get("/sessions/:id", async (req, res) => {
+app.get("/presences/:sessionId", async (req, res) => {
 
-  const { id } = req.params;
+  const { sessionId } = req.params;
 
-  const { data, error } = await supabase
-    .from("sessions")
-    .select("*")
-    .eq("id", id)
-    .single();
+  try {
 
-  if (error) {
-    return res.status(404).json({ error });
+    const { data, error } = await supabase
+      .from("presences")
+      .select(`
+        id,
+        session_id,
+        scan_time,
+        created_at,
+        apprenants (
+          nom,
+          prenom,
+          groupe
+        )
+      `)
+      .eq("session_id", sessionId);
+
+
+    if (error) {
+      return res.status(500).json({
+        error: error.message
+      });
+    }
+
+
+    res.json(data);
+
+
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message
+    });
+
   }
 
-  res.json(data);
 });
 
 
