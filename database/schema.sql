@@ -5,6 +5,8 @@ create table if not exists apprenants (
   email text,
   created_at timestamp default now()
 );
+ALTER TABLE apprenants
+ADD COLUMN qr_code text;
 
 create table if not exists sessions (
   id text primary key,

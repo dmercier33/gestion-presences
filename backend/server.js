@@ -11,12 +11,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-console.log("FRONTEND SERVED FROM :", frontendPath);
-
 // servir frontend
 const frontendPath = path.resolve(process.cwd(), "../frontend");
 app.use(express.static(frontendPath));
 
+console.log("FRONTEND SERVED FROM :", frontendPath);
 
 // SUPABASE
 const supabase = createClient(
@@ -343,7 +342,35 @@ app.post("/session-apprenants", async(req,res)=>{
 });
 
 
+app.post("/apprenants/:id/qr", async (req,res)=>{
 
+    const id = req.params.id;
+
+    const qrCode = "APP_" + Date.now() + "_" + Math.random()
+        .toString(36)
+        .substring(2,8);
+
+
+    const { data, error } = await supabase
+        .from("apprenants")
+        .update({
+            qr_code: qrCode
+        })
+        .eq("id", id)
+        .select();
+
+
+    if(error){
+        return res.status(500).json(error);
+    }
+
+
+    res.json({
+        qr_code: qrCode,
+        apprenant:data[0]
+    });
+
+});
 
 // START
 
@@ -356,3 +383,4 @@ app.listen(
     );
   }
 );
+

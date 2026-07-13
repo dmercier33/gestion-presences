@@ -57,7 +57,19 @@
 
 <h2>👥 Liste des apprenants</h2>
 
+<h3>➕ Nouvel apprenant</h3>
 
+<input id="nom" placeholder="Nom">
+
+<input id="prenom" placeholder="Prénom">
+
+<input id="groupe" placeholder="Groupe">
+
+<button onclick="creerApprenant()">
+  Créer
+</button>
+
+<p id="creationStatus"></p>
 <p id="status">
 Chargement...
 </p>
@@ -97,44 +109,56 @@ const API_URL =
 
 
 
-function genererQR(apprenantId) {
-
+async function genererQR(apprenantId) {
 
   const container =
-    document.getElementById(
-      "qr-" + apprenantId
+    document.getElementById("qr-" + apprenantId);
+
+
+  container.innerHTML = "Génération...";
+
+
+  try {
+
+    const response = await fetch(
+      `${API_URL}/apprenants/${apprenantId}/qr`,
+      {
+        method:"POST"
+      }
     );
 
 
-  container.innerHTML = "";
+    const data = await response.json();
 
 
-  const qrData = JSON.stringify({
-
-    type: "APPRENANT",
-
-    id: apprenantId
-
-  });
+    console.log(
+      "QR reçu :",
+      data
+    );
 
 
-  new QRCode(
-
-    container,
-
-    {
-      text: qrData,
-      width: 180,
-      height: 180
-    }
-
-  );
+    container.innerHTML="";
 
 
-  console.log(
-    "QR apprenant généré :",
-    qrData
-  );
+    new QRCode(
+      container,
+      {
+        text:data.qr_code,
+        width:180,
+        height:180
+      }
+    );
+
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    container.innerHTML =
+      "Erreur génération QR";
+
+  }
 
 }
 
