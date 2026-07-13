@@ -14,8 +14,8 @@
 
 body {
   font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 20px;
+  text-align:center;
+  padding:20px;
 }
 
 #reader {
@@ -40,7 +40,9 @@ body {
 
 <h2>📷 Scanner présence</h2>
 
+
 <div id="reader"></div>
+
 
 <p id="status">
 En attente du QR...
@@ -59,34 +61,35 @@ console.log("scanner v0.3.4 chargé");
 
 
 let sessionId = null;
+
 let apprenantId = null;
+
 let isScanning = true;
 
 
 
+// ======================================
+// Enregistrement présence
+// ======================================
+
 async function enregistrerPresence(){
 
 
-  console.log(
-    "Tentative enregistrement :",
-    {
-      sessionId,
-      apprenantId
-    }
-  );
-
-
   if(!sessionId || !apprenantId){
-
-    console.log("Données manquantes");
 
     return;
 
   }
 
 
+  console.log(
+    "Enregistrement présence :",
+    sessionId,
+    apprenantId
+  );
 
-  try {
+
+  try{
 
 
     const result =
@@ -97,32 +100,37 @@ async function enregistrerPresence(){
 
 
     console.log(
-      "Retour API :",
+      "Réponse serveur :",
       result
     );
 
 
     if(result.status === "ok"){
 
+
       document.getElementById("status").innerText =
         "✅ Présence enregistrée";
 
-    }
 
+    }
     else {
+
 
       document.getElementById("status").innerText =
         "❌ " + JSON.stringify(result);
 
+
     }
 
 
+
     sessionId = null;
+
     apprenantId = null;
 
 
-  }
 
+  }
 
   catch(error){
 
@@ -141,6 +149,9 @@ async function enregistrerPresence(){
 
 
 
+// ======================================
+// Lecture QR
+// ======================================
 
 function onScanSuccess(decodedText){
 
@@ -155,23 +166,17 @@ function onScanSuccess(decodedText){
   isScanning=false;
 
 
-  console.log(
-    "Texte QR brut :",
-    decodedText
-  );
+
+  let data=null;
 
 
 
-  let data;
-
-
-
-  // QR apprenant simple
+  // Nouveau QR apprenant v0.3.3
 
   if(decodedText.startsWith("APP_")){
 
 
-    data = {
+    data={
 
       type:"APPRENANT",
 
@@ -186,14 +191,13 @@ function onScanSuccess(decodedText){
   else {
 
 
-    try {
+    try{
 
 
-      data = JSON.parse(decodedText);
+      data=JSON.parse(decodedText);
 
 
     }
-
 
     catch(e){
 
@@ -206,6 +210,7 @@ function onScanSuccess(decodedText){
 
       return;
 
+
     }
 
 
@@ -214,21 +219,23 @@ function onScanSuccess(decodedText){
 
 
   console.log(
-    "Objet QR :",
+    "QR lu :",
     data
   );
 
 
 
-  // =========================
-  // APPRENANT
-  // =========================
+
+  // ==========================
+  // QR APPRENANT
+  // ==========================
 
 
-  if(data.type === "APPRENANT"){
+  if(data.type==="APPRENANT"){
 
 
-    apprenantId = data.id;
+    apprenantId=data.id;
+
 
 
     document.getElementById("status").innerText =
@@ -246,13 +253,11 @@ function onScanSuccess(decodedText){
 
 
     }
-
-
-    else {
+    else{
 
 
       document.getElementById("status").innerText +=
-        "\n⚠️ En attente session";
+        "\n⚠️ En attente de la session";
 
 
     }
@@ -260,6 +265,7 @@ function onScanSuccess(decodedText){
 
 
     isScanning=true;
+
 
     return;
 
@@ -269,28 +275,17 @@ function onScanSuccess(decodedText){
 
 
 
-  // =========================
-  // SESSION
-  // =========================
+
+  // ==========================
+  // QR SESSION
+  // ==========================
 
 
-  if(data.type === "SESSION"){
-
-
-    sessionId = data.sessionId;
+  if(data.type==="SESSION"){
 
 
 
-    console.log(
-      "SESSION détectée :",
-      data
-    );
-
-
-    console.log(
-      "sessionId mémorisé :",
-      sessionId
-    );
+    sessionId=data.sessionId;
 
 
 
@@ -312,10 +307,12 @@ function onScanSuccess(decodedText){
 
     isScanning=true;
 
+
     return;
 
 
   }
+
 
 
 
@@ -330,9 +327,13 @@ function onScanSuccess(decodedText){
 
 
 
+// ======================================
+// Démarrage caméra
+// ======================================
+
 
 const html5QrCode =
-  new Html5QrCode("reader");
+  new Html5Qrcode("reader");
 
 
 
@@ -351,12 +352,11 @@ html5QrCode.start(
 
 )
 
-
 .catch(err=>{
 
 
   console.error(
-    "Erreur caméra :",
+    "Erreur caméra",
     err
   );
 
@@ -366,6 +366,7 @@ html5QrCode.start(
 
 
 });
+
 
 
 </script>
