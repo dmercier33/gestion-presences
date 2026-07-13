@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Gestion des apprenants</title>
+
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+
+    table {
+
+      margin: auto;
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 700px;
+
+    }
+
+
+    th, td {
+
+      border: 1px solid #ccc;
+      padding: 10px;
+
+    }
+
+
+    th {
+
+      background: #eee;
+
+    }
+
+
+    #status {
+
+      margin: 20px;
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<h2>👥 Liste des apprenants</h2>
+
+
+<p id="status">
+Chargement...
+</p>
+
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+<th>Nom</th>
+<th>Prénom</th>
+<th>Groupe</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="listeApprenants">
+
+</tbody>
+
+
+</table>
+
+
+
+<script type="module">
+
+
+const API_URL =
+"https://gestion-presences-56vd.onrender.com";
+
+
+
+async function chargerApprenants() {
+
+
+  try {
+
+
+    const response = await fetch(
+      `${API_URL}/apprenants`
+    );
+
+
+    const apprenants =
+      await response.json();
+
+
+
+    console.log(
+      "Apprenants reçus :",
+      apprenants
+    );
+
+
+
+    const tbody =
+      document.getElementById(
+        "listeApprenants"
+      );
+
+
+
+    tbody.innerHTML =
+      apprenants.map(a => `
+
+        <tr>
+
+          <td>${a.id}</td>
+
+          <td>${a.nom}</td>
+
+          <td>${a.prenom}</td>
+
+          <td>${a.groupe ?? ""}</td>
+
+        </tr>
+
+      `).join("");
+
+
+
+    document.getElementById(
+      "status"
+    ).innerText =
+      `${apprenants.length} apprenant(s)`;
+
+
+  }
+
+
+  catch(error) {
+
+
+    console.error(error);
+
+
+    document.getElementById(
+      "status"
+    ).innerText =
+      "Erreur chargement apprenants";
+
+
+  }
+
+
+}
+
+
+
+chargerApprenants();
+
+
+</script>
+
+
+</body>
+
+</html>
