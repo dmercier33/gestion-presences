@@ -1,6 +1,7 @@
 import { createSession } from "./api.js";
 
 let sessionActive = null;
+let refreshTimer = null;
 
 
 async function nouvelleSession() {
@@ -14,7 +15,15 @@ async function nouvelleSession() {
         console.log("Session reçue :", session);
 
         sessionActive = session;
-        setInterval(refreshPresences, 5000);
+
+
+        // éviter plusieurs timers si on recrée une session
+        if (refreshTimer) {
+            clearInterval(refreshTimer);
+        }
+
+        refreshTimer = setInterval(refreshPresences, 5000);
+
 
         localStorage.setItem(
             "session",
@@ -54,10 +63,13 @@ async function nouvelleSession() {
 }
 
 
+
 window.nouvelleSession = nouvelleSession;
 
 
-// branchement bouton
+
+// bouton nouvelle session
+
 document
     .getElementById("btnNewSession")
     .addEventListener(
@@ -65,36 +77,54 @@ document
         nouvelleSession
     );
 
+
+
+
+
 async function refreshPresences() {
 
-  if (!sessionActive) return;
-
-  try {
-
-    const res = await fetch(
-      `https://gestion-presences-56vd.onrender.com/presences/${sessionActive.sessionId}`
-    );
-
-    const presences = await res.json();
+    if (!sessionActive) return;
 
 
-    document.getElementById("presenceCount").innerText =
-      `${presences.length} apprenant(s)`;
+    try {
+
+        const res = await fetch(
+            `https://gestion-presences-56vd.onrender.com/presences/${sessionActive.sessionId}`
+        );
 
 
-    document.getElementById("presenceList").innerHTML =
-      presences.map(p => `
-        <p>
-          ✅ ${p.apprenant_id}
-          - ${new Date(p.created_at).toLocaleTimeString()}
-        </p>
-      `).join("");
+        const presences = await res.json();
 
 
-  } catch(err) {
 
-    console.error("Erreur chargement présences", err);
+        document.getElementById("presenceCount").innerText =
+            `${presences.length} apprenant(s)`;
 
-  }
+
+
+        document.getElementById("presenceList").innerHTML =
+
+            presences.map(p => `
+
+                <p>
+                    ✅ ${p.apprenants.prenom}
+                    ${p.apprenants.nom}
+                    (${p.apprenants.groupe})
+                    -
+                    ${new Date(p.created_at).toLocaleTimeString()}
+                </p>
+
+            `).join("");
+
+
+
+    } catch (err) {
+
+        console.error(
+            "Erreur chargement présences",
+            err
+        );
+
+    }
 
 }
