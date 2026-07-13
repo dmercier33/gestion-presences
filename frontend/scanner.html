@@ -76,7 +76,7 @@ function onScanSuccess(decodedText) {
 try {
 
   const parts = decodedText.split("|");
-
+  console.log("QR LU PAR LE SCANNER :", data);
   sessionId = parts[0];
 
   if (!sessionId) {
