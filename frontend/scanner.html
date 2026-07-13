@@ -1,61 +1,84 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Scanner Présence</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://unpkg.com/html5-qrcode"></script>
+<title>Scanner Présence</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
+<script src="https://unpkg.com/html5-qrcode"></script>
 
-    #reader {
-      width: 100%;
-      max-width: 400px;
-      margin: auto;
-    }
+<style>
 
-    #status {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-  </style>
+body {
+  font-family: Arial, sans-serif;
+  text-align:center;
+  padding:20px;
+}
+
+#reader {
+  width:100%;
+  max-width:400px;
+  margin:auto;
+}
+
+#status {
+  margin-top:20px;
+  font-size:18px;
+  white-space:pre-line;
+}
+
+</style>
+
 </head>
+
 
 <body>
 
+
 <h2>📷 Scanner présence</h2>
+
 
 <div id="reader"></div>
 
-<p id="status">En attente du QR...</p>
+
+<p id="status">
+En attente du QR...
+</p>
+
 
 
 <script type="module">
 
+
 import { registerPresence } from "./js/api.js";
 
-console.log("scanner.js v0.2 chargé");
+
+console.log("scanner v0.3.4 chargé");
 
 
-let isScanning = true;
-
-let apprenantId = null;
 
 let sessionId = null;
 
+let apprenantId = null;
+
+let isScanning = true;
 
 
-async function enregistrerPresence() {
 
-  if (!sessionId || !apprenantId) {
+// ======================================
+// Enregistrement présence
+// ======================================
+
+async function enregistrerPresence(){
+
+
+  if(!sessionId || !apprenantId){
+
     return;
+
   }
 
 
@@ -66,12 +89,14 @@ async function enregistrerPresence() {
   );
 
 
-  try {
+  try{
 
-    const result = await registerPresence(
-      sessionId,
-      apprenantId
-    );
+
+    const result =
+      await registerPresence(
+        sessionId,
+        apprenantId
+      );
 
 
     console.log(
@@ -80,211 +105,273 @@ async function enregistrerPresence() {
     );
 
 
-    if (result.status === "ok") {
+    if(result.status === "ok"){
+
 
       document.getElementById("status").innerText =
         "✅ Présence enregistrée";
 
-    } else {
+
+    }
+    else {
+
 
       document.getElementById("status").innerText =
         "❌ " + JSON.stringify(result);
 
+
     }
+
 
 
     sessionId = null;
+
     apprenantId = null;
 
 
-  } catch(err) {
-
-    console.error(err);
-
-    document.getElementById("status").innerText =
-      "Erreur serveur";
 
   }
+
+  catch(error){
+
+
+    console.error(error);
+
+
+    document.getElementById("status").innerText =
+      "❌ Erreur serveur";
+
+
+  }
+
 
 }
 
 
 
-function onScanSuccess(decodedText) {
+// ======================================
+// Lecture QR
+// ======================================
 
-  if (!isScanning) return;
+function onScanSuccess(decodedText){
 
 
-  isScanning = false;
+  if(!isScanning){
+
+    return;
+
+  }
 
 
-  let data = null;
+  isScanning=false;
+
+
+
+  let data=null;
+
 
 
   // Nouveau QR apprenant v0.3.3
-  if (decodedText.startsWith("APP_")) {
 
-    data = {
-      type: "APPRENANT",
-      id: decodedText
+  if(decodedText.startsWith("APP_")){
+
+
+    data={
+
+      type:"APPRENANT",
+
+      id:decodedText
+
     };
 
+
   }
 
-  // Ancien format JSON
+
   else {
 
-    try {
 
-      data = JSON.parse(decodedText);
+    try{
+
+
+      data=JSON.parse(decodedText);
+
 
     }
 
-    catch(e) {
+    catch(e){
+
 
       document.getElementById("status").innerText =
-        "QR invalide";
+        "❌ QR invalide";
 
-      isScanning = true;
+
+      isScanning=true;
 
       return;
+
+
     }
+
 
   }
 
-
-  console.log("QR lu :", data);
-
-  document.getElementById("status").innerText =
-  "QR lu : " + JSON.stringify(data);
-
-  // QR APPRENANT
-
-if (data.type === "APPRENANT") {
-
-  apprenantId = data.id;
-
-  document.getElementById("status").innerText =
-    "✅ Apprenant reconnu : " + apprenantId
-    + "\nSession = " + sessionId;
 
 
   console.log(
-    "DEBUG APPRENANT",
-    {
-      sessionId,
-      apprenantId
-    }
+    "QR lu :",
+    data
   );
 
 
-  if (sessionId) {
-
-    document.getElementById("status").innerText +=
-      "\n➡️ Lancement enregistrement";
-
-    enregistrerPresence();
-
-  }
-  else {
-
-    document.getElementById("status").innerText +=
-      "\n❌ Pas de session active";
-
-  }
 
 
-  isScanning = true;
+  // ==========================
+  // QR APPRENANT
+  // ==========================
 
-  return;
 
-}
+  if(data.type==="APPRENANT"){
+
+
+    apprenantId=data.id;
+
+
 
     document.getElementById("status").innerText =
-      "✅ Apprenant reconnu : " + apprenantId;
+      "✅ Apprenant reconnu : "
+      + apprenantId
+      + "\nSession : "
+      + sessionId;
 
 
-    isScanning = true;
 
+    if(sessionId){
 
-    if (sessionId) {
 
       enregistrerPresence();
+
+
+    }
+    else{
+
+
+      document.getElementById("status").innerText +=
+        "\n⚠️ En attente de la session";
+
 
     }
 
 
+
+    isScanning=true;
+
+
     return;
+
 
   }
 
 
 
+
+
+  // ==========================
   // QR SESSION
+  // ==========================
 
-  if (data.type === "SESSION") {
+
+  if(data.type==="SESSION"){
 
 
-    sessionId = data.sessionId;
+
+    sessionId=data.sessionId;
+
 
 
     document.getElementById("status").innerText =
-      "✅ Session reconnue";
+      "✅ Session reconnue : "
+      + sessionId;
 
 
-    isScanning = true;
 
+    if(apprenantId){
 
-    if (apprenantId) {
 
       enregistrerPresence();
+
 
     }
 
 
+
+    isScanning=true;
+
+
     return;
 
+
   }
+
 
 
 
   document.getElementById("status").innerText =
-    "QR inconnu";
+    "❌ QR inconnu";
 
 
-  isScanning = true;
+  isScanning=true;
+
 
 }
 
 
 
+// ======================================
+// Démarrage caméra
+// ======================================
 
-const html5QrCode = new Html5Qrcode("reader");
+
+const html5QrCode =
+  new Html5Qrcode("reader");
+
 
 
 html5QrCode.start(
 
-  { facingMode: "environment" },
+  {
+    facingMode:"environment"
+  },
 
   {
-    fps: 10,
-    qrbox: 250
+    fps:10,
+    qrbox:250
   },
 
   onScanSuccess
 
 )
 
-.catch(err => {
+.catch(err=>{
+
+
+  console.error(
+    "Erreur caméra",
+    err
+  );
+
 
   document.getElementById("status").innerText =
     "Erreur caméra : " + err;
 
+
 });
+
 
 
 </script>
 
 
 </body>
+
 </html>
