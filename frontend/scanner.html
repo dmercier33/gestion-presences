@@ -112,30 +112,44 @@ async function enregistrerPresence() {
 
 function onScanSuccess(decodedText) {
 
-
   if (!isScanning) return;
 
 
   isScanning = false;
 
 
-  let data;
+  let data = null;
 
 
-  try {
+  // Nouveau QR apprenant v0.3.3
+  if (decodedText.startsWith("APP_")) {
 
-    data = JSON.parse(decodedText);
+    data = {
+      type: "APPRENANT",
+      id: decodedText
+    };
 
   }
 
-  catch(e) {
+  // Ancien format JSON
+  else {
 
-    document.getElementById("status").innerText =
-      "QR invalide";
+    try {
 
-    isScanning = true;
+      data = JSON.parse(decodedText);
 
-    return;
+    }
+
+    catch(e) {
+
+      document.getElementById("status").innerText =
+        "QR invalide";
+
+      isScanning = true;
+
+      return;
+    }
+
   }
 
 
@@ -168,7 +182,6 @@ function onScanSuccess(decodedText) {
     return;
 
   }
-
 
 
 
@@ -205,7 +218,6 @@ function onScanSuccess(decodedText) {
 
 
   isScanning = true;
-
 
 }
 
