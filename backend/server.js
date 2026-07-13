@@ -43,23 +43,13 @@ const { data, error } = await supabase
     session_id,
     scan_time,
     created_at,
-    apprenants!fk_apprenant (
+    apprenants!presences_apprenant_id_fkey (
       nom,
       prenom,
       groupe
     )
   `)
   .eq("session_id", sessionId);
-
-  if (error) {
-    return res.status(500).json({ error });
-  }
-
-  res.json({
-    sessionId,
-    token
-  });
-});
 
 
 // 🟢 GET SESSION
