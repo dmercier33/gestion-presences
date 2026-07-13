@@ -14,6 +14,7 @@ async function nouvelleSession() {
         console.log("Session reçue :", session);
 
         sessionActive = session;
+        setInterval(refreshPresences, 5000);
 
         localStorage.setItem(
             "session",
