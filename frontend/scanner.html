@@ -160,17 +160,45 @@ function onScanSuccess(decodedText) {
 
   // QR APPRENANT
 
-  if (data.type === "APPRENANT") {
+if (data.type === "APPRENANT") {
+
+  apprenantId = data.id;
+
+  document.getElementById("status").innerText =
+    "✅ Apprenant reconnu : " + apprenantId
+    + "\nSession = " + sessionId;
 
 
-    apprenantId = data.id;
+  console.log(
+    "DEBUG APPRENANT",
+    {
+      sessionId,
+      apprenantId
+    }
+  );
 
-      console.log(
-    "DEBUG avant présence => sessionId:",
-    sessionId,
-    "apprenantId:",
-    apprenantId
-);
+
+  if (sessionId) {
+
+    document.getElementById("status").innerText +=
+      "\n➡️ Lancement enregistrement";
+
+    enregistrerPresence();
+
+  }
+  else {
+
+    document.getElementById("status").innerText +=
+      "\n❌ Pas de session active";
+
+  }
+
+
+  isScanning = true;
+
+  return;
+
+}
 
     document.getElementById("status").innerText =
       "✅ Apprenant reconnu : " + apprenantId;
