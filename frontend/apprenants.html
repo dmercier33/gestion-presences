@@ -8,6 +8,8 @@
 
   <title>Gestion des apprenants</title>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <style>
 
     body {
@@ -17,34 +19,32 @@
     }
 
     table {
-
       margin: auto;
       border-collapse: collapse;
       width: 90%;
-      max-width: 700px;
-
+      max-width: 800px;
     }
-
 
     th, td {
-
       border: 1px solid #ccc;
       padding: 10px;
-
     }
-
 
     th {
-
       background: #eee;
-
     }
 
-
     #status {
-
       margin: 20px;
+    }
 
+    .qr {
+      margin-top: 10px;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 5px 10px;
     }
 
   </style>
@@ -73,6 +73,7 @@ Chargement...
 <th>Nom</th>
 <th>Prénom</th>
 <th>Groupe</th>
+<th>QR</th>
 
 </tr>
 
@@ -93,6 +94,50 @@ Chargement...
 
 const API_URL =
 "https://gestion-presences-56vd.onrender.com";
+
+
+
+function genererQR(apprenantId) {
+
+
+  const container =
+    document.getElementById(
+      "qr-" + apprenantId
+    );
+
+
+  container.innerHTML = "";
+
+
+  const qrData = JSON.stringify({
+
+    type: "APPRENANT",
+
+    id: apprenantId
+
+  });
+
+
+  new QRCode(
+
+    container,
+
+    {
+      text: qrData,
+      width: 180,
+      height: 180
+    }
+
+  );
+
+
+  console.log(
+    "QR apprenant généré :",
+    qrData
+  );
+
+}
+
 
 
 
@@ -139,6 +184,20 @@ async function chargerApprenants() {
 
           <td>${a.groupe ?? ""}</td>
 
+          <td>
+
+            <button
+              onclick="genererQR('${a.id}')">
+              📱 QR
+            </button>
+
+            <div
+              class="qr"
+              id="qr-${a.id}">
+            </div>
+
+          </td>
+
         </tr>
 
       `).join("");
@@ -171,6 +230,9 @@ async function chargerApprenants() {
 
 }
 
+
+
+window.genererQR = genererQR;
 
 
 chargerApprenants();
