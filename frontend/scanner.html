@@ -155,7 +155,8 @@ function onScanSuccess(decodedText) {
 
   console.log("QR lu :", data);
 
-
+  document.getElementById("status").innerText =
+  "QR lu : " + JSON.stringify(data);
 
   // QR APPRENANT
 
