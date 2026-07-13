@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>Scanner Présence</title>
 
   <script src="https://unpkg.com/html5-qrcode"></script>
@@ -12,127 +13,161 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
-      background: #f5f5f5;
-    }
-
-    h2 {
-      margin-bottom: 20px;
     }
 
     #reader {
       width: 100%;
       max-width: 400px;
       margin: auto;
-      border-radius: 10px;
-      overflow: hidden;
     }
 
     #status {
-      margin-top: 15px;
-      font-size: 16px;
+      margin-top: 20px;
+      font-size: 18px;
     }
   </style>
 </head>
 
 <body>
 
-<h2>📷 Scanner QR Présence</h2>
+<h2>📷 Scanner présence</h2>
 
 <div id="reader"></div>
 
-<p id="status">📡 En attente de scan...</p>
+<p id="status">En attente du QR...</p>
+
 
 <script>
-let html5QrCode;
+
 let isScanning = true;
 
-window.addEventListener("load", () => {
 
-  html5QrCode = new Html5Qrcode("reader");
+const API_URL = "https://gestion-presences-56vd.onrender.com";
 
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    onScanSuccess
-  ).catch(err => {
-    document.getElementById("status").innerText =
-      "❌ Caméra inaccessible : " + err;
-  });
-
-});
 
 function onScanSuccess(decodedText) {
-  console.log("TEXTE QR BRUT :", decodedText);
+
   if (!isScanning) return;
 
   isScanning = false;
 
-  document.getElementById("status").innerText = "🎯 QR détecté...";
+
+  document.getElementById("status").innerText =
+    "QR détecté...";
+
 
   let data;
 
-  let sessionId;
 
-try {
+  try {
 
-  const parts = decodedText.split("|");
-  console.log("QR LU PAR LE SCANNER :", data);
-  sessionId = parts[0];
+    data = JSON.parse(decodedText);
 
-  if (!sessionId) {
-    throw new Error("QR invalide");
+  } catch(e) {
+
+    document.getElementById("status").innerText =
+      "QR invalide";
+
+    isScanning = true;
+    return;
   }
 
-} catch (e) {
 
-  document.getElementById("status").innerText =
-    "❌ QR invalide";
+  console.log("QR lu :", data);
 
-  setTimeout(() => {
-    isScanning = true;
-    document.getElementById("status").innerText =
-      "📡 En attente de scan...";
-  }, 1500);
 
-  return;
-}
-  console.log("Données QR reçues :", data);
-  fetch("/api/presences", {
+  fetch(`${API_URL}/api/presences`, {
+
     method: "POST",
+
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-  sessionId: sessionId,
-  apprenantId: "APP-0001"
-})
-  })
-  .then(res => res.json())
-  .then(res => {
 
-    document.getElementById("status").innerText =
-      res.status === "ok"
-        ? "✅ Présence enregistrée"
-        : "⚠️ " + JSON.stringify(res);
+    body: JSON.stringify({
+
+      sessionId: data.sessionId,
+
+      apprenantId: "APP-0001"
+
+    })
+
+  })
+
+
+  .then(res => res.json())
+
+
+  .then(result => {
+
+    console.log("Réponse serveur :", result);
+
+
+    if (result.status === "ok") {
+
+      document.getElementById("status").innerText =
+        "✅ Présence enregistrée";
+
+    } else {
+
+      document.getElementById("status").innerText =
+        "❌ " + JSON.stringify(result);
+
+    }
+
 
     setTimeout(() => {
+
       isScanning = true;
-      document.getElementById("status").innerText = "📡 En attente de scan...";
-    }, 2000);
+
+      document.getElementById("status").innerText =
+        "En attente du QR...";
+
+    }, 3000);
 
   })
+
+
   .catch(err => {
 
-    document.getElementById("status").innerText = "❌ Erreur serveur";
+    console.error(err);
 
-    setTimeout(() => {
-      isScanning = true;
-      document.getElementById("status").innerText = "📡 En attente de scan...";
-    }, 2000);
+    document.getElementById("status").innerText =
+      "Erreur serveur";
+
+    isScanning = true;
 
   });
+
 }
+
+
+
+const html5QrCode = new Html5Qrcode("reader");
+
+
+html5QrCode.start(
+
+  { facingMode: "environment" },
+
+  {
+    fps: 10,
+    qrbox: 250
+  },
+
+  onScanSuccess
+
+)
+
+.catch(err => {
+
+  document.getElementById("status").innerText =
+    "Erreur caméra : " + err;
+
+});
+
 </script>
+
 
 </body>
 </html>
