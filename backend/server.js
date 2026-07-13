@@ -36,13 +36,20 @@ app.post("/sessions", async (req, res) => {
   const sessionId = "SESSION_" + Date.now();
   const token = Math.random().toString(36).substring(2, 10).toUpperCase();
 
-  const { error } = await supabase.from("sessions").insert([
-    {
-      id: sessionId,
-      token,
-      active: true
-    }
-  ]);
+const { data, error } = await supabase
+  .from("presences")
+  .select(`
+    id,
+    session_id,
+    scan_time,
+    created_at,
+    apprenants!fk_apprenant (
+      nom,
+      prenom,
+      groupe
+    )
+  `)
+  .eq("session_id", sessionId);
 
   if (error) {
     return res.status(500).json({ error });
