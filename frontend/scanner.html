@@ -96,7 +96,7 @@ try {
 
   return;
 }
-
+  console.log("Données QR reçues :", data);
   fetch("/api/presences", {
     method: "POST",
     headers: {
