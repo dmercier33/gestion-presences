@@ -155,6 +155,35 @@ if (!allowed) {
   }
 });
 
+app.get("/presences/:sessionId", async (req, res) => {
+
+  const { sessionId } = req.params;
+
+  try {
+
+    const { data, error } = await supabase
+      .from("presences")
+      .select("*")
+      .eq("session_id", sessionId);
+
+    if (error) {
+      return res.status(500).json({
+        error: error.message
+      });
+    }
+
+    res.json(data);
+
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
+
 app.listen(process.env.PORT || 3000, () => {
   console.log("API running on port", process.env.PORT || 3000);
 });
