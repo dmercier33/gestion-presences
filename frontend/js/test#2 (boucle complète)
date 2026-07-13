@@ -1,0 +1,11 @@
+création session
+        ↓
+QR généré
+        ↓
+scan mobile
+        ↓
+insert dans presences
+        ↓
+lecture GET /presences/:sessionId
+        ↓
+mise à jour écran formateur
