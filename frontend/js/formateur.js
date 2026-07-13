@@ -63,3 +63,37 @@ document
         "click",
         nouvelleSession
     );
+
+async function refreshPresences() {
+
+  if (!sessionActive) return;
+
+  try {
+
+    const res = await fetch(
+      `https://gestion-presences-56vd.onrender.com/presences/${sessionActive.sessionId}`
+    );
+
+    const presences = await res.json();
+
+
+    document.getElementById("presenceCount").innerText =
+      `${presences.length} apprenant(s)`;
+
+
+    document.getElementById("presenceList").innerHTML =
+      presences.map(p => `
+        <p>
+          ✅ ${p.apprenant_id}
+          - ${new Date(p.created_at).toLocaleTimeString()}
+        </p>
+      `).join("");
+
+
+  } catch(err) {
+
+    console.error("Erreur chargement présences", err);
+
+  }
+
+}
