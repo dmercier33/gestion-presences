@@ -175,11 +175,56 @@ app.post("/api/presences", async (req, res) => {
     }
 
 
-    if (!allowed) {
-      return res.status(403).json({
-        error: "Apprenant non autorisé dans cette session"
-      });
-    }
+// vérifier ou créer la participation session / apprenant
+
+const { data: participation, error: participationError } =
+  await supabase
+    .from("session_apprenants")
+    .select("id")
+    .eq("session_id", sessionId)
+    .eq("apprenant_id", apprenantId)
+    .maybeSingle();
+
+
+if (participationError) {
+
+  return res.status(500).json({
+    error: participationError.message
+  });
+
+}
+
+
+// création automatique au premier scan
+
+if (!participation) {
+
+
+  const participationId =
+    "SA_" + Date.now();
+
+
+  const { error: insertParticipationError } =
+    await supabase
+      .from("session_apprenants")
+      .insert([
+        {
+          id: participationId,
+          session_id: sessionId,
+          apprenant_id: apprenantId
+        }
+      ]);
+
+
+  if (insertParticipationError) {
+
+    return res.status(500).json({
+      error: insertParticipationError.message
+    });
+
+  }
+
+}
 
 
 
