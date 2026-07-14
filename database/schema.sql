@@ -20,6 +20,10 @@ ALTER TABLE public.sessions
 ADD COLUMN duration_minutes integer DEFAULT 120;
 ALTER TABLE public.sessions
 ADD COLUMN expires_at timestamp without time zone;
+ALTER TABLE public.sessions
+DROP COLUMN started_at,
+DROP COLUMN start_time,
+DROP COLUMN end_time;
 
 create table if not exists presences (
   id uuid primary key default gen_random_uuid(),

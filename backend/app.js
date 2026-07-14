@@ -99,10 +99,10 @@ app.post("/sessions", async (req, res) => {
     .toUpperCase();
 
 
-  const startedAt = new Date();
+  const createdAt = new Date();
 
   const expiresAt = new Date(
-    startedAt.getTime() + durationMinutes * 60000
+    createdAt.getTime() + durationMinutes * 60000
   );
 
 
@@ -113,7 +113,6 @@ app.post("/sessions", async (req, res) => {
         id: sessionId,
         token,
         active: true,
-        started_at: startedAt,
         duration_minutes: durationMinutes,
         expires_at: expiresAt
       }
@@ -186,11 +185,6 @@ app.get("/presences/:sessionId", async (req, res) => {
 
 });
 
-
-
-// ===============================
-// SCAN QR PRESENCE
-// ===============================
 
 // ===============================
 // SCAN QR PRESENCE
