@@ -124,54 +124,6 @@ app.get("/presences/:sessionId", async (req, res) => {
 // SCAN QR PRESENCE
 // ===============================
 
-app.post("/api/presences", async (req, res) => {
-
-  const { sessionId, apprenantId: qrCode } = req.body;
-
-
-  if (!sessionId || !apprenantId) {
-    return res.status(400).json({
-      error: "Missing sessionId or apprenantId"
-    });
-  }
-
-
-  try {
-
-
-    // vérifier session
-
-    const { data: session, error: sessionError } =
-      await supabase
-        .from("sessions")
-        .select("id")
-        .eq("id", sessionId)
-        .maybeSingle();
-
-
-    if (sessionError || !session) {
-      return res.status(404).json({
-        error: "Session not found"
-      });
-    }
-
-
-
-    // vérifier inscription
-
-    const { data: allowed, error: allowedError } =
-      await supabase
-        .from("session_apprenants")
-        .select("id")
-        .eq("session_id", sessionId)
-        .eq("apprenant_id", apprenantId)
-        .maybeSingle();
-
-
-    if (allowedError) {
-      return res.status(500).json({
-        error: allowedError.message
-      });
 // ===============================
 // SCAN QR PRESENCE
 // ===============================
@@ -213,7 +165,7 @@ app.post("/api/presences", async (req, res) => {
 
 
 
-    // Transformer le QR en vrai identifiant apprenant
+    // Transformer le QR en identifiant apprenant interne
 
     const { data: apprenant, error: apprenantError } =
       await supabase
@@ -298,7 +250,7 @@ app.post("/api/presences", async (req, res) => {
 
 
 
-    // Anti doublon présence
+    // Vérifier doublon présence
 
     const { data: existing } =
       await supabase
@@ -363,121 +315,6 @@ app.post("/api/presences", async (req, res) => {
       error: err.message
     });
 
-
-  }
-
-});
-
-
-// vérifier ou créer la participation session / apprenant
-
-const { data: participation, error: participationError } =
-  await supabase
-    .from("session_apprenants")
-    .select("id")
-    .eq("session_id", sessionId)
-    .eq("apprenant_id", apprenantId)
-    .maybeSingle();
-
-
-if (participationError) {
-
-  return res.status(500).json({
-    error: participationError.message
-  });
-
-}
-
-
-// création automatique au premier scan
-
-if (!participation) {
-
-
-  const participationId =
-    "SA_" + Date.now();
-
-
-  const { error: insertParticipationError } =
-    await supabase
-      .from("session_apprenants")
-      .insert([
-        {
-          id: participationId,
-          session_id: sessionId,
-          apprenant_id: apprenantId
-        }
-      ]);
-
-
-  if (insertParticipationError) {
-
-    return res.status(500).json({
-      error: insertParticipationError.message
-    });
-
-  }
-
-}
-
-
-
-    // anti doublon
-
-    const { data: existing } =
-      await supabase
-        .from("presences")
-        .select("id")
-        .eq("session_id", sessionId)
-        .eq("apprenant_id", apprenantId)
-        .maybeSingle();
-
-
-    if (existing) {
-      return res.status(409).json({
-        error: "Already registered"
-      });
-    }
-
-
-
-    // insertion
-
-    const { data, error } =
-      await supabase
-        .from("presences")
-        .insert([
-          {
-            session_id: sessionId,
-            apprenant_id: apprenantId,
-            type_scan: "QR",
-            created_at: new Date().toISOString()
-          }
-        ])
-        .select()
-        .single();
-
-
-
-    if (error) {
-      return res.status(500).json({
-        error
-      });
-    }
-
-
-    res.json({
-      status: "ok",
-      presence: data
-    });
-
-
-
-  } catch(err) {
-
-    res.status(500).json({
-      error: err.message
-    });
 
   }
 
