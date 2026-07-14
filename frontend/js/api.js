@@ -3,7 +3,11 @@ const API_URL = "https://gestion-presences-56vd.onrender.com";
 /**
  * Création d'une session côté formateur
  */
+/**
+ * Création d'une session côté formateur
+ */
 export async function createSession() {
+
     const res = await fetch(`${API_URL}/sessions`, {
         method: "POST",
         headers: {
@@ -11,11 +15,28 @@ export async function createSession() {
         }
     });
 
+
     if (!res.ok) {
         throw new Error("Erreur création session");
     }
 
-    return await res.json();
+
+    const result = await res.json();
+
+
+    localStorage.setItem(
+        "sessionId",
+        result.sessionId
+    );
+
+
+    localStorage.setItem(
+        "sessionToken",
+        result.token
+    );
+
+
+    return result;
 }
 
 

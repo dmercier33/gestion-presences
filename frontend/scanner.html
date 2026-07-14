@@ -60,13 +60,16 @@ console.log("scanner v0.3.4 chargé");
 
 
 
-let sessionId = null;
+let sessionId = localStorage.getItem("sessionId");
 
 let apprenantId = null;
 
 let isScanning = true;
 
-
+console.log(
+  "Session active :",
+  sessionId
+);
 
 // ======================================
 // Enregistrement présence
