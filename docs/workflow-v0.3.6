@@ -1,0 +1,39 @@
+FORMATEUR
+    |
+    | crée une session
+    |
+    ↓
+BACKEND
+    |
+    | génère :
+    | - session_id
+    | - token
+    | - date/heure début
+    | - durée de validité
+    |
+    ↓
+FORMATEUR affiche QR SESSION
+    |
+    | (outil de rattachement à la séance)
+    |
+    ↓
+
+APPRENANT
+    |
+    | scanne QR SESSION
+    |
+    | puis présente son QR APPRENANT
+    |
+    ↓
+
+BACKEND
+    |
+    | vérifie :
+    | - session valide
+    | - apprenant connu
+    | - pas de doublon
+    | - horodatage cohérent
+    |
+    ↓
+
+PRESENCE enregistrée
