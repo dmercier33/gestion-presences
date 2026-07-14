@@ -38,6 +38,11 @@ export async function createSession() {
  */
 export async function registerPresence(sessionId, apprenantId) {
 
+    console.log("ENVOI PRESENCE :", {
+    sessionId,
+    apprenantId
+    });
+    
     const res = await fetch(`${API_URL}/api/presences`, {
         method: "POST",
         headers: {
