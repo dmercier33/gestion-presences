@@ -30,6 +30,15 @@ body {
   white-space:pre-line;
 }
 
+#debug {
+  margin-top:20px;
+  padding:10px;
+  border:1px solid #ccc;
+  text-align:left;
+  white-space:pre-line;
+  font-size:14px;
+}
+
 </style>
 
 </head>
@@ -48,7 +57,11 @@ body {
 En attente du QR...
 </p>
 
-<div id="debug"></div>
+
+<div id="debug">
+DEBUG :
+</div>
+
 
 <script type="module">
 
@@ -56,25 +69,22 @@ En attente du QR...
 import { registerPresence } from "./js/api.js";
 
 
-console.log("scanner v0.3.4 chargé");
+console.log("scanner v0.3.5 chargé");
 
 
-
-let sessionStockee =
-    localStorage.getItem("session");
-
-
-let sessionId = null;
+// ======================================
+// SESSION ACTIVE
+// ======================================
 
 
-if (sessionStockee) {
+let sessionId =
+    localStorage.getItem("sessionId");
 
-    const session =
-        JSON.parse(sessionStockee);
 
-    sessionId = session.sessionId;
-
-}
+debug(
+  "SESSION AU CHARGEMENT :\n" +
+  sessionId
+);
 
 
 console.log(
@@ -82,43 +92,47 @@ console.log(
     sessionId
 );
 
+
+
 let apprenantId = null;
 
 let isScanning = true;
 
-console.log(
-  "Session active :",
-  sessionId
-);
+
+
+// ======================================
+// DEBUG MOBILE
+// ======================================
+
 
 function debug(message) {
-    document.getElementById("debug").innerText += "\n" + message;
+
+    document.getElementById("debug").innerText +=
+        "\n" + message;
+
 }
+
+
 
 // ======================================
 // Enregistrement présence
 // ======================================
 
+
 async function enregistrerPresence(){
 
+
   debug(
+    "CONTROLE PRESENCE\n" +
     "sessionId = " + sessionId +
     "\napprenantId = " + apprenantId
-  );
-
-  console.log(
-    "AVANT CONTROLE PRESENCE :",
-    {
-      sessionId,
-      apprenantId
-    }
   );
 
 
   if(!sessionId || !apprenantId){
 
-    console.log(
-      "PRESENCE ABANDONNEE : sessionId ou apprenantId manquant"
+    debug(
+      "PRESENCE ABANDONNEE : donnée manquante"
     );
 
     return;
@@ -126,10 +140,8 @@ async function enregistrerPresence(){
   }
 
 
-  console.log(
-    "Enregistrement présence :",
-    sessionId,
-    apprenantId
+  debug(
+    "ENVOI AU SERVEUR..."
   );
 
 
@@ -143,10 +155,17 @@ async function enregistrerPresence(){
       );
 
 
+    debug(
+      "REPONSE SERVEUR :\n" +
+      JSON.stringify(result)
+    );
+
+
     console.log(
       "Réponse serveur :",
       result
     );
+
 
 
     if(result.status === "ok"){
@@ -168,18 +187,22 @@ async function enregistrerPresence(){
 
 
 
-    sessionId = null;
-
     apprenantId = null;
 
 
 
   }
 
+
   catch(error){
 
 
     console.error(error);
+
+
+    debug(
+      "ERREUR : " + error.message
+    );
 
 
     document.getElementById("status").innerText =
@@ -193,11 +216,14 @@ async function enregistrerPresence(){
 
 
 
+
 // ======================================
 // Lecture QR
 // ======================================
 
+
 function onScanSuccess(decodedText){
+
 
 
   if(!isScanning){
@@ -205,6 +231,7 @@ function onScanSuccess(decodedText){
     return;
 
   }
+
 
 
   isScanning=false;
@@ -215,7 +242,7 @@ function onScanSuccess(decodedText){
 
 
 
-  // Nouveau QR apprenant v0.3.3
+  // QR apprenant
 
   if(decodedText.startsWith("APP_")){
 
@@ -237,9 +264,7 @@ function onScanSuccess(decodedText){
 
     try{
 
-
       data=JSON.parse(decodedText);
-
 
     }
 
@@ -253,7 +278,6 @@ function onScanSuccess(decodedText){
       isScanning=true;
 
       return;
-
 
     }
 
@@ -269,6 +293,14 @@ function onScanSuccess(decodedText){
 
 
 
+  debug(
+    "QR LU :\n" +
+    JSON.stringify(data)
+  );
+
+
+
+
 
   // ==========================
   // QR APPRENANT
@@ -276,6 +308,7 @@ function onScanSuccess(decodedText){
 
 
   if(data.type==="APPRENANT"){
+
 
 
     apprenantId=data.id;
@@ -320,8 +353,9 @@ function onScanSuccess(decodedText){
 
 
 
+
   // ==========================
-  // QR SESSION
+  // QR SESSION (conservé)
   // ==========================
 
 
@@ -330,7 +364,20 @@ function onScanSuccess(decodedText){
 
 
     sessionId=data.sessionId;
-    console.log("SESSION STOCKEE =", sessionId);
+
+
+    localStorage.setItem(
+      "sessionId",
+      sessionId
+    );
+
+
+
+    debug(
+      "SESSION QR RECUE :\n" +
+      sessionId
+    );
+
 
 
     document.getElementById("status").innerText =
@@ -349,13 +396,13 @@ function onScanSuccess(decodedText){
 
 
 
-console.log("FIN SCAN SESSION - sessionId =", sessionId);
+    isScanning=true;
 
-isScanning=true;
-return;
+    return;
 
 
   }
+
 
 
 
@@ -367,7 +414,9 @@ return;
   isScanning=true;
 
 
+
 }
+
 
 
 
@@ -395,6 +444,7 @@ html5QrCode.start(
   onScanSuccess
 
 )
+
 
 .catch(err=>{
 
