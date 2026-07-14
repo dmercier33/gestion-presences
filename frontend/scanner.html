@@ -60,7 +60,27 @@ console.log("scanner v0.3.4 chargé");
 
 
 
-let sessionId = localStorage.getItem("sessionId");
+let sessionStockee =
+    localStorage.getItem("session");
+
+
+let sessionId = null;
+
+
+if (sessionStockee) {
+
+    const session =
+        JSON.parse(sessionStockee);
+
+    sessionId = session.sessionId;
+
+}
+
+
+console.log(
+    "SESSION ACTIVE :",
+    sessionId
+);
 
 let apprenantId = null;
 
