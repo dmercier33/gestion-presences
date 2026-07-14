@@ -1,0 +1,101 @@
+Spécification fonctionnelle — v0.5.0
+Gestion métier des sessions
+Objectif
+
+Simplifier au maximum le travail du formateur tout en garantissant la fiabilité des émargements.
+
+Cas d'usage principal
+
+Le formateur :
+
+choisit la durée de la séance ;
+clique sur Nouvelle session ;
+affiche le QR Session ;
+les apprenants émargent ;
+la session devient inactive automatiquement à l'expiration.
+
+Aucune clôture manuelle n'est nécessaire.
+
+Interface
+Création de session
+Durée de la séance
+
+● 2 heures
+
+○ 3 heures
+
+○ Personnalisée
+
+      [ 4 ] heures
+
+[ Nouvelle session ]
+
+La durée par défaut est 2 heures (à confirmer).
+
+Règles métier
+Une seule session active
+
+À un instant donné :
+
+un formateur ne peut avoir qu'une seule session active.
+
+Si une nouvelle session est créée :
+
+l'ancienne est automatiquement clôturée ;
+la nouvelle devient active.
+Expiration automatique
+
+Chaque session possède :
+
+une date de création ;
+une durée.
+
+Le backend calcule automatiquement sa fin.
+
+Une session expirée :
+
+n'accepte plus de scans ;
+reste consultable dans l'historique.
+Validité d'un scan
+
+Un scan est accepté uniquement si :
+
+la session est active ;
+elle n'a pas expiré ;
+l'apprenant n'a pas déjà émargé.
+Hors périmètre (v0.5)
+
+Pas encore :
+
+export FSE ;
+statistiques ;
+gestion multi-formateurs ;
+rôles utilisateurs ;
+conformité RGPD avancée.
+Critères de validation
+
+La v0.5 est terminée si :
+
+✅ création d'une session avec durée choisie ;
+✅ une seule session active ;
+✅ expiration automatique ;
+✅ refus des scans après expiration ;
+✅ aucune action manuelle nécessaire pour terminer une séance.
+✅ la version v0.5.0 introduit la notion de cycle de vie automatique des sessions. Le formateur choisit une durée ; le système gère l'activation et l'expiration.
+
+
+Et j'ajouterais un petit encadré qui va guider tout le projet
+💡 Principe de conception
+L'application prend les décisions techniques. Le formateur prend uniquement les décisions pédagogiques.
+
+Autrement dit :
+le système gère les dates, les expirations, les vérifications et les contrôles ;
+le formateur se concentre sur son cours.
+
+Je terminerais par une idée qui me tient à cœur. Depuis quelques jours, j'ai l'impression qu'on ne développe plus seulement une application de QR code. On est en train de définir un produit.
+Et un produit a besoin d'une identité.
+Je ne parle pas encore de logo ou de marketing, mais d'une vision.
+Je garderais quelque part (dans le README ou un document VISION.md) cette phrase :
+« Une solution d'émargement numérique pensée pour être plus simple que la feuille papier. »
+Si, à chaque nouvelle fonctionnalité, on se demande « est-ce que ça rend la vie du formateur plus simple ? », je pense qu'on prendra les bonnes décisions. C'est une excellente boussole pour éviter d'ajouter des fonctionnalités juste parce qu'on peut les développer.
+

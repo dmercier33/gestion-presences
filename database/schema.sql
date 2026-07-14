@@ -16,6 +16,10 @@ create table if not exists sessions (
 alter table sessions add column created_by text;
 alter table sessions add column start_time timestamp;
 alter table sessions add column end_time timestamp;
+ALTER TABLE public.sessions
+ADD COLUMN duration_minutes integer DEFAULT 120;
+ALTER TABLE public.sessions
+ADD COLUMN expires_at timestamp without time zone;
 
 create table if not exists presences (
   id uuid primary key default gen_random_uuid(),

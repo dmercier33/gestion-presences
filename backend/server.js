@@ -67,12 +67,43 @@ app.get("/health", (req, res) => {
 
 app.post("/sessions", async (req, res) => {
 
+  // Durée choisie par le formateur (défaut : 2 heures)
+  const durationMinutes = req.body.duration_minutes || 120;
+
+
+  // Désactiver les anciennes sessions actives
+  const { error: deactivateError } = await supabase
+    .from("sessions")
+    .update({
+      active: false,
+      ended_at: new Date()
+    })
+    .eq("active", true);
+
+
+  if (deactivateError) {
+    return res.status(500).json({
+      error: deactivateError
+    });
+  }
+
+
+  // Création nouvelle session
+
   const sessionId = "SESSION_" + Date.now();
+
 
   const token = Math.random()
     .toString(36)
     .substring(2, 10)
     .toUpperCase();
+
+
+  const startedAt = new Date();
+
+  const expiresAt = new Date(
+    startedAt.getTime() + durationMinutes * 60000
+  );
 
 
   const { data, error } = await supabase
@@ -81,7 +112,10 @@ app.post("/sessions", async (req, res) => {
       {
         id: sessionId,
         token,
-        active: true
+        active: true,
+        started_at: startedAt,
+        duration_minutes: durationMinutes,
+        expires_at: expiresAt
       }
     ])
     .select()
@@ -89,13 +123,16 @@ app.post("/sessions", async (req, res) => {
 
 
   if (error) {
-    return res.status(500).json({ error });
+    return res.status(500).json({
+      error
+    });
   }
 
 
   res.json({
     sessionId: data.id,
-    token: data.token
+    token: data.token,
+    expires_at: data.expires_at
   });
 
 });

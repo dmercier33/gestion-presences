@@ -1,0 +1,42 @@
+Décisions fonctionnelles — v0.5.0
+D-001 — Une seule session active par formateur
+
+Décision :
+La création d'une nouvelle session entraîne automatiquement la désactivation de la session active précédente.
+
+Raison :
+
+un formateur travaille généralement sur une seule séance à la fois ;
+éviter les ambiguïtés lors des scans ;
+éviter de demander une action supplémentaire au formateur.
+
+Comportement attendu :
+
+Session A ACTIVE
+
+        ↓
+
+Création session B
+
+        ↓
+
+Session A INACTIVE
+Session B ACTIVE
+D-002 — Durée de session configurable
+
+Décision :
+La durée d'une session est choisie lors de sa création.
+
+Valeurs proposées :
+
+2 heures (valeur par défaut)
+3 heures
+durée personnalisée
+
+Le frontend transmet une durée en minutes :
+
+{
+  "duration_minutes": 120
+}
+
+Le backend calcule automatiquement l'expiration.

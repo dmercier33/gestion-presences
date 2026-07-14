@@ -1,11 +1,9 @@
 Vision globale des jalons
 ✅ v0.3.x — Socle fonctionnel (ce qu'on vient de faire)
 Objectif :
-
 Prouver que le métier fonctionne.
 
 Acquis :
-
 ✅ sessions
 ✅ QR session
 ✅ QR apprenant
@@ -17,119 +15,82 @@ Acquis :
 
 Statut : terminé
 
-🚩 v0.4.0 — Identité QR propre
 
+🚩 v0.4.0 — Identité QR propre
 Objectif :
 sortir du prototype QR.
 
 À faire :
-
 QR apprenant JSON normalisé ;
 QR session JSON normalisé ;
 version du format QR ;
 génération centralisée backend ;
 suppression progressive des formats historiques.
 
-Architecture cible :
+Statut : terminé.
 
-QR
- |
- ↓
-type + données
- |
- ↓
-scanner
- |
- ↓
-API
+v0.5.0
 
-À mon avis, c'est le prochain gros jalon.
+Gestion métier des sessions
+durée ;
+expiration ;
+session unique ;
+amélioration du cycle de vie.
 
-🚩 v0.5.0 — Gestion métier réelle
 
-Objectif :
-passer d'un outil technique à un outil d'émargement.
+v0.6.0
 
-Ajouter :
+Interface formateur
+tableau des présents ;
+informations utiles ;
+ergonomie.
 
-Sessions
 
-Aujourd'hui :
+v0.7.0
 
-id
-token
-active
+Sécurité et conformité
+UUID apprenants ;
+nettoyage schéma ;
+contrôles ;
+audit ;
+RGPD/FSE.
 
-Demain :
 
-id
-date
-heure_debut
-heure_fin
-formation
-groupe
-formateur
-statut
-Apprenants
-
-Ajouter :
-
-nom
-prenom
-groupe
-email (optionnel)
-actif
-date_creation
-Présences
-
-Ajouter :
-
-heure_scan
-source_scan
-statut
-
-On commence à avoir une vraie traçabilité.
-
-🚩 v0.6.0 — Interface formateur
-
-Objectif :
-un formateur peut réellement utiliser l'application.
-
-Fonctions :
-
-créer une session ;
-afficher QR ;
-voir les présents en direct ;
-fermer session ;
-exporter émargement.
-🚩 v0.7.0 — Sécurité / conformité
-
-Très important pour FSE.
-
-Ajouter :
-
-expiration session ;
-contrôle date/heure ;
-journal des actions ;
-utilisateur formateur identifié ;
-protection API ;
-limitation des scans.
 🚩 v0.8.0 — Déploiement propre
 
 Passer du projet qui tourne au service maintenable :
-
 variables environnement propres ;
 sauvegardes ;
 gestion erreurs ;
 logs ;
 documentation ;
 procédure de récupération.
+
+
+v1.0.0
+
+Version production
+stabilisation ;
+tests ;
+documentation ;
+déploiement propre.
+
+
+Après v1.0.0
+
+Gestion pédagogique avancée
+groupes ;
+listes prévues ;
+feuille d'émargement complète ;
+absences ;
+exports avancés.
+
+
+
 🚩 v1.0.0 — Version production
 
 Pour moi, une v1 serait :
-
 Un formateur arrive :
-
 il se connecte ;
 il crée une séance ;
 il affiche le QR ;
@@ -139,7 +100,6 @@ il clôture ;
 il exporte un justificatif.
 
 Et côté FSE :
-
 on sait qui ;
 quand ;
 dans quelle session ;
