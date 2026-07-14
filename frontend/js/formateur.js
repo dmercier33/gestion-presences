@@ -12,6 +12,16 @@ async function nouvelleSession() {
 
         const session = await createSession();
 
+        localStorage.setItem(
+            "sessionId",
+            session.sessionId
+        );
+
+        localStorage.setItem(
+    "sessionToken",
+    session.token
+)       ;
+
         console.log("Session reçue :", session);
 
         sessionActive = session;
