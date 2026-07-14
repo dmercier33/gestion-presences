@@ -1,3 +1,4 @@
+import { API_URL } from "./config.js";
 import { createSession } from "./api.js";
 
 let sessionActive = null;
@@ -102,7 +103,7 @@ async function refreshPresences() {
     try {
 
         const res = await fetch(
-            `https://gestion-presences-56vd.onrender.com/presences/${sessionActive.sessionId}`
+            `${API_URL}/presences/${sessionActive.sessionId}`
         );
 
 
