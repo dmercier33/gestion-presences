@@ -13,34 +13,6 @@ API Node.js déployée
 GitHub Pages
 Frontend accessible
 
-Sprint 1 – MVP
-Objectif :
-✅ créer une session
-✅ générer le QR
-✅ scanner le QR
-✅ enregistrer une présence
-
-C'est le premier jalon où l'application devient utilisable.
-
-Sprint 2
-Ajout de :
-liste des apprenants
-import CSV/Excel
-tableau des présents en direct
-
-Sprint 3
-Ajout de :
-connexion formateur
-plusieurs organismes
-plusieurs formations
-
-Sprint 4
-Ajout de :
-export Excel
-PDF d'émargement
-statistiques
-
-
 Nous utiliserons :
 GitHub → code source
 GitHub Pages → frontend

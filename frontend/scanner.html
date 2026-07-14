@@ -235,7 +235,9 @@ function onScanSuccess(decodedText){
 
 
 
-    // lecture JSON normalisé
+    // ======================================
+    // Lecture QR normalisée
+    // ======================================
 
     try {
 
@@ -248,7 +250,9 @@ function onScanSuccess(decodedText){
     catch(e){
 
 
-        // compatibilité ancien QR apprenant
+        // ======================================
+        // Compatibilité anciens QR apprenant
+        // ======================================
 
         if(decodedText.startsWith("APP_")){
 
@@ -256,6 +260,8 @@ function onScanSuccess(decodedText){
             data = {
 
                 type:"APPRENANT",
+
+                version:1,
 
                 qrCode:decodedText
 
@@ -265,6 +271,12 @@ function onScanSuccess(decodedText){
         }
 
         else {
+
+
+            debug(
+                "QR INVALIDE :\n" +
+                decodedText
+            );
 
 
             document.getElementById("status").innerText =
@@ -297,12 +309,62 @@ function onScanSuccess(decodedText){
 
 
 
-    // ===============================
+    // ======================================
+    // Contrôle type QR
+    // ======================================
+
+
+    if(!data.type){
+
+
+        debug(
+            "QR SANS TYPE"
+        );
+
+
+        document.getElementById("status").innerText =
+            "❌ QR sans type";
+
+
+        isScanning=true;
+
+        return;
+
+
+    }
+
+
+
+
+
+    // ======================================
     // QR SESSION
-    // ===============================
+    // ======================================
 
 
     if(data.type==="SESSION"){
+
+
+
+        if(!data.sessionId){
+
+
+            debug(
+                "SESSION INVALIDE"
+            );
+
+
+            document.getElementById("status").innerText =
+                "❌ Session invalide";
+
+
+            isScanning=true;
+
+            return;
+
+
+        }
+
 
 
         sessionId =
@@ -332,7 +394,9 @@ function onScanSuccess(decodedText){
 
         if(qrApprenant){
 
+
             enregistrerPresence();
+
 
         }
 
@@ -342,6 +406,7 @@ function onScanSuccess(decodedText){
 
         return;
 
+
     }
 
 
@@ -349,12 +414,34 @@ function onScanSuccess(decodedText){
 
 
 
-    // ===============================
+    // ======================================
     // QR APPRENANT
-    // ===============================
+    // ======================================
 
 
     if(data.type==="APPRENANT"){
+
+
+
+        if(!data.qrCode && !data.id){
+
+
+            debug(
+                "APPRENANT SANS IDENTITE"
+            );
+
+
+            document.getElementById("status").innerText =
+                "❌ QR apprenant invalide";
+
+
+            isScanning=true;
+
+            return;
+
+
+        }
+
 
 
         qrApprenant =
@@ -379,7 +466,9 @@ function onScanSuccess(decodedText){
 
         if(sessionId){
 
+
             enregistrerPresence();
+
 
         }
 
@@ -398,10 +487,23 @@ function onScanSuccess(decodedText){
 
         return;
 
+
     }
 
 
 
+
+
+
+    // ======================================
+    // Type inconnu
+    // ======================================
+
+
+    debug(
+        "TYPE QR INCONNU : " +
+        data.type
+    );
 
 
     document.getElementById("status").innerText =
