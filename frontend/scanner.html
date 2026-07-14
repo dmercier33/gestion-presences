@@ -63,49 +63,57 @@ DEBUG :
 </div>
 
 
+
 <script type="module">
 
 
 import { registerPresence } from "./js/api.js";
 
 
-console.log("scanner v0.3.5 chargé");
+console.log("scanner v0.3.7 chargé");
+
 
 
 // ======================================
-// SESSION ACTIVE
+// ETAT APPLICATION
 // ======================================
 
 
-let sessionId =
-    localStorage.getItem("sessionId");
+let sessionId = null;
 
-
-debug(
-  "SESSION AU CHARGEMENT :\n" +
-  sessionId
-);
-
-
-console.log(
-    "SESSION ACTIVE :",
-    sessionId
-);
-
-
-
-let apprenantId = null;
+let qrApprenant = null;
 
 let isScanning = true;
 
 
 
+// secours mémoire locale
+
+const ancienneSession =
+    localStorage.getItem("sessionId");
+
+
+if(ancienneSession){
+
+    sessionId = ancienneSession;
+
+}
+
+
+debug(
+    "SESSION AU CHARGEMENT :\n" +
+    sessionId
+);
+
+
+
+
 // ======================================
-// DEBUG MOBILE
+// DEBUG
 // ======================================
 
 
-function debug(message) {
+function debug(message){
 
     document.getElementById("debug").innerText +=
         "\n" + message;
@@ -114,102 +122,89 @@ function debug(message) {
 
 
 
+
 // ======================================
-// Enregistrement présence
+// PRESENCE
 // ======================================
 
 
 async function enregistrerPresence(){
 
 
-  debug(
-    "CONTROLE PRESENCE\n" +
-    "sessionId = " + sessionId +
-    "\napprenantId = " + apprenantId
-  );
-
-
-  if(!sessionId || !apprenantId){
-
     debug(
-      "PRESENCE ABANDONNEE : donnée manquante"
-    );
-
-    return;
-
-  }
-
-
-  debug(
-    "ENVOI AU SERVEUR..."
-  );
-
-
-  try{
-
-
-    const result =
-      await registerPresence(
-        sessionId,
-        apprenantId
-      );
-
-
-    debug(
-      "REPONSE SERVEUR :\n" +
-      JSON.stringify(result)
+        "CONTROLE PRESENCE\n" +
+        "sessionId = " + sessionId +
+        "\nqrApprenant = " + qrApprenant
     );
 
 
-    console.log(
-      "Réponse serveur :",
-      result
-    );
+    if(!sessionId || !qrApprenant){
 
+        debug(
+            "PRESENCE ABANDONNEE : donnée manquante"
+        );
 
-
-    if(result.status === "ok"){
-
-
-      document.getElementById("status").innerText =
-        "✅ Présence enregistrée";
-
-
-    }
-    else {
-
-
-      document.getElementById("status").innerText =
-        "❌ " + JSON.stringify(result);
-
+        return;
 
     }
 
 
 
-    apprenantId = null;
+    try{
+
+
+        const result =
+            await registerPresence(
+                sessionId,
+                qrApprenant
+            );
 
 
 
-  }
+        debug(
+            "REPONSE SERVEUR :\n" +
+            JSON.stringify(result)
+        );
 
 
-  catch(error){
+
+        if(result.status === "ok"){
 
 
-    console.error(error);
+            document.getElementById("status").innerText =
+                "✅ Présence enregistrée";
 
 
-    debug(
-      "ERREUR : " + error.message
-    );
+        }
+        else {
 
 
-    document.getElementById("status").innerText =
-      "❌ Erreur serveur";
+            document.getElementById("status").innerText =
+                "❌ " + JSON.stringify(result);
 
 
-  }
+        }
+
+
+
+        qrApprenant = null;
+
+
+
+    }
+
+    catch(error){
+
+
+        debug(
+            "ERREUR : " + error.message
+        );
+
+
+        console.error(error);
+
+
+    }
 
 
 }
@@ -218,200 +213,202 @@ async function enregistrerPresence(){
 
 
 // ======================================
-// Lecture QR
+// SCAN QR
 // ======================================
 
 
 function onScanSuccess(decodedText){
 
 
+    if(!isScanning){
 
-  if(!isScanning){
+        return;
 
-    return;
-
-  }
-
+    }
 
 
-  isScanning=false;
+    isScanning=false;
 
 
 
-  let data=null;
+    let data = null;
 
 
 
-  // QR apprenant
+    // lecture JSON normalisé
 
-  if(decodedText.startsWith("APP_")){
-
-
-    data={
-
-      type:"APPRENANT",
-
-      id:decodedText
-
-    };
+    try {
 
 
-  }
+        data = JSON.parse(decodedText);
 
-
-  else {
-
-
-    try{
-
-      data=JSON.parse(decodedText);
 
     }
 
     catch(e){
 
 
-      document.getElementById("status").innerText =
-        "❌ QR invalide";
+        // compatibilité ancien QR apprenant
+
+        if(decodedText.startsWith("APP_")){
 
 
-      isScanning=true;
+            data = {
 
-      return;
+                type:"APPRENANT",
 
-    }
+                qrCode:decodedText
 
-
-  }
-
+            };
 
 
-  console.log(
-    "QR lu :",
-    data
-  );
+        }
+
+        else {
 
 
-
-  debug(
-    "QR LU :\n" +
-    JSON.stringify(data)
-  );
+            document.getElementById("status").innerText =
+                "❌ QR invalide";
 
 
+            isScanning=true;
 
+            return;
 
-
-  // ==========================
-  // QR APPRENANT
-  // ==========================
-
-
-  if(data.type==="APPRENANT"){
-
-
-
-    apprenantId=data.id;
-
-
-
-    document.getElementById("status").innerText =
-      "✅ Apprenant reconnu : "
-      + apprenantId
-      + "\nSession : "
-      + sessionId;
-
-
-
-    if(sessionId){
-
-
-      enregistrerPresence();
+        }
 
 
     }
-    else{
-
-
-      document.getElementById("status").innerText +=
-        "\n⚠️ En attente de la session";
-
-
-    }
-
-
-
-    isScanning=true;
-
-
-    return;
-
-
-  }
-
-
-
-
-
-
-  // ==========================
-  // QR SESSION (conservé)
-  // ==========================
-
-
-  if(data.type==="SESSION"){
-
-
-
-    sessionId=data.sessionId;
-
-
-    localStorage.setItem(
-      "sessionId",
-      sessionId
-    );
 
 
 
     debug(
-      "SESSION QR RECUE :\n" +
-      sessionId
+        "QR LU :\n" +
+        JSON.stringify(data)
+    );
+
+
+    console.log(
+        "QR LU :",
+        data
     );
 
 
 
-    document.getElementById("status").innerText =
-      "✅ Session reconnue : "
-      + sessionId;
+
+
+    // ===============================
+    // QR SESSION
+    // ===============================
+
+
+    if(data.type==="SESSION"){
+
+
+        sessionId =
+            data.sessionId;
 
 
 
-    if(apprenantId){
+        localStorage.setItem(
+            "sessionId",
+            sessionId
+        );
 
 
-      enregistrerPresence();
 
+        document.getElementById("status").innerText =
+            "✅ Session reconnue\n" +
+            sessionId;
+
+
+
+        debug(
+            "SESSION ACTIVE : " +
+            sessionId
+        );
+
+
+
+        if(qrApprenant){
+
+            enregistrerPresence();
+
+        }
+
+
+
+        isScanning=true;
+
+        return;
 
     }
 
 
 
+
+
+
+    // ===============================
+    // QR APPRENANT
+    // ===============================
+
+
+    if(data.type==="APPRENANT"){
+
+
+        qrApprenant =
+            data.qrCode || data.id;
+
+
+
+        document.getElementById("status").innerText =
+            "✅ Apprenant reconnu\n" +
+            qrApprenant +
+            "\nSession : " +
+            sessionId;
+
+
+
+        debug(
+            "QR APPRENANT : " +
+            qrApprenant
+        );
+
+
+
+        if(sessionId){
+
+            enregistrerPresence();
+
+        }
+
+        else {
+
+
+            document.getElementById("status").innerText +=
+                "\n⚠️ En attente de la session";
+
+
+        }
+
+
+
+        isScanning=true;
+
+        return;
+
+    }
+
+
+
+
+
+    document.getElementById("status").innerText =
+        "❌ Type QR inconnu";
+
+
     isScanning=true;
-
-    return;
-
-
-  }
-
-
-
-
-
-  document.getElementById("status").innerText =
-    "❌ QR inconnu";
-
-
-  isScanning=true;
 
 
 
@@ -420,28 +417,34 @@ function onScanSuccess(decodedText){
 
 
 
+
 // ======================================
-// Démarrage caméra
+// CAMERA
 // ======================================
 
 
 const html5QrCode =
-  new Html5Qrcode("reader");
+    new Html5Qrcode("reader");
 
 
 
 html5QrCode.start(
 
-  {
+{
+
     facingMode:"environment"
-  },
 
-  {
+},
+
+{
+
     fps:10,
-    qrbox:250
-  },
 
-  onScanSuccess
+    qrbox:250
+
+},
+
+onScanSuccess
 
 )
 
@@ -449,14 +452,14 @@ html5QrCode.start(
 .catch(err=>{
 
 
-  console.error(
-    "Erreur caméra",
-    err
-  );
+    console.error(
+        "Erreur caméra",
+        err
+    );
 
 
-  document.getElementById("status").innerText =
-    "Erreur caméra : " + err;
+    document.getElementById("status").innerText =
+        "Erreur caméra : " + err;
 
 
 });
