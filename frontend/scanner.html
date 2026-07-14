@@ -48,7 +48,7 @@ body {
 En attente du QR...
 </p>
 
-
+<div id="debug"></div>
 
 <script type="module">
 
@@ -91,12 +91,20 @@ console.log(
   sessionId
 );
 
+function debug(message) {
+    document.getElementById("debug").innerText += "\n" + message;
+}
+
 // ======================================
 // Enregistrement présence
 // ======================================
 
 async function enregistrerPresence(){
 
+  debug(
+    "sessionId = " + sessionId +
+    "\napprenantId = " + apprenantId
+  );
 
   console.log(
     "AVANT CONTROLE PRESENCE :",
