@@ -558,13 +558,4 @@ app.post("/apprenants/:id/qr", async (req,res)=>{
 
 // START
 
-app.listen(
-  process.env.PORT || 3000,
-  ()=>{
-    console.log(
-      "API running on port",
-      process.env.PORT || 3000
-    );
-  }
-);
-
+export default app;
