@@ -9,3 +9,7 @@ clôture automatique ;
 exports FSE.
 
 Ce sont des sujets importants, mais ils ne doivent pas bloquer le premier flux complet.
+
+Point TODOLIST — À traiter plus tard :
+
+Gestion de la notion de groupe et éventuelle restriction d'accès à une session. Ne pas utiliser session_apprenants comme mécanisme de contrôle dans le MVP.
