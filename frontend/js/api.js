@@ -1,4 +1,4 @@
-const API_URL = "https://gestion-presences-56vd.onrender.com";
+const API_URL = CONFIG.API_URL;
 
 
 /**
@@ -42,7 +42,7 @@ export async function registerPresence(sessionId, apprenantId) {
     sessionId,
     apprenantId
     });
-    
+
     const res = await fetch(`${API_URL}/api/presences`, {
         method: "POST",
         headers: {

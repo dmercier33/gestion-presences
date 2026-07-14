@@ -94,8 +94,8 @@ Chargement...
 
 <script type="module">
 
-const API_URL =
-"https://gestion-presences-56vd.onrender.com";
+//???? const API_URL = "https://gestion-presences-56vd.onrender.com";
+const API_URL = "http://localhost:3000";
 
 
 // ===================================================
@@ -166,6 +166,8 @@ async function creerApprenant() {
 
 async function genererQR(apprenantId) {
 
+  console.log("GENERATION QR APPELEE :", apprenantId);
+
   const container =
     document.getElementById("qr-" + apprenantId);
 
@@ -173,6 +175,7 @@ async function genererQR(apprenantId) {
 
   try {
 
+    console.log("ID ENVOYE AU BACKEND :", apprenantId);
     const response = await fetch(
 
       `${API_URL}/apprenants/${apprenantId}/qr`,
@@ -184,20 +187,21 @@ async function genererQR(apprenantId) {
     );
 
     const data = await response.json();
+    console.log("REPONSE BACKEND QR :", data);
 
     container.innerHTML="";
 
-    new QRCode(
+  new QRCode(
 
-      container,
+    container,
 
-      {
-        text:data.qr_code,
-        width:180,
-        height:180
-      }
+    {
+      text: JSON.stringify(data.qr_payload),
+      width:180,
+      height:180
+    }
 
-    );
+  );   
 
   }
 
@@ -245,8 +249,7 @@ async function chargerApprenants() {
 
 <td>
 
-<button
-onclick="genererQR('${a.id}')">
+<button onclick="genererQR('${a.id}')">
 
 📱 QR
 

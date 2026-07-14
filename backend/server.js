@@ -4,7 +4,24 @@ import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import path from "path";
 
+console.log("=== SERVER.JS CHARGE ===");
+
 dotenv.config();
+
+console.log(
+  "URL Supabase =",
+  process.env.SUPABASE_URL
+);
+
+console.log(
+  "KEY Supabase présente =",
+  !!process.env.SUPABASE_KEY
+);
+
+console.log(
+  "Longueur KEY =",
+  process.env.SUPABASE_KEY?.length
+);
 
 const app = express();
 
@@ -23,6 +40,20 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
+console.log(
+  "SUPABASE_URL OK :",
+  process.env.SUPABASE_URL
+);
+
+console.log(
+  "SUPABASE_KEY présente :",
+  !!process.env.SUPABASE_KEY
+);
+
+console.log(
+  "SUPABASE_KEY début :",
+  process.env.SUPABASE_KEY?.substring(0,10)
+);
 
 // HEALTH
 app.get("/health", (req, res) => {
@@ -384,7 +415,6 @@ app.get("/apprenants", async(req,res)=>{
 // SESSION APPRENANTS
 // ===============================
 
-
 app.post("/session-apprenants", async(req,res)=>{
 
 
@@ -418,13 +448,23 @@ app.post("/session-apprenants", async(req,res)=>{
 });
 
 
+// ===============================
+// QR APPRENANTS
+// ===============================
+
 app.post("/apprenants/:id/qr", async (req,res)=>{
+
 
     const id = req.params.id;
 
-    const qrCode = "APP_" + Date.now() + "_" + Math.random()
-        .toString(36)
-        .substring(2,8);
+    const qrCode =
+        "APP_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2,8);
+
 
 
     const { data, error } = await supabase
@@ -436,17 +476,48 @@ app.post("/apprenants/:id/qr", async (req,res)=>{
         .select();
 
 
+
     if(error){
-        return res.status(500).json(error);
+
+        return res.status(500).json({
+            error:error.message
+        });
+
     }
 
+    if(!data || data.length === 0){
+
+        return res.status(404).json({
+            error:"Apprenant introuvable"
+        });
+
+    }
+
+    const qrPayload = {
+
+        type:"APPRENANT",
+
+        version:1,
+
+        qrCode:qrCode
+
+    };
+
+    console.log("QR VERSIONNEE ACTIVE");
 
     res.json({
-        qr_code: qrCode,
+
+        qr_code:qrCode,
+
+        qr_payload:qrPayload,
+
         apprenant:data[0]
+
     });
 
+
 });
+
 
 // START
 

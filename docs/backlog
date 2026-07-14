@@ -1,0 +1,92 @@
+Très bonne question 😄. Maintenant qu'on a un socle qui fonctionne, on peut faire une estimation beaucoup plus réaliste qu'au début.
+
+Je vais raisonner en temps de développement réel, pas en "temps calendrier" (car le rythme dépendra de nos séances, des tests terrain, etc.).
+
+Mon estimation : environ 40 à 80 heures de travail jusqu'à une v1.0.0 exploitable
+
+Avec notre architecture actuelle, je ne vois pas un chantier de plusieurs centaines d'heures. Le plus gros risque n'est plus technique : c'est la définition métier et les ajustements.
+
+Voici comment je découperais :
+
+🚀 v0.4.0 — QR propre et finalisé
+
+≈ 4 à 8 h
+
+À faire :
+
+génération QR JSON côté backend ;
+versionnement du format QR ;
+gestion propre des anciens QR ;
+éventuellement expiration des QR session.
+
+Résultat :
+la brique QR est "propre".
+
+🏗️ v0.5.0 — Modèle métier FSE
+
+≈ 10 à 20 h
+
+C'est probablement le plus gros morceau.
+
+Évolution de la base :
+
+Aujourd'hui :
+
+sessions
+apprenants
+presences
+
+Vers quelque chose comme :
+
+organismes (optionnel)
+formations
+groupes
+formateurs
+sessions
+apprenants
+inscriptions
+presences
+
+Avec :
+
+relations propres ;
+historique ;
+contraintes ;
+exports.
+
+C'est là qu'il faut réfléchir avant de coder.
+
+🖥️ v0.6.0 — Interface formateur utilisable
+
+≈ 10 à 15 h
+
+Aujourd'hui tu as les briques, mais il faudra une vraie expérience :
+
+écran connexion ;
+bouton nouvelle séance ;
+QR visible ;
+liste des présents en direct ;
+fermeture séance ;
+export.
+🔒 v0.7.0 — Sécurité / robustesse
+
+≈ 8 à 15 h
+
+Notamment :
+
+authentification ;
+droits formateur/admin ;
+expiration session ;
+protection API ;
+gestion erreurs ;
+logs propres.
+📄 v0.8/v0.9 — Préparation production
+
+≈ 8 à 20 h
+
+tests terrain ;
+documentation ;
+nettoyage code ;
+sauvegardes ;
+procédure d'installation ;
+amélioration UX.
