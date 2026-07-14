@@ -98,7 +98,20 @@ console.log(
 async function enregistrerPresence(){
 
 
+  console.log(
+    "AVANT CONTROLE PRESENCE :",
+    {
+      sessionId,
+      apprenantId
+    }
+  );
+
+
   if(!sessionId || !apprenantId){
+
+    console.log(
+      "PRESENCE ABANDONNEE : sessionId ou apprenantId manquant"
+    );
 
     return;
 
