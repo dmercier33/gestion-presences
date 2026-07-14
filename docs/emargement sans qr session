@@ -1,0 +1,41 @@
+v0.3.4 — Nouveau flux d'émargement
+Flux utilisateur
+1) Le formateur crée une session
+
+Le backend crée :
+
+sessions
+---------
+SESSION_xxxxx
+active=true
+created_at=...
+
+Le QR session n'est plus utilisé.
+
+2) Le formateur ouvre le scanner
+
+Le scanner est attaché à cette session.
+
+Le scanner attend uniquement :
+
+QR APPRENANT
+3) Le formateur scanne une carte apprenant
+
+Exemple :
+
+APP_1783969845178_shjdpv
+
+Le frontend envoie :
+
+{
+  "sessionId":"SESSION_xxxxx",
+  "apprenantId":"APP_xxxxx"
+}
+4) Le backend traite
+
+Ordre :
+
+vérifier session active ✅
+vérifier apprenant existant ✅
+créer session_apprenants si absent ✅
+créer presences ✅
