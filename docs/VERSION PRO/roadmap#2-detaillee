@@ -1,0 +1,268 @@
+Très bien. Je te propose un document volontairement court et engageant : pas une spécification de 50 pages, mais un garde-fou qui nous empêchera de repartir dans tous les sens.
+
+Contrat d'architecture V1 — Gestion Présences FLE/FSE
+
+Version : V1.0 — Document de référence
+Objectif : construire une première version fonctionnelle, simple et évolutive d'une application d'émargement numérique par QR code pour organismes de formation FLE.
+
+1. Finalité du produit
+
+L'application permet à un formateur de :
+
+sélectionner un groupe d'apprenants ;
+démarrer une séance ;
+générer un QR code temporaire de séance ;
+permettre aux apprenants de valider leur présence par scan ;
+conserver une preuve exploitable de présence.
+
+La V1 privilégie :
+
+simplicité d'utilisation ;
+fiabilité des données ;
+traçabilité ;
+évolutivité.
+2. Principes d'architecture retenus
+Principe 1 — Une session appartient toujours à un groupe
+
+Une session n'est jamais globale à l'application.
+
+Modèle :
+
+GROUPE
+   |
+   |
+ SESSION
+   |
+   |
+ PRESENCES
+
+Conséquence :
+
+Deux groupes peuvent avoir des sessions simultanées.
+
+Exemple :
+
+09h00
+
+FLE A2  → Session 001
+FLE B1  → Session 002
+
+OK
+Principe 2 — Une seule session ouverte par groupe
+
+Invariant métier :
+
+Un groupe ne peut pas avoir deux sessions ouvertes simultanément.
+
+Exemple interdit :
+
+FLE A2
+
+Session 001 ouverte
+
++
+Session 002 ouverte
+
+NON
+
+Lorsqu'un formateur tente de créer une nouvelle session sur un groupe déjà ouvert :
+
+refus ;
+ou fermeture explicite de l'ancienne session (évolution future).
+Principe 3 — Une présence est toujours rattachée à une session
+
+Une présence n'existe jamais seule.
+
+Clé métier :
+
+SESSION + APPRENANT = PRESENCE
+
+Un apprenant ne peut pas être enregistré deux fois sur une même session.
+
+3. Modèle de données V1
+Table apprenants
+
+Rôle :
+stockage des personnes.
+
+id
+nom
+prenom
+qr_code
+created_at
+Table groupes
+
+Rôle :
+nomenclature stable FSE / organisme.
+
+id
+code
+libelle
+created_at
+
+Exemple :
+
+code :
+FLE_A2_2026
+
+libelle :
+Français niveau A2
+Table groupe_apprenants
+
+Rôle :
+définir les participants attendus d'un groupe.
+
+id
+groupe_id
+apprenant_id
+Table sessions
+
+Rôle :
+représenter une séance réelle.
+
+id
+groupe_id
+token
+started_at
+ended_at
+expires_at
+duration_minutes
+created_at
+
+Décision :
+
+Pas de champ active.
+
+L'état d'une session est calculé :
+
+Session ouverte :
+
+ended_at IS NULL
+
+Session terminée :
+
+ended_at renseigné
+
+Session expirée :
+
+now > expires_at
+Table session_apprenants
+
+Rôle :
+figer les participants prévus au moment de la séance.
+
+id
+session_id
+apprenant_id
+
+Cette table garantit l'historique.
+
+Table presences
+
+Rôle :
+preuve d'émargement.
+
+id
+session_id
+apprenant_id
+scanned_at
+type_scan
+4. Flux métier V1
+Création d'une session
+
+Le formateur :
+
+Choisit un groupe
+
+        ↓
+
+Création session
+
+        ↓
+
+Copie des membres du groupe
+dans session_apprenants
+
+        ↓
+
+Génération QR session
+Scan apprenant
+
+L'apprenant :
+
+Scanne QR session
+
+        +
+
+Scanne QR personnel
+
+        ↓
+
+Validation serveur
+
+        ↓
+
+Création présence
+
+Contrôles :
+
+session existante ;
+session ouverte ;
+apprenant existant ;
+apprenant attendu dans la session ;
+absence de doublon.
+5. Ce qui est volontairement exclu de la V1
+
+Pour préserver la simplicité :
+
+❌ gestion des comptes utilisateurs
+❌ authentification formateurs
+❌ planning complet
+❌ facturation
+❌ exports FSE avancés
+❌ signature électronique
+❌ gestion historique des changements de groupe
+❌ import massif Excel
+❌ application mobile native
+
+Ces éléments pourront être ajoutés après validation terrain.
+
+6. Critère de réussite V1
+
+La V1 est considérée comme réussie si :
+
+Un formateur peut :
+
+Choisir son groupe
+        ↓
+Créer une séance
+        ↓
+Afficher un QR
+        ↓
+Faire scanner les apprenants
+        ↓
+Obtenir une liste fiable des présents
+
+avec :
+
+plusieurs groupes simultanés possibles ;
+aucune ambiguïté de rattachement ;
+données conservées durablement.
+Décision d'architecture finale V1
+
+✅ Supabase comme base de données
+✅ Node.js / Express comme API
+✅ Frontend web simple
+✅ QR session temporaire
+✅ QR apprenant individuel
+✅ Session rattachée à un groupe
+✅ Pas de session active globale
+✅ Pas de champ active dans le modèle métier
+
+Statut : ARCHITECTURE V1 VALIDÉE — passage possible au développement.
+
+Je te propose qu'on considère ce document comme notre "constitution" pour la suite 😄. Toute nouvelle idée devra répondre à une question simple :
+
+"Est-ce indispensable pour fermer la boucle V1, ou est-ce une évolution V2 ?"
+
+C'est exactement l'esprit agile que tu évoquais.

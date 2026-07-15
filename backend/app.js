@@ -67,29 +67,56 @@ app.get("/health", (req, res) => {
 
 app.post("/sessions", async (req, res) => {
 
-  // Durée choisie par le formateur (défaut : 2 heures)
-  const durationMinutes = req.body.duration_minutes || 120;
+  const {
+    groupe_id,
+    duration_minutes = 120
+  } = req.body;
 
 
-  // Désactiver les anciennes sessions actives
-  const { error: deactivateError } = await supabase
-    .from("sessions")
-    .update({
-      active: false,
-      ended_at: new Date()
-    })
-    .eq("active", true);
-
-
-  if (deactivateError) {
-    return res.status(500).json({
-      error: deactivateError
+  if (!groupe_id) {
+    return res.status(400).json({
+      error:"groupe_id obligatoire"
     });
   }
 
 
-  // Création nouvelle session
+// Désactiver les anciennes sessions actives
+const now = new Date();
 
+const { data: existingSessions, error: existingError } =
+  await supabase
+    .from("sessions")
+    .select("id, started_at, duration_minutes")
+    .eq("groupe_id", groupe_id)
+    .eq("active", true);
+
+if (existingError) {
+  return res.status(500).json({
+    error: existingError.message
+  });
+}
+
+for (const session of existingSessions) {
+
+  const endTime = new Date(
+    new Date(session.started_at).getTime()
+    + session.duration_minutes * 60000
+  );
+
+
+  if (now < endTime) {
+
+    await supabase
+      .from("sessions")
+      .update({
+        active:false,
+        ended_at:now
+      })
+      .eq("id", session.id);
+
+  }
+
+  // Création nouvelle session
   const sessionId = "SESSION_" + Date.now();
 
 
@@ -110,11 +137,12 @@ app.post("/sessions", async (req, res) => {
     .from("sessions")
     .insert([
       {
-        id: sessionId,
-        token,
-        active: true,
-        duration_minutes: durationMinutes,
-        expires_at: expiresAt
+      id: sessionId,
+      token,
+      groupe_id,
+      active: true,
+      duration_minutes,
+      started_at: new Date()
       }
     ])
     .select()
@@ -127,13 +155,13 @@ app.post("/sessions", async (req, res) => {
     });
   }
 
+  console.log("Nouvelle session créée :", data);
 
   res.json({
     sessionId: data.id,
     token: data.token,
-    expires_at: data.expires_at
+    expires_at:data.expires_at
   });
-
 });
 
 
@@ -208,14 +236,14 @@ app.post("/api/presences", async (req, res) => {
 
 
     // Vérifier que la session existe
-
     const { data: session, error: sessionError } =
       await supabase
         .from("sessions")
-        .select("id")
+        .select("id, active, expires_at, ended_at")
         .eq("id", sessionId)
         .maybeSingle();
 
+console.log("SESSION LUE :", session);
 
     if (sessionError || !session) {
 
@@ -225,7 +253,21 @@ app.post("/api/presences", async (req, res) => {
 
     }
 
+    console.log("REFUS :", {
+    active: session.active,
+    expires_at: session.expires_at,
+    now: new Date().toISOString()
+  });
 
+    if (
+      !session.active ||
+      session.ended_at ||
+      new Date(session.expires_at) < new Date()
+    ) {
+      return res.status(403).json({
+        error: "Session expired"
+      });
+    }
 
     // Transformer le QR en identifiant apprenant interne
 

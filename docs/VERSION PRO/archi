@@ -1,0 +1,22 @@
+                 REFERENTE
+                    |
+                    |
+        +-----------+------------+
+        |                        |
+     GROUPES              APPRENANTS
+        |                        |
+        +-----------+------------+
+                    |
+          groupe_apprenants
+                    |
+                    |
+             FORMATEUR
+                    |
+              choisit groupe
+                    |
+              crée SESSION
+                    |
+          session_apprenants
+                    |
+                    |
+              PRESENCES

@@ -49,3 +49,20 @@ alter table presences
 add constraint fk_apprenant
 foreign key (apprenant_id) references apprenants(id)
 on delete cascade;
+
+
+======= ROADMAP #2
+
+create table groupes (
+  id text primary key,
+  code text not null unique,
+  libelle text,
+  created_at timestamp default now()
+);
+
+create table groupe_apprenants (
+  id text primary key,
+  groupe_id text references groupes(id),
+  apprenant_id text references apprenants(id),
+  created_at timestamp default now()
+);

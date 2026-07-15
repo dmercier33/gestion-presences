@@ -162,3 +162,38 @@ test("un QR apprenant inconnu est refusé", async () => {
 
 
 });
+
+test("refuse une présence sur une session expirée", async () => {
+
+  // création session
+  const sessionResponse = await request(app)
+    .post("/sessions")
+    .send({
+      duration_minutes: 120
+    });
+
+  const sessionId = sessionResponse.body.sessionId;
+
+
+  // on force l'expiration dans le passé
+  await supabase
+    .from("sessions")
+    .update({
+      expires_at: new Date(Date.now() - 60000)
+    })
+    .eq("id", sessionId);
+
+
+  // tentative de scan
+  const response = await request(app)
+    .post("/api/presences")
+    .send({
+      sessionId,
+      apprenantId: "UN_QR_TEST"
+    });
+
+
+  expect(response.status).toBe(403);
+  expect(response.body.error).toBe("Session expired");
+
+});

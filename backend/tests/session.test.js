@@ -5,6 +5,8 @@ import app from "../app.js";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
+import { testFormation } from "./helpers.js";
+
 dotenv.config();
 
 
@@ -81,6 +83,7 @@ test("une nouvelle session désactive l'ancienne", async () => {
       secondSessionId
     ]);
 
+    console.log(sessions);
 
   expect(error).toBeNull();
 
