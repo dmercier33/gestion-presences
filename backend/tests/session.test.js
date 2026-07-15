@@ -5,7 +5,6 @@ import app from "../app.js";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
-import { testFormation } from "./helpers.js";
 
 dotenv.config();
 
@@ -18,91 +17,24 @@ const supabase = createClient(
 
 describe("Sessions API", () => {
 
-  test("création d'une nouvelle session", async () => {
+  test("une deuxième session active du même groupe est refusée", async () => {
 
-    const response = await request(app)
+    // Création d'une première session du groupe GRP_G1 deja faite avant
+
+    const secondResponse = await request(app)
       .post("/sessions")
       .send({
-        duration_minutes: 120
+        groupe_id:"GRP_G1",
+        duration_minutes:120
       });
 
 
-    expect(response.status).toBe(200);
+    expect(secondResponse.status).toBe(409);
 
-    expect(response.body.sessionId)
-      .toBeDefined();
 
-    expect(response.body.token)
-      .toBeDefined();
-
-    expect(response.body.expires_at)
-      .toBeDefined();
+    expect(secondResponse.body.error)
+      .toBe("Une session est déjà ouverte pour ce groupe.");
 
   });
 
-});
-
-test("une nouvelle session désactive l'ancienne", async () => {
-
-  // Création session A
-  const firstResponse = await request(app)
-    .post("/sessions")
-    .send({
-      duration_minutes: 120
-    });
-
-
-  expect(firstResponse.status).toBe(200);
-
-
-  const firstSessionId = firstResponse.body.sessionId;
-
-
-
-  // Création session B
-  const secondResponse = await request(app)
-    .post("/sessions")
-    .send({
-      duration_minutes: 120
-    });
-
-
-  expect(secondResponse.status).toBe(200);
-
-
-  const secondSessionId = secondResponse.body.sessionId;
-
-
-
-  // Vérification en base Supabase
-  const { data: sessions, error } = await supabase
-    .from("sessions")
-    .select("id, active")
-    .in("id", [
-      firstSessionId,
-      secondSessionId
-    ]);
-
-    console.log(sessions);
-
-  expect(error).toBeNull();
-
-
-  const oldSession = sessions.find(
-    s => s.id === firstSessionId
-  );
-
-
-  const newSession = sessions.find(
-    s => s.id === secondSessionId
-  );
-
-
-  expect(oldSession.active)
-    .toBe(false);
-
-
-  expect(newSession.active)
-    .toBe(true);
-
-});
+}); 

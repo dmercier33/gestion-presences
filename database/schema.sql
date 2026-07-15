@@ -25,6 +25,19 @@ DROP COLUMN started_at,
 DROP COLUMN start_time,
 DROP COLUMN end_time;
 
+ALTER TABLE public.sessions
+ALTER COLUMN started_at TYPE timestamptz
+USING started_at AT TIME ZONE 'UTC';
+
+ALTER TABLE public.sessions
+ALTER COLUMN expires_at TYPE timestamptz
+USING expires_at AT TIME ZONE 'UTC';
+
+ALTER TABLE public.sessions
+ALTER COLUMN ended_at TYPE timestamptz
+USING ended_at AT TIME ZONE 'UTC';
+
+
 create table if not exists presences (
   id uuid primary key default gen_random_uuid(),
   session_id text not null,

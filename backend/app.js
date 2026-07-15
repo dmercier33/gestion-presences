@@ -64,7 +64,6 @@ app.get("/health", (req, res) => {
 // ===============================
 // CREATE SESSION
 // ===============================
-
 app.post("/sessions", async (req, res) => {
 
   const {
@@ -72,6 +71,9 @@ app.post("/sessions", async (req, res) => {
     duration_minutes = 120
   } = req.body;
 
+console.log("BODY SESSION RECU :", req.body);
+console.log("GROUPE_ID RECU :", groupe_id);
+console.log("DUREE RECU :", duration_minutes);
 
   if (!groupe_id) {
     return res.status(400).json({
@@ -80,15 +82,18 @@ app.post("/sessions", async (req, res) => {
   }
 
 
-// Désactiver les anciennes sessions actives
 const now = new Date();
 
-const { data: existingSessions, error: existingError } =
+const { data: existingSession, error: existingError } =
   await supabase
     .from("sessions")
-    .select("id, started_at, duration_minutes")
+    .select("id, expires_at, active, ended_at")
     .eq("groupe_id", groupe_id)
-    .eq("active", true);
+    .eq("active", true)
+    .is("ended_at", null)
+    .gt("expires_at", now.toISOString())
+    .maybeSingle();
+
 
 if (existingError) {
   return res.status(500).json({
@@ -96,58 +101,53 @@ if (existingError) {
   });
 }
 
-for (const session of existingSessions) {
+if (existingSession) {
 
-  const endTime = new Date(
-    new Date(session.started_at).getTime()
-    + session.duration_minutes * 60000
-  );
+  return res.status(409).json({
+    error: "Une session est déjà ouverte pour ce groupe.",
+    sessionId: existingSession.id
+  });
 
-
-  if (now < endTime) {
-
-    await supabase
-      .from("sessions")
-      .update({
-        active:false,
-        ended_at:now
-      })
-      .eq("id", session.id);
-
-  }
+}
 
   // Création nouvelle session
   const sessionId = "SESSION_" + Date.now();
-
 
   const token = Math.random()
     .toString(36)
     .substring(2, 10)
     .toUpperCase();
 
-
   const createdAt = new Date();
 
   const expiresAt = new Date(
-    createdAt.getTime() + durationMinutes * 60000
+    createdAt.getTime() + duration_minutes * 60000
   );
 
+  console.log("OBJET ENVOYE A SUPABASE :", {
+    id: sessionId,
+    token,
+    groupe_id,
+    duration_minutes,
+    started_at: createdAt.toISOString(),
+    expires_at: expiresAt.toISOString(),
+  });
 
-  const { data, error } = await supabase
-    .from("sessions")
-    .insert([
-      {
+const { data, error } = await supabase
+  .from("sessions")
+  .insert([
+    {
       id: sessionId,
       token,
       groupe_id,
-      active: true,
       duration_minutes,
-      started_at: new Date()
-      }
-    ])
-    .select()
-    .single();
-
+      started_at: createdAt.toISOString(),
+      expires_at: expiresAt.toISOString(),
+      active: true
+    }
+  ])
+  .select()
+  .single();
 
   if (error) {
     return res.status(500).json({
@@ -239,11 +239,19 @@ app.post("/api/presences", async (req, res) => {
     const { data: session, error: sessionError } =
       await supabase
         .from("sessions")
-        .select("id, active, expires_at, ended_at")
+        .select("id, expires_at, ended_at, active")
         .eq("id", sessionId)
         .maybeSingle();
 
-console.log("SESSION LUE :", session);
+    console.log("SESSION LUE :", session);
+
+    console.log("VERIFICATION SESSION :", {
+      active: session.active,
+      ended_at: session.ended_at,
+      expires_at: session.expires_at,
+      maintenant: new Date().toISOString(),
+      expiration_depassee: new Date(session.expires_at) < new Date()
+    });
 
     if (sessionError || !session) {
 
@@ -258,6 +266,15 @@ console.log("SESSION LUE :", session);
     expires_at: session.expires_at,
     now: new Date().toISOString()
   });
+
+  console.log("VERIFICATION SESSION AVANT REFUS :", {
+  id: session.id,
+  active: session.active,
+  ended_at: session.ended_at,
+  expires_at: session.expires_at,
+  now: new Date().toISOString(),
+  expiration_depassee: new Date(session.expires_at) < new Date()
+});
 
     if (
       !session.active ||
