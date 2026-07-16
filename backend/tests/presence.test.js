@@ -1,22 +1,56 @@
+import dotenv from "dotenv";
+
+console.log("AVANT DOTENV URL =", process.env.SUPABASE_URL);
+dotenv.config({
+  path: process.env.NODE_ENV === "test"
+    ? ".env.test"
+    : ".env"
+});
+console.log("APRES DOTENV URL =", process.env.SUPABASE_URL);
+
+import { beforeEach } from "vitest";
 import { describe, test, expect } from "vitest";
 import request from "supertest";
 import app from "../app.js";
-
 import { createClient } from "@supabase/supabase-js";
-import dotenv from "dotenv";
-
-dotenv.config();
-
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
 
+beforeEach(async () => {
 
+  await supabase
+    .from("presences")
+    .delete()
+    .neq("id","");
+
+  await supabase
+    .from("session_apprenants")
+    .delete()
+    .neq("id","");
+
+  await supabase
+    .from("sessions")
+    .delete()
+    .neq("id","");
+
+});
+
+// Base de test
+const TEST_GROUP_ID = "GRP_TEST_001";
+const TEST_APPRENANT_QR = "QR_TEST_001";
+
+const { data: groupe } = await supabase
+  .from("groupes")
+  .select("id")
+  .eq("id", TEST_GROUP_ID)
+  .single();
+
+expect(groupe).toBeDefined();
 
 describe("Presences API", () => {
-
 
   test("un apprenant ne peut pas être enregistré deux fois sur une session", async () => {
 
@@ -26,10 +60,11 @@ describe("Presences API", () => {
     const sessionResponse = await request(app)
       .post("/sessions")
       .send({
-        duration_minutes: 120
-      });
+        groupe_id: TEST_GROUP_ID,
+        duration_minutes:120
+    });
 
-
+console.log("REPONSE SESSION :", sessionResponse.body);
     expect(sessionResponse.status).toBe(200);
 
 
@@ -41,11 +76,10 @@ describe("Presences API", () => {
 
     const { data: apprenant } = await supabase
       .from("apprenants")
-      .select("qr_code")
-      .limit(1)
+      .select("*")
+      .eq("qr_code", TEST_APPRENANT_QR)
       .single();
-
-
+      
     expect(apprenant).toBeDefined();
 
 
@@ -63,7 +97,8 @@ describe("Presences API", () => {
         apprenantId: qrCode
       });
 
-
+console.log("REPONSE SESSION :", sessionResponse.body);
+console.log("ERREUR SCAN :", firstScan.body);
     expect(firstScan.status).toBe(200);
 
 
@@ -96,13 +131,11 @@ test("une session inconnue est refusée", async () => {
 
 
   // Récupérer un QR apprenant valide
-
   const { data: apprenant } = await supabase
     .from("apprenants")
-    .select("qr_code")
-    .limit(1)
+    .select("*")
+    .eq("qr_code", TEST_APPRENANT_QR)
     .single();
-
 
   expect(apprenant).toBeDefined();
 
@@ -135,12 +168,12 @@ test("un QR apprenant inconnu est refusé", async () => {
   const sessionResponse = await request(app)
     .post("/sessions")
     .send({
-      duration_minutes: 120
-    });
+      groupe_id: TEST_GROUP_ID,
+      duration_minutes:120
+  })
 
-
-  expect(sessionResponse.status)
-    .toBe(200);
+  console.log("REPONSE SESSION :", sessionResponse.body);
+  expect(sessionResponse.status).toBe(200);
 
 
 
@@ -169,7 +202,8 @@ test("refuse une présence sur une session expirée", async () => {
   const sessionResponse = await request(app)
     .post("/sessions")
     .send({
-      duration_minutes: 120
+      groupe_id: TEST_GROUP_ID,
+      duration_minutes:120
     });
 
   const sessionId = sessionResponse.body.sessionId;
@@ -197,3 +231,4 @@ test("refuse une présence sur une session expirée", async () => {
   expect(response.body.error).toBe("Session expired");
 
 });
+

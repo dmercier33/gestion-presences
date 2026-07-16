@@ -3,10 +3,20 @@ import cors from "cors";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from "url";
 
-console.log("=== SERVER.JS CHARGE ===");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-dotenv.config();
+console.log("APP NODE_ENV =", process.env.NODE_ENV);
+
+dotenv.config({
+  path: process.env.NODE_ENV === "test"
+    ? ".env.test"
+    : ".env"
+});
+
+console.log("APP DOTENV =", process.env.SUPABASE_URL);
 
 console.log(
   "URL Supabase =",
@@ -203,13 +213,15 @@ app.get("/presences/:sessionId", async (req, res) => {
     res.json(data);
 
 
-  } catch (err) {
+  } catch(error){
 
-    res.status(500).json({
-      error: err.message
-    });
+console.error("ERREUR PRESENCE COMPLETE :", error);
 
-  }
+res.status(500).json({
+ error: error.message
+});
+
+}
 
 });
 
@@ -242,24 +254,25 @@ app.post("/api/presences", async (req, res) => {
         .select("id, expires_at, ended_at, active")
         .eq("id", sessionId)
         .maybeSingle();
+}
 
-    console.log("SESSION LUE :", session);
+console.log("SESSION LUE :", session);
 
-    console.log("VERIFICATION SESSION :", {
-      active: session.active,
-      ended_at: session.ended_at,
-      expires_at: session.expires_at,
-      maintenant: new Date().toISOString(),
-      expiration_depassee: new Date(session.expires_at) < new Date()
-    });
+if (sessionError || !session) {
 
-    if (sessionError || !session) {
+  return res.status(404).json({
+    error: "Session not found"
+  });
 
-      return res.status(404).json({
-        error: "Session not found"
-      });
+}
 
-    }
+console.log("VERIFICATION SESSION :", {
+  active: session.active,
+  ended_at: session.ended_at,
+  expires_at: session.expires_at,
+  maintenant: new Date().toISOString(),
+  expiration_depassee: new Date(session.expires_at) < new Date()
+});
 
     console.log("REFUS :", {
     active: session.active,
