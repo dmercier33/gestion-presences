@@ -34,7 +34,35 @@ async function nouvelleSession() {
             groupe_id,
             duration_minutes
         });
-        vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+        const groupe_id =
+            document.getElementById("selectGroupe").value;
+
+
+        const duration_minutes =
+            Number(
+                document.getElementById("duration").value
+            );
+
+
+        if (!groupe_id) {
+
+            alert("Veuillez choisir un groupe");
+
+            return;
+        }
+
+
+        console.log("Création session :", {
+            groupe_id,
+            duration_minutes
+        });
+
+
+        const session = await createSession({
+            groupe_id,
+            duration_minutes
+        });
 
         localStorage.setItem(
             "sessionId",
