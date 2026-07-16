@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<title>QR Apprenant Test</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+</head>
+
+
+<body>
+
+<h1>QR APP-0005</h1>
+
+<div id="qr"></div>
+
+
+<script>
+
+new QRCode(
+    document.getElementById("qr"),
+    {
+        text: "APP_TEST_0005",
+        width: 250,
+        height: 250
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

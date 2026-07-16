@@ -1,0 +1,101 @@
+Le QR session = le panneau à l'entrée de la classe
+
+La maîtresse ouvre une classe pour aujourd'hui.
+
+Elle crée une session :
+
+"Cours de français du 16 juillet, groupe G1, de 18h34 à 20h34"
+
+Le serveur lui donne une carte d'identité de cette classe temporaire :
+
+SESSION_1784226881932
+
+et un petit secret :
+
+RQ4SMMIP
+
+On met ces deux choses dans un QR :
+
+{
+  "type": "SESSION",
+  "sessionId": "SESSION_1784226881932",
+  "token": "RQ4SMMIP"
+}
+
+Ce QR veut dire :
+
+"Bonjour serveur, je suis la classe ouverte maintenant."
+
+Il ne dit PAS :
+
+"Je suis Paul"
+
+Le QR apprenant = le badge de l'enfant
+
+Maintenant Paul arrive.
+
+Paul a un badge permanent :
+
+APP_1784229825737_3784sg
+
+On met ça dans son QR.
+
+Ce QR veut dire :
+
+"Bonjour, je suis Paul."
+
+Il ne dit PAS :
+
+"Je viens au cours de 18h34"
+
+Le jour du cours
+
+Le scanner fait deux choses :
+
+1) Il regarde la classe
+
+Il lit :
+
+SESSION_1784226881932
+
+et demande au serveur :
+
+"Est-ce que cette classe existe ? Est-elle encore ouverte ?"
+
+Le serveur répond :
+
+"Oui 👍"
+
+2) Il regarde l'enfant
+
+Il lit :
+
+APP_1784229825737_3784sg
+
+et demande :
+
+"Qui est cet enfant ?"
+
+Le serveur répond :
+
+"C'est APP-0001"
+
+3) Il écrit la présence
+
+Il met dans la table :
+
+presences
+
+session_id              apprenant_id
+------------------------------------
+SESSION_1784226881932   APP-0001
+
+Et voilà :
+
+"Paul était présent dans cette classe."
+
+La confusion venait du fait qu'on a deux objets qui ont tous les deux un QR :
+
+QR	Représente	Change quand ?
+QR session	le cours ouvert	à chaque nouveau cours
+QR apprenant	la personne	rarement (création du compte)
