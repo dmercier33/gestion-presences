@@ -1,3 +1,5 @@
+1. CMD : 
+
 # creer une session : 
 curl -X POST https://gestion-presences-56vd.onrender.com/sessions -H "Content-Type: application/json" -d "{}"
 
@@ -17,3 +19,9 @@ curl -X POST https://gestion-presences-56vd.onrender.com/api/presences -H "Conte
 
 ## test qu'un apprenant doit obligatoirement être affecté à la session avant de pouvoir émarger : 
 curl -X POST https://gestion-presences-56vd.onrender.com/api/presences -H "Content-Type: application/json" -d "{\"sessionId\":\"SESSION_1783873233815\",\"apprenantId\":\"APP-0002\"}"
+
+
+2. PS : 
+curl.exe -X POST http://localhost:3000/api/sessions -H "Content-Type: application/json" -d '{"groupe_id":"G1","duration_minutes":120}'
+
+curl.exe -X POST http://localhost:3000/api/presences -H "Content-Type: application/json" -d '{"sessionId":"SESSION_1784209287130","apprenantId":"APP-0001"}'
