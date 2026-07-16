@@ -5,10 +5,6 @@ let sessionActive = null;
 let refreshTimer = null;
 
 
-let sessionActive = null;
-let refreshTimer = null;
-
-
 // ===============================
 // CHARGEMENT DES GROUPES
 // ===============================
