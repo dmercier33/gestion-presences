@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-console.log("AVANT DOTENV URL =", process.env.SUPABASE_URL);
+
 
 dotenv.config({
   path: process.env.NODE_ENV === "test"
@@ -8,7 +8,7 @@ dotenv.config({
     : ".env"
 });
 
-console.log("APRES DOTENV URL =", process.env.SUPABASE_URL);
+
 
 
 import { beforeEach } from "vitest";

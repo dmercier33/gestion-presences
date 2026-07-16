@@ -4,18 +4,35 @@ import { API_URL } from "./config.js";
 /**
  * Création d'une session côté formateur
  */
-export async function createSession() {
+export async function createSession({
+    groupe_id,
+    duration_minutes
+}) {
 
     const res = await fetch(`${API_URL}/sessions`, {
+
         method: "POST",
+
         headers: {
             "Content-Type": "application/json"
-        }
+        },
+
+        body: JSON.stringify({
+            groupe_id,
+            duration_minutes
+        })
+
     });
 
 
     if (!res.ok) {
-        throw new Error("Erreur création session");
+
+        const error = await res.json();
+
+        throw new Error(
+            error.message || "Erreur création session"
+        );
+
     }
 
 

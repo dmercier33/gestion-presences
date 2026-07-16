@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 
-console.log("AVANT DOTENV URL =", process.env.SUPABASE_URL);
+
 dotenv.config({
   path: process.env.NODE_ENV === "test"
     ? ".env.test"
     : ".env"
 });
-console.log("APRES DOTENV URL =", process.env.SUPABASE_URL);
+
 
 import { beforeEach } from "vitest";
 import { describe, test, expect } from "vitest";
@@ -64,7 +64,7 @@ describe("Presences API", () => {
         duration_minutes: 120
       });
 
-    console.log("REPONSE SESSION :", sessionResponse.body);
+    
     expect(sessionResponse.status).toBe(200);
 
 
@@ -97,8 +97,8 @@ describe("Presences API", () => {
         apprenantId: qrCode
       });
 
-    console.log("REPONSE SESSION :", sessionResponse.body);
-    console.log("ERREUR SCAN :", firstScan.body);
+    
+    
     expect(firstScan.status).toBe(200);
 
 
@@ -172,7 +172,7 @@ test("un QR apprenant inconnu est refusé", async () => {
       duration_minutes: 120
     })
 
-  console.log("REPONSE SESSION :", sessionResponse.body);
+  
   expect(sessionResponse.status).toBe(200);
 
 

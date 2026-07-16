@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log("APP NODE_ENV =", process.env.NODE_ENV);
+
 
 dotenv.config({
   path: process.env.NODE_ENV === "test"
@@ -16,7 +16,7 @@ dotenv.config({
     : ".env"
 });
 
-console.log("APP DOTENV =", process.env.SUPABASE_URL);
+
 
 console.log(
   "URL Supabase =",
@@ -42,7 +42,7 @@ app.use(express.json());
 const frontendPath = path.resolve(process.cwd(), "../frontend");
 app.use(express.static(frontendPath));
 
-console.log("FRONTEND SERVED FROM :", frontendPath);
+
 
 // SUPABASE
 const supabase = createClient(
@@ -54,7 +54,7 @@ console.log(
   "SUPABASE_URL OK :",
   process.env.SUPABASE_URL
 );
-console.log("SUPABASE URL :", process.env.SUPABASE_URL);
+
 
 console.log(
   "SUPABASE_KEY présente :",
@@ -73,6 +73,24 @@ app.get("/health", (req, res) => {
 
 
 // ===============================
+// LISTE DES GROUPES
+// ===============================
+app.get("/groupes", async (req, res) => {
+
+  const { data, error } = await supabase
+    .from("groupes")
+    .select("id, libelle")
+    .order("libelle");
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json(data);
+
+});
+
+// ===============================
 // CREATE SESSION
 // ===============================
 app.post("/sessions", async (req, res) => {
@@ -82,9 +100,9 @@ app.post("/sessions", async (req, res) => {
     duration_minutes = 120
   } = req.body;
 
-  console.log("BODY SESSION RECU :", req.body);
-  console.log("GROUPE_ID RECU :", groupe_id);
-  console.log("DUREE RECU :", duration_minutes);
+  
+  
+  
 
   if (!groupe_id) {
     return res.status(400).json({
@@ -166,7 +184,7 @@ app.post("/sessions", async (req, res) => {
     });
   }
 
-  console.log("Nouvelle session créée :", data);
+  
 
   res.json({
     sessionId: data.id,
@@ -230,7 +248,7 @@ app.get("/presences/:sessionId", async (req, res) => {
 // SCAN QR PRESENCE
 // ===============================
 app.post("/api/presences", async (req, res) => {
-console.log("VERSION ROUTE PRESENCES = 2026-07-16-A");
+
   const { sessionId, apprenantId: qrCode } = req.body;
 
 
@@ -254,9 +272,9 @@ console.log("VERSION ROUTE PRESENCES = 2026-07-16-A");
         .eq("id", sessionId)
         .maybeSingle();
 
-console.log("SESSION CHERCHEE :", sessionId);
-console.log("SESSION TROUVEE :", session);
-console.log("ERREUR SESSION :", sessionError);
+
+
+
 
   if (sessionError || !session) {
 
@@ -600,7 +618,7 @@ app.post("/apprenants/:id/qr", async (req, res) => {
 
   };
 
-  console.log("QR VERSIONNEE ACTIVE");
+  
 
   res.json({
 
