@@ -5,6 +5,67 @@ let sessionActive = null;
 let refreshTimer = null;
 
 
+let sessionActive = null;
+let refreshTimer = null;
+
+
+// ===============================
+// CHARGEMENT DES GROUPES
+// ===============================
+
+async function chargerGroupes() {
+
+    try {
+
+        const res = await fetch(`${API_URL}/groupes`);
+
+        if (!res.ok) {
+
+            throw new Error("Erreur chargement groupes");
+
+        }
+
+
+        const groupes = await res.json();
+
+
+        console.log("GROUPES RECUS :", groupes);
+
+
+        const select = document.getElementById("selectGroupe");
+
+
+        select.innerHTML = `
+            <option value="">
+                -- Choisir un groupe --
+            </option>
+        `;
+
+
+        groupes.forEach(groupe => {
+
+            const option = document.createElement("option");
+
+            option.value = groupe.id;
+
+            option.textContent = groupe.libelle;
+
+            select.appendChild(option);
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur chargement groupes :",
+            error
+        );
+
+    }
+
+}
+
 async function nouvelleSession() {
 
     try {
@@ -113,7 +174,7 @@ document
         nouvelleSession
     );
 
-
+chargerGroupes();
 
 
 
