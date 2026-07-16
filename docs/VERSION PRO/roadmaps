@@ -1,3 +1,5 @@
+###### 14 JUILLET 2026 
+
 Étape 0 — Figer l'architecture (celle qu'on est en train de faire)
 
 Objectif :
@@ -149,3 +151,36 @@ les petits détours utiles.
 Donc je dirais :
 
 Une à deux semaines de travail tranquille pour une V1 très solide.
+
+
+####### 16 Juillet 2026
+
+✅ MVP-1 (terminé)
+
+Backend stable.
+
+🎯 MVP-2
+
+Application utilisable par un formateur.
+
+ouvrir une session
+afficher le QR
+scanner les apprenants
+voir les présences en direct
+🎯 MVP-3
+
+Administration.
+
+groupes
+apprenants
+historique
+🎯 MVP-4
+
+Exports FSE.
+
+PDF
+Excel
+statistiques
+🎯 v1.0
+
+Application déployable.

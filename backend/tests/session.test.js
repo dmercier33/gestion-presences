@@ -41,8 +41,8 @@ describe("Sessions API", () => {
     const firstResponse = await request(app)
       .post("/sessions")
       .send({
-        groupe_id:"GRP_G1",
-        duration_minutes:120
+        groupe_id: "GRP_G1",
+        duration_minutes: 120
       });
 
 
@@ -53,8 +53,8 @@ describe("Sessions API", () => {
     const secondResponse = await request(app)
       .post("/sessions")
       .send({
-        groupe_id:"GRP_G1",
-        duration_minutes:120
+        groupe_id: "GRP_G1",
+        duration_minutes: 120
       });
 
 

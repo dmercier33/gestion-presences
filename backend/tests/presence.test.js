@@ -24,17 +24,17 @@ beforeEach(async () => {
   await supabase
     .from("presences")
     .delete()
-    .neq("id","");
+    .neq("id", "");
 
   await supabase
     .from("session_apprenants")
     .delete()
-    .neq("id","");
+    .neq("id", "");
 
   await supabase
     .from("sessions")
     .delete()
-    .neq("id","");
+    .neq("id", "");
 
 });
 
@@ -61,10 +61,10 @@ describe("Presences API", () => {
       .post("/sessions")
       .send({
         groupe_id: TEST_GROUP_ID,
-        duration_minutes:120
-    });
+        duration_minutes: 120
+      });
 
-console.log("REPONSE SESSION :", sessionResponse.body);
+    console.log("REPONSE SESSION :", sessionResponse.body);
     expect(sessionResponse.status).toBe(200);
 
 
@@ -79,7 +79,7 @@ console.log("REPONSE SESSION :", sessionResponse.body);
       .select("*")
       .eq("qr_code", TEST_APPRENANT_QR)
       .single();
-      
+
     expect(apprenant).toBeDefined();
 
 
@@ -97,8 +97,8 @@ console.log("REPONSE SESSION :", sessionResponse.body);
         apprenantId: qrCode
       });
 
-console.log("REPONSE SESSION :", sessionResponse.body);
-console.log("ERREUR SCAN :", firstScan.body);
+    console.log("REPONSE SESSION :", sessionResponse.body);
+    console.log("ERREUR SCAN :", firstScan.body);
     expect(firstScan.status).toBe(200);
 
 
@@ -169,8 +169,8 @@ test("un QR apprenant inconnu est refusé", async () => {
     .post("/sessions")
     .send({
       groupe_id: TEST_GROUP_ID,
-      duration_minutes:120
-  })
+      duration_minutes: 120
+    })
 
   console.log("REPONSE SESSION :", sessionResponse.body);
   expect(sessionResponse.status).toBe(200);
@@ -203,7 +203,7 @@ test("refuse une présence sur une session expirée", async () => {
     .post("/sessions")
     .send({
       groupe_id: TEST_GROUP_ID,
-      duration_minutes:120
+      duration_minutes: 120
     });
 
   const sessionId = sessionResponse.body.sessionId;
