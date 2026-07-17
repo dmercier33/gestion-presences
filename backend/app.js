@@ -475,6 +475,7 @@ app.post("/apprenants", async (req, res) => {
     ])
     .select()
     .single();
+    
 
   if (error) {
     return res.status(500).json({
@@ -502,9 +503,9 @@ app.get("/apprenants", async (req, res) => {
       created_at,
       groupe_id,
       groupes (
-        id,
-        code,
-        libelle
+      id,
+      code,
+      libelle
       )
     `)
     .order("created_at", { ascending: false });
