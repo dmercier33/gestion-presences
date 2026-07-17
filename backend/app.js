@@ -452,7 +452,14 @@ app.post("/api/presences", async (req, res) => {
 // Administrateur
 app.post("/apprenants", async (req, res) => {
 
-  const { nom, prenom, groupe } = req.body;
+  const { nom, prenom, groupe_id } = req.body;
+
+  if (!nom || !prenom || !groupe_id) {
+    return res.status(400).json({
+      error: "nom, prenom et groupe_id obligatoires"
+    });
+  }
+
   const id = "APP_" + Date.now();
 
   const { data, error } = await supabase
@@ -462,7 +469,7 @@ app.post("/apprenants", async (req, res) => {
         id,
         nom,
         prenom,
-        groupe,
+        groupe_id,
         actif: true
       }
     ])
@@ -470,13 +477,14 @@ app.post("/apprenants", async (req, res) => {
     .single();
 
   if (error) {
-    return res.status(500).json({ error });
+    return res.status(500).json({
+      error: error.message
+    });
   }
 
   res.json(data);
 
 });
-
 
 // =================================
 // LISTE DES APPRENANTS
@@ -498,7 +506,10 @@ app.get("/apprenants", async (req, res) => {
 
 
 // =================================
-// AJOUT QR APPRENANT (id apprenant)
+// Rôle :
+// Générer ou régénérer le badge QR d'un apprenant.
+// Utilisateur concerné :
+// Administrateur
 // =================================
 app.post("/apprenants/:id/qr", async (req, res) => {
 

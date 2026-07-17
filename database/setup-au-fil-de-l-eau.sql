@@ -35,6 +35,14 @@ CREATE TABLE apprenants (
     created_at timestamptz DEFAULT now()
 );
 
+alter table apprenants
+add column groupe_id text;
+
+alter table apprenants
+add constraint fk_apprenants_groupe
+foreign key (groupe_id)
+references groupes(id)
+on delete set null;
 
 -- =========================================
 -- SESSIONS
