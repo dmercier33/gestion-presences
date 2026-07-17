@@ -72,35 +72,36 @@ app.get("/health", (req, res) => {
 });
 
 
+/*
+ API Présencia
+
+ Sessions
+   POST /sessions *
+   GET /sessions/:id ?
+
+ Présences
+   POST /api/presences *
+   GET /presences/:sessionId *
+
+ Groupes
+   GET /groupes *
+
+ Apprenants
+   GET /apprenants *
+   POST /apprenants *
+*/
+
 // ===============================
-// LISTE DES GROUPES
-// ===============================
-app.get("/groupes", async (req, res) => {
-
-  const { data, error } = await supabase
-    .from("groupes")
-    .select("id, libelle")
-    .order("libelle");
-
-  if (error) {
-    return res.status(500).json({ error: error.message });
-  }
-
-  res.json(data);
-
-});
-
-// ===============================
-// OUVERTURE D'UNE SEANCE
+// OUVERTURE D'UNE SESSION
 // ===============================
 //
 // Ouvre la séance courante d'un groupe.
-//
 // Si une séance active existe déjà pour ce groupe,
 // elle est reprise.
-// Sinon une nouvelle séance est créée.
+// Sinon une nouvelle séance est créée avec son token associé.
 //
 // Cette route est appelée par l'écran formateur.
+// Elle retourne les informations nécessaires au formateur
 app.post("/sessions", async (req, res) => {
 
   const {
@@ -202,9 +203,16 @@ res.json({
 
 
 
-// ===============================
-// LECTURE PRESENCES SESSION
-// ===============================
+// =====================================================
+// CONSULTATION DES PRÉSENCES D'UNE SÉANCE
+// =====================================================
+//
+// Rôle :
+// Retourne la liste des apprenants présents
+// pour affichage côté formateur.
+//
+// Utilisateur concerné :
+// Formateur
 app.get("/presences/:sessionId", async (req, res) => {
 
   const { sessionId } = req.params;
@@ -246,9 +254,23 @@ app.get("/presences/:sessionId", async (req, res) => {
 });
 
 
-// ===============================
-// SCAN QR PRESENCE
-// ===============================
+
+// =====================================================
+// ENREGISTREMENT D'UNE PRÉSENCE
+// =====================================================
+//
+// Rôle :
+// Enregistre l'émargement d'un apprenant.
+//
+// Vérifications :
+// - séance existante
+// - séance active
+// - séance non expirée
+// - apprenant reconnu par son QR
+// - absence de doublon
+//
+// Utilisateur concerné :
+// Formateur
 app.post("/api/presences", async (req, res) => {
 
   const { sessionId, apprenantId: qrCode } = req.body;
@@ -412,9 +434,22 @@ app.post("/api/presences", async (req, res) => {
 
 
 
-// ===============================
-// APPRENANTS
-// ===============================
+// =====================================================
+// CRÉATION D'UN APPRENANT
+// =====================================================
+//
+// Rôle :
+// Crée un apprenant dans le référentiel Présencia.
+//
+// Version actuelle :
+// Création simple nom/prénom/groupe.
+//
+// Évolution prévue v1.0 :
+// - groupe_id au lieu de groupe texte
+// - génération automatique du QR
+//
+// Utilisateur concerné :
+// Administrateur
 app.post("/apprenants", async (req, res) => {
 
   const { nom, prenom, groupe } = req.body;
@@ -443,9 +478,9 @@ app.post("/apprenants", async (req, res) => {
 });
 
 
-// ===============================
-// GET SESSION APPRENANTS
-// ===============================
+// =================================
+// LISTE DES APPRENANTS
+// =================================
 app.get("/apprenants", async (req, res) => {
 
   const { data, error } = await supabase
@@ -462,39 +497,9 @@ app.get("/apprenants", async (req, res) => {
 });
 
 
-
-// ===============================
-// SESSION APPRENANTS
-// ===============================
-app.post("/session-apprenants", async (req, res) => {
-
-  const { sessionId, apprenantId } = req.body;
-  const id = "SA_" + Date.now();
-
-  const { data, error } = await supabase
-    .from("session_apprenants")
-    .insert([
-      {
-        id,
-        session_id: sessionId,
-        apprenant_id: apprenantId
-      }
-    ])
-    .select()
-    .single();
-
-  if (error) {
-    return res.status(500).json({ error });
-  }
-
-  res.json(data);
-
-});
-
-
-// ===============================
-// QR APPRENANTS
-// ===============================
+// =================================
+// AJOUT QR APPRENANT (id apprenant)
+// =================================
 app.post("/apprenants/:id/qr", async (req, res) => {
 
   const id = req.params.id;
@@ -542,9 +547,9 @@ app.post("/apprenants/:id/qr", async (req, res) => {
 
 });
 
-// ===============================
+// ===================
 // LISTE DES GROUPES
-// ===============================
+// ===================
 app.get("/groupes", async (req, res) => {
 
   try {
@@ -568,6 +573,9 @@ app.get("/groupes", async (req, res) => {
   }
 
 });
+
+
+
 
 // START
 export default app;
