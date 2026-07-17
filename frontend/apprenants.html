@@ -57,7 +57,11 @@
   <h3>➕ Nouvel apprenant</h3>
   <input id="nom" placeholder="Nom">
   <input id="prenom" placeholder="Prénom">
-  <input id="groupe" placeholder="Groupe">
+  <select id="groupe">
+    <option value="">
+      Choisir un groupe
+    </option>
+  </select>
 
   <button onclick="creerApprenant()">
     Créer
@@ -92,14 +96,62 @@
     // const API_URL = "http://localhost:3000";
     import { API_URL } from "./js/config.js";
 
+
+    // ===================================================
+    // Chargement des groupes
+    // ===================================================
+    async function chargerGroupes() {
+
+      try {
+
+        const response =
+          await fetch(`${API_URL}/groupes`);
+
+        const groupes =
+          await response.json();
+
+        const select =
+          document.getElementById("groupe");
+
+        select.innerHTML =
+          `
+          <option value="">
+            Choisir un groupe
+          </option>
+          `;
+
+        groupes.forEach(g => {
+
+          select.innerHTML +=
+          `
+          <option value="${g.id}">
+            ${g.libelle}
+          </option>
+          `;
+
+        });
+
+      }
+
+      catch(error) {
+
+        console.error(
+          "Erreur chargement groupes",
+          error
+        );
+
+      }
+
+    }
+
     // ===================================================
     // Création apprenant
     // ===================================================
-
     async function creerApprenant() {
       const nom = document.getElementById("nom").value.trim();
       const prenom = document.getElementById("prenom").value.trim();
-      const groupe = document.getElementById("groupe").value.trim();
+      const groupe_id =
+        document.getElementById("groupe").value;
 
       if (!nom || !prenom) {
         document.getElementById("creationStatus").innerText =
@@ -118,8 +170,9 @@
             body: JSON.stringify({
               nom,
               prenom,
-              groupe
+              groupe_id
             })
+
           }
         );
 
@@ -247,6 +300,7 @@ id="qr-${a.id}">
     window.genererQR = genererQR;
     window.creerApprenant = creerApprenant;
 
+    chargerGroupes();
     chargerApprenants();
 
   </script>
