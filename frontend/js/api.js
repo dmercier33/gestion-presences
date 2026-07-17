@@ -2,7 +2,7 @@ import { API_URL } from "./config.js";
 
 
 /**
- * Création d'une session côté formateur
+ * Ouverture d'une séance côté formateur
  */
 export async function openSession({
     groupe_id,
@@ -21,18 +21,15 @@ export async function openSession({
     });
 
 
-    if (!res.ok) {
-        const error = await res.json();
-        throw new Error(
-            error.message || "Erreur création session"
-        );
-    }
+    throw new Error(
+        error.error || "Erreur ouverture séance"
+    );
 
 
     const result = await res.json();
 
     console.log(
-        "SESSION CREEE :",
+        "REPONSE OUVERTURE SEANCE :",
         result
     );
 
@@ -47,8 +44,8 @@ export async function openSession({
 export async function validatePresence(sessionId, apprenantId) {
 
     console.log("ENVOI PRESENCE :", {
-    sessionId,
-    apprenantId
+        sessionId,
+        apprenantId
     });
 
     const res = await fetch(`${API_URL}/api/presences`, {

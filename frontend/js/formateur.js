@@ -51,7 +51,7 @@ async function chargerGroupes() {
 
 }
 
-async function nouvelleSession() {
+async function ouvrirSeance() {
 
     try {
 
@@ -73,20 +73,29 @@ async function nouvelleSession() {
             duration_minutes
         });
 
-        const session = await openSession({
+        const resultat = await openSession({
             groupe_id,
             duration_minutes
         });
 
+        const session = resultat.session;
+
+        if (resultat.status === "existing") {
+
+            console.log(
+                "Séance existante reprise"
+            );
+
+        }
         localStorage.setItem(
             "sessionId",
             session.sessionId
         );
 
         localStorage.setItem(
-    "sessionToken",
-    session.token
-)       ;
+            "sessionToken",
+            session.token
+        );
 
         console.log("Session reçue :", session);
 
@@ -104,8 +113,15 @@ async function nouvelleSession() {
             JSON.stringify(session)
         );
 
-        document.getElementById("sessionInfo").innerText =
+        let message;
+        if (resultat.status === "existing") {
+            message =
+            `Séance existante reprise pour le groupe : ${groupe_id}`;
+        } else {
+            message =
             `Séance ouverte pour le groupe : ${groupe_id}`;
+        }
+        document.getElementById("sessionInfo").innerText = message;
 
         const qrContainer = document.getElementById("qrCanvas");
 
@@ -173,14 +189,14 @@ async function refreshPresences() {
 
 }
 
-window.nouvelleSession = nouvelleSession;
+window.ouvrirSeance = ouvrirSeance;
 
-// bouton nouvelle session
+// bouton ouvrir séance
 document
     .getElementById("btnNewSession")
     .addEventListener(
         "click",
-        nouvelleSession
+        ouvrirSeance
     );
 
 chargerGroupes();
