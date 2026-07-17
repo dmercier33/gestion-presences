@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        Gestion des présences - Formateur
+    </title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <!-- Librairie QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <h1>
+        📋 Gestion des présences
+    </h1>
+
+
+
+    <div class="card">
+
+
+        <h2>
+            Nouvelle session
+        </h2>
+
+
+
+        <label for="selectGroupe">
+            Groupe :
+        </label>
+
+
+        <select id="selectGroupe">
+
+            <option value="">
+                -- Choisir un groupe --
+            </option>
+
+
+            <option value="GRP_G1">
+                Groupe G1
+            </option>
+
+
+        </select>
+
+
+
+        <br><br>
+
+
+
+        <label for="duration">
+            Durée (minutes) :
+        </label>
+
+
+        <input
+            id="duration"
+            type="number"
+            value="120"
+            min="1"
+        >
+
+
+
+        <br><br>
+
+
+
+        <button id="btnNewSession">
+            ➕ Créer la session
+        </button>
+
+
+    </div>
+
+
+
+
+
+    <div class="card">
+
+
+        <h2>
+            Session active
+        </h2>
+
+
+        <div id="sessionInfo">
+            Aucune session
+        </div>
+
+
+        <div id="qrCanvas"></div>
+
+
+    </div>
+
+
+
+
+
+    <div class="card">
+
+
+        <h2>
+            Présences
+        </h2>
+
+
+        <div id="presenceCount">
+            0 apprenant
+        </div>
+
+
+        <div id="presenceList"></div>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+<script 
+    type="module" 
+    src="js/formateur.js?v=2">
+</script>
+
+
+
+</body>
+
+</html>
