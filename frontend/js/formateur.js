@@ -129,7 +129,7 @@ async function ouvrirSeance() {
 
         const qrData = JSON.stringify({
             type: "SESSION",
-            sessionId: session.sessionId,
+            sessionId: session.id,
             token: session.token
         });
 
