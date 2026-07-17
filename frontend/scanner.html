@@ -91,10 +91,12 @@
             localStorage.getItem("sessionId");
 
 
-        if (ancienneSession) {
-
+        if (
+            ancienneSession &&
+            ancienneSession !== "undefined" &&
+            ancienneSession !== "null"
+        ) {
             sessionId = ancienneSession;
-
         }
 
 
