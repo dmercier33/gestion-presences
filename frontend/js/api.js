@@ -4,6 +4,9 @@ import { API_URL } from "./config.js";
 /**
  * Ouverture d'une séance côté formateur
  */
+/**
+ * Ouverture d'une séance côté formateur
+ */
 export async function openSession({
     groupe_id,
     duration_minutes
@@ -21,9 +24,14 @@ export async function openSession({
     });
 
 
-    throw new Error(
-        error.error || "Erreur ouverture séance"
-    );
+    if (!res.ok) {
+
+        const error = await res.json();
+
+        throw new Error(
+            error.error || "Erreur ouverture séance"
+        );
+    }
 
 
     const result = await res.json();
@@ -35,7 +43,6 @@ export async function openSession({
 
     return result;
 }
-
 
 
 /**
