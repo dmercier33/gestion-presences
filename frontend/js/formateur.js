@@ -133,8 +133,6 @@ async function ouvrirSeance() {
             token: session.token
         });
 
-        console.log("VERSION TEST QR SESSION V0.2");
-
         new QRCode(qrContainer, {
             text: qrData,
             width: 250,
