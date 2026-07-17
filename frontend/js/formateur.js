@@ -159,10 +159,17 @@ async function refreshPresences() {
 
     try {
 
-        const res = await fetch(
-            `${API_URL}/presences/${sessionCourante.sessionId}`
+        console.log(
+            "RAFRAICHISSEMENT PRESENCES SESSION :",
+            sessionCourante.id
         );
-
+        const res = await fetch(
+            `${API_URL}/presences/${sessionCourante.id}`
+        );
+        console.log(
+            "PRESENCES RECUES :",
+            sessionCourante.id
+        );
         const presences = await res.json();
 
         console.log("PRESENCES RECUES :", presences);
