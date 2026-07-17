@@ -119,6 +119,7 @@ gestion fin de session.
 Backend
 nettoyage des logs debug ;
 réponses API normalisées.
+
 🚀 v0.9 — Préparation production
 
 Objectif : passer du prototype à l'outil utilisable
@@ -138,6 +139,7 @@ Sessions
 historique des sessions ;
 recherche ;
 export.
+
 🏁 v1.0 — Version opérationnelle organisme
 
 Objectif : outil utilisable pour un organisme FLE/FSE

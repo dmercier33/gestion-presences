@@ -91,8 +91,16 @@ app.get("/groupes", async (req, res) => {
 });
 
 // ===============================
-// CREATE SESSION
+// OUVERTURE D'UNE SEANCE
 // ===============================
+//
+// Ouvre la séance courante d'un groupe.
+//
+// Si une séance active existe déjà pour ce groupe,
+// elle est reprise.
+// Sinon une nouvelle séance est créée.
+//
+// Cette route est appelée par l'écran formateur.
 app.post("/sessions", async (req, res) => {
 
   const {
@@ -106,7 +114,8 @@ app.post("/sessions", async (req, res) => {
     });
   }
 
-  // Rechercher une séance déjà ouverte pour ce groupe
+// Rechercher une séance déjà ouverte pour ce groupe.
+// Une séance existante est reprise afin d'éviter la création de doublons.
   const now = new Date();
   const { data: existingSession, error: existingError } =
   await supabase

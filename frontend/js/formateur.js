@@ -68,7 +68,7 @@ async function ouvrirSeance() {
             return;
         }
 
-        console.log("Création session :", {
+        console.log("Ouvrir séance :", {
             groupe_id,
             duration_minutes
         });
@@ -145,10 +145,10 @@ async function ouvrirSeance() {
 
     } catch (error) {
 
-        console.error("Erreur création session :", error);
+        console.error("Erreur ouverture séance :", error);
 
         document.getElementById("sessionInfo").innerText =
-            "Erreur création session";
+            "Erreur ouverture séance";
     }
 }
 
@@ -160,7 +160,7 @@ async function refreshPresences() {
     try {
 
         console.log(
-            "RAFRAICHISSEMENT PRESENCES SESSION :",
+            "RAFRAICHISSEMENT PRESENCES SEANCE :",
             sessionCourante.id
         );
         const res = await fetch(
