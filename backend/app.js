@@ -493,17 +493,31 @@ app.get("/apprenants", async (req, res) => {
 
   const { data, error } = await supabase
     .from("apprenants")
-    .select("*")
+    .select(`
+      id,
+      nom,
+      prenom,
+      qr_code,
+      actif,
+      created_at,
+      groupe_id,
+      groupes (
+        id,
+        code,
+        libelle
+      )
+    `)
     .order("created_at", { ascending: false });
 
   if (error) {
-    return res.status(500).json({ error });
+    return res.status(500).json({
+      error: error.message
+    });
   }
 
   res.json(data);
 
 });
-
 
 // =================================
 // Rôle :
