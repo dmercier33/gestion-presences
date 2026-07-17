@@ -10,40 +10,31 @@ export async function createSession({
 }) {
 
     const res = await fetch(`${API_URL}/sessions`, {
-
         method: "POST",
-
         headers: {
             "Content-Type": "application/json"
         },
-
         body: JSON.stringify({
             groupe_id,
             duration_minutes
         })
-
     });
 
 
     if (!res.ok) {
-
         const error = await res.json();
-
         throw new Error(
             error.message || "Erreur création session"
         );
-
     }
 
 
     const result = await res.json();
 
-
     console.log(
         "SESSION CREEE :",
         result
     );
-
 
     return result;
 }

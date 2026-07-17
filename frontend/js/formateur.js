@@ -18,18 +18,13 @@ async function chargerGroupes() {
         if (!res.ok) {
 
             throw new Error("Erreur chargement groupes");
-
         }
-
 
         const groupes = await res.json();
 
-
         console.log("GROUPES RECUS :", groupes);
 
-
         const select = document.getElementById("selectGroupe");
-
 
         select.innerHTML = `
             <option value="">
@@ -37,27 +32,19 @@ async function chargerGroupes() {
             </option>
         `;
 
-
         groupes.forEach(groupe => {
-
             const option = document.createElement("option");
-
             option.value = groupe.id;
-
             option.textContent = groupe.libelle;
-
             select.appendChild(option);
-
         });
 
 
     } catch (error) {
-
         console.error(
             "Erreur chargement groupes :",
             error
         );
-
     }
 
 }
@@ -74,18 +61,15 @@ async function nouvelleSession() {
                 document.getElementById("duration").value
             );
 
-
         if (!groupe_id) {
             alert("Veuillez choisir un groupe");
             return;
         }
 
-
         console.log("Création session :", {
             groupe_id,
             duration_minutes
         });
-
 
         const session = await createSession({
             groupe_id,
@@ -106,7 +90,6 @@ async function nouvelleSession() {
 
         sessionActive = session;
 
-
         // éviter plusieurs timers si on recrée une session
         if (refreshTimer) {
             clearInterval(refreshTimer);
@@ -114,21 +97,17 @@ async function nouvelleSession() {
 
         refreshTimer = setInterval(refreshPresences, 5000);
 
-
         localStorage.setItem(
             "session",
             JSON.stringify(session)
         );
 
-
         document.getElementById("sessionInfo").innerText =
             `Session créée : ${session.sessionId}`;
-
 
         const qrContainer = document.getElementById("qrCanvas");
 
         qrContainer.innerHTML = "";
-
 
         const qrData = JSON.stringify({
             type: "SESSION",
@@ -155,14 +134,9 @@ async function nouvelleSession() {
     }
 }
 
-
-
 window.nouvelleSession = nouvelleSession;
 
-
-
 // bouton nouvelle session
-
 document
     .getElementById("btnNewSession")
     .addEventListener(
@@ -171,8 +145,6 @@ document
     );
 
 chargerGroupes();
-
-
 
 async function refreshPresences() {
 
@@ -185,20 +157,14 @@ async function refreshPresences() {
             `${API_URL}/presences/${sessionActive.sessionId}`
         );
 
-
         const presences = await res.json();
 
         console.log("PRESENCES RECUES :", presences);
 
         document.getElementById("presenceCount").innerText =
             `${presences.length} apprenant(s)`;
-
-
-
         document.getElementById("presenceList").innerHTML =
-
             presences.map(p => `
-
                 <p>
                     ✅ ${p.apprenants.prenom}
                     ${p.apprenants.nom}
@@ -206,18 +172,13 @@ async function refreshPresences() {
                     -
                     ${new Date(p.created_at).toLocaleTimeString()}
                 </p>
-
             `).join("");
 
-
-
     } catch (err) {
-
         console.error(
             "Erreur chargement présences",
             err
         );
-
     }
 
 }

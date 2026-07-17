@@ -11,7 +11,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
-
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
@@ -25,7 +24,8 @@
       max-width: 900px;
     }
 
-    th, td {
+    th,
+    td {
       border: 1px solid #ccc;
       padding: 10px;
     }
@@ -47,249 +47,209 @@
     .qr {
       margin-top: 10px;
     }
-
   </style>
 
 </head>
 
 <body>
 
-<h2>👥 Liste des apprenants</h2>
+  <h2>👥 Liste des apprenants</h2>
+  <h3>➕ Nouvel apprenant</h3>
+  <input id="nom" placeholder="Nom">
+  <input id="prenom" placeholder="Prénom">
+  <input id="groupe" placeholder="Groupe">
 
-<h3>➕ Nouvel apprenant</h3>
+  <button onclick="creerApprenant()">
+    Créer
+  </button>
+  <p id="creationStatus"></p>
+  <p id="status">
+    Chargement...
+  </p>
 
-<input id="nom" placeholder="Nom">
-<input id="prenom" placeholder="Prénom">
-<input id="groupe" placeholder="Groupe">
+  <table>
 
-<button onclick="creerApprenant()">
-Créer
-</button>
+    <thead>
 
-<p id="creationStatus"></p>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Groupe</th>
+        <th>QR</th>
+      </tr>
 
-<p id="status">
-Chargement...
-</p>
+    </thead>
 
-<table>
+    <tbody id="listeApprenants">
+    </tbody>
 
-<thead>
+  </table>
 
-<tr>
-<th>ID</th>
-<th>Nom</th>
-<th>Prénom</th>
-<th>Groupe</th>
-<th>QR</th>
-</tr>
+  <script type="module">
 
-</thead>
+    //???? const API_URL = "https://gestion-presences-56vd.onrender.com";
+    const API_URL = "http://localhost:3000";
 
-<tbody id="listeApprenants">
-</tbody>
+    // ===================================================
+    // Création apprenant
+    // ===================================================
 
-</table>
+    async function creerApprenant() {
+      const nom = document.getElementById("nom").value.trim();
+      const prenom = document.getElementById("prenom").value.trim();
+      const groupe = document.getElementById("groupe").value.trim();
 
-
-<script type="module">
-
-//???? const API_URL = "https://gestion-presences-56vd.onrender.com";
-const API_URL = "http://localhost:3000";
-
-
-// ===================================================
-// Création apprenant
-// ===================================================
-
-async function creerApprenant() {
-
-  const nom = document.getElementById("nom").value.trim();
-  const prenom = document.getElementById("prenom").value.trim();
-  const groupe = document.getElementById("groupe").value.trim();
-
-  if (!nom || !prenom) {
-
-    document.getElementById("creationStatus").innerText =
-      "Nom et prénom obligatoires.";
-
-    return;
-  }
-
-  try {
-
-    const response = await fetch(
-      `${API_URL}/apprenants`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          nom,
-          prenom,
-          groupe
-        })
-      }
-    );
-
-    const data = await response.json();
-
-    console.log(data);
-
-    document.getElementById("creationStatus").innerText =
-      "✅ Apprenant créé";
-
-    document.getElementById("nom").value = "";
-    document.getElementById("prenom").value = "";
-    document.getElementById("groupe").value = "";
-
-    chargerApprenants();
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-    document.getElementById("creationStatus").innerText =
-      "Erreur création";
-
-  }
-
-}
-
-
-// ===================================================
-// Génération QR
-// ===================================================
-
-async function genererQR(apprenantId) {
-
-  console.log("GENERATION QR APPELEE :", apprenantId);
-
-  const container =
-    document.getElementById("qr-" + apprenantId);
-
-  container.innerHTML = "Génération...";
-
-  try {
-
-    console.log("ID ENVOYE AU BACKEND :", apprenantId);
-    const response = await fetch(
-
-      `${API_URL}/apprenants/${apprenantId}/qr`,
-
-      {
-        method:"POST"
+      if (!nom || !prenom) {
+        document.getElementById("creationStatus").innerText =
+          "Nom et prénom obligatoires.";
+        return;
       }
 
-    );
+      try {
+        const response = await fetch(
+          `${API_URL}/apprenants`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              nom,
+              prenom,
+              groupe
+            })
+          }
+        );
 
-    const data = await response.json();
-    console.log("REPONSE BACKEND QR :", data);
+        const data = await response.json();
 
-    container.innerHTML="";
+        console.log(data);
 
-  new QRCode(
+        document.getElementById("creationStatus").innerText =
+          "✅ Apprenant créé";
 
-    container,
+        document.getElementById("nom").value = "";
+        document.getElementById("prenom").value = "";
+        document.getElementById("groupe").value = "";
 
-    {
-      text: JSON.stringify(data.qr_payload),
-      width:180,
-      height:180
+        chargerApprenants();
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+        document.getElementById("creationStatus").innerText =
+          "Erreur création";
+
+      }
+
     }
 
-  );   
 
-  }
+    // ===================================================
+    // Génération QR
+    // ===================================================
 
-  catch(error){
+    async function genererQR(apprenantId) {
 
-    console.error(error);
+      console.log("GENERATION QR APPELEE :", apprenantId);
 
-    container.innerHTML =
-      "Erreur";
+      const container =
+        document.getElementById("qr-" + apprenantId);
 
-  }
+      container.innerHTML = "Génération...";
 
-}
+      try {
+        console.log("ID ENVOYE AU BACKEND :", apprenantId);
+        const response = await fetch(
+          `${API_URL}/apprenants/${apprenantId}/qr`,
+          {
+            method: "POST"
+          }
+        );
+
+        const data = await response.json();
+        console.log("REPONSE BACKEND QR :", data);
+
+        container.innerHTML = "";
+
+        new QRCode(
+          container,
+          {
+            text: JSON.stringify(data.qr_payload),
+            width: 180,
+            height: 180
+          }
+        );
+
+      }
+
+      catch (error) {
+        console.error(error);
+        container.innerHTML =
+          "Erreur";
+      }
+
+    }
 
 
-// ===================================================
-// Chargement liste
-// ===================================================
+    // ===================================================
+    // Chargement liste
+    // ===================================================
 
-async function chargerApprenants() {
+    async function chargerApprenants() {
+      try {
+        const response =
+          await fetch(`${API_URL}/apprenants`);
 
-  try {
+        const apprenants =
+          await response.json();
 
-    const response =
-      await fetch(`${API_URL}/apprenants`);
+        const tbody =
+          document.getElementById("listeApprenants");
 
-    const apprenants =
-      await response.json();
-
-    const tbody =
-      document.getElementById("listeApprenants");
-
-    tbody.innerHTML =
-      apprenants.map(a => `
+        tbody.innerHTML =
+          apprenants.map(a => `
 
 <tr>
 
 <td>${a.id}</td>
-
 <td>${a.nom}</td>
-
 <td>${a.prenom}</td>
-
 <td>${a.groupe ?? ""}</td>
-
 <td>
-
 <button onclick="genererQR('${a.id}')">
-
 📱 QR
-
 </button>
-
 <div
 class="qr"
 id="qr-${a.id}">
-
 </div>
-
 </td>
-
 </tr>
 
 `).join("");
+        document.getElementById("status").innerText =
+          apprenants.length + " apprenant(s)";
+      }
+      catch (error) {
+        console.error(error);
+        document.getElementById("status").innerText =
+          "Erreur chargement";
+      }
 
-    document.getElementById("status").innerText =
-      apprenants.length + " apprenant(s)";
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-    document.getElementById("status").innerText =
-      "Erreur chargement";
-
-  }
-
-}
+    }
 
 
-window.genererQR = genererQR;
-window.creerApprenant = creerApprenant;
+    window.genererQR = genererQR;
+    window.creerApprenant = creerApprenant;
 
-chargerApprenants();
+    chargerApprenants();
 
-</script>
+  </script>
 
 </body>
+
 </html>
