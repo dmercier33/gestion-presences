@@ -422,8 +422,19 @@ function onScanSuccess(decodedText){
     if(data.type==="APPRENANT"){
 
 
+        if(!sessionId){
 
-        if(!data.qrCode && !data.id){
+            document.getElementById("status").innerText =
+                "⚠️ Scannez d'abord le QR séance";
+
+            isScanning = true;
+
+            return;
+
+        }
+
+
+    if(!data.qrCode && !data.id){
 
 
             debug(
