@@ -106,34 +106,39 @@ app.post("/sessions", async (req, res) => {
     });
   }
 
-  //   Vérifier qu'il n'y a pas déjà une session active pour ce groupe
+  // Rechercher une séance déjà ouverte pour ce groupe
   const now = new Date();
   const { data: existingSession, error: existingError } =
-    await supabase
-      .from("sessions")
-      .select("id, expires_at, active, ended_at")
-      .eq("groupe_id", groupe_id)
-      .eq("active", true)
-      .is("ended_at", null)
-      .gt("expires_at", now.toISOString())
-      .maybeSingle();
+  await supabase
+    .from("sessions")
+    .select(`
+      id,
+      token,
+      groupe_id,
+      active,
+      started_at,
+      expires_at,
+      duration_minutes
+    `)
+    .eq("groupe_id", groupe_id)
+    .eq("active", true)
+    .is("ended_at", null)
+    .gt("expires_at", now.toISOString())
+    .maybeSingle();
 
 
-  if (existingError) {
-    return res.status(500).json({
-      error: existingError.message
-    });
-  }
+if (existingError) {
+  return res.status(500).json({
+    error: existingError.message
+  });
+}
 
-  // Si une session existe déjà, renvoyer un message d'erreur
-  if (existingSession) {
-
-    return res.status(409).json({
-      error: "Une session est déjà ouverte pour ce groupe.",
-      sessionId: existingSession.id
-    });
-
-  }
+if (existingSession) {
+  return res.status(200).json({
+    status: "existing",
+    session: existingSession
+  });
+}
 
   // Création nouvelle session
   const sessionId = "SESSION_" + Date.now();
@@ -180,11 +185,10 @@ app.post("/sessions", async (req, res) => {
     });
   }
 
-  res.json({
-    sessionId: data.id,
-    token: data.token,
-    expires_at: data.expires_at
-  });
+res.json({
+  status: "created",
+  session: data
+});
 });
 
 

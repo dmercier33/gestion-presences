@@ -4,7 +4,7 @@ import { API_URL } from "./config.js";
 /**
  * Création d'une session côté formateur
  */
-export async function createSession({
+export async function openSession({
     groupe_id,
     duration_minutes
 }) {
@@ -44,7 +44,7 @@ export async function createSession({
 /**
  * Enregistrement d'une présence après scan QR
  */
-export async function registerPresence(sessionId, apprenantId) {
+export async function validatePresence(sessionId, apprenantId) {
 
     console.log("ENVOI PRESENCE :", {
     sessionId,

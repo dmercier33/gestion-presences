@@ -67,7 +67,7 @@ DEBUG :
 <script type="module">
 
 
-import { registerPresence } from "./js/api.js";
+import { validatePresence } from "./js/api.js";
 
 
 console.log("scanner v0.3.7 chargé");
@@ -154,7 +154,7 @@ async function enregistrerPresence(){
 
 
         const result =
-            await registerPresence(
+            await validatePresence(
                 sessionId,
                 qrApprenant
             );

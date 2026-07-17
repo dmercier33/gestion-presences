@@ -79,7 +79,7 @@ Relis le code en te posant une seule question à chaque fonction :
 "Quelle responsabilité unique a cette fonction ?"
 Si tu n'arrives pas à répondre en une phrase simple, c'est souvent qu'elle fait deux choses à la fois.
 Par exemple :
-createSession()
+openSession()
 Sa responsabilité devrait être :
 "Créer une session."
 Pas :

@@ -1,9 +1,11 @@
 import { API_URL } from "./config.js";
-import { createSession } from "./api.js";
+import { openSession } from "./api.js";
 
-let sessionActive = null;
+let sessionCourante = null;
 let refreshTimer = null;
 
+// formateur.js pilote l'interface du formateur pendant le déroulement d'une session.
+// formateur.js ne contient que la logique de l'écran formateur.
 
 // ===============================
 // CHARGEMENT DES GROUPES
@@ -71,7 +73,7 @@ async function nouvelleSession() {
             duration_minutes
         });
 
-        const session = await createSession({
+        const session = await openSession({
             groupe_id,
             duration_minutes
         });
@@ -88,7 +90,7 @@ async function nouvelleSession() {
 
         console.log("Session reçue :", session);
 
-        sessionActive = session;
+        sessionCourante = session;
 
         // éviter plusieurs timers si on recrée une session
         if (refreshTimer) {
@@ -103,7 +105,7 @@ async function nouvelleSession() {
         );
 
         document.getElementById("sessionInfo").innerText =
-            `Session créée : ${session.sessionId}`;
+            `Séance ouverte pour le groupe : ${groupe_id}`;
 
         const qrContainer = document.getElementById("qrCanvas");
 
@@ -134,27 +136,15 @@ async function nouvelleSession() {
     }
 }
 
-window.nouvelleSession = nouvelleSession;
-
-// bouton nouvelle session
-document
-    .getElementById("btnNewSession")
-    .addEventListener(
-        "click",
-        nouvelleSession
-    );
-
-chargerGroupes();
-
 async function refreshPresences() {
 
-    if (!sessionActive) return;
+    if (!sessionCourante) return;
 
 
     try {
 
         const res = await fetch(
-            `${API_URL}/presences/${sessionActive.sessionId}`
+            `${API_URL}/presences/${sessionCourante.sessionId}`
         );
 
         const presences = await res.json();
@@ -182,3 +172,15 @@ async function refreshPresences() {
     }
 
 }
+
+window.nouvelleSession = nouvelleSession;
+
+// bouton nouvelle session
+document
+    .getElementById("btnNewSession")
+    .addEventListener(
+        "click",
+        nouvelleSession
+    );
+
+chargerGroupes();
