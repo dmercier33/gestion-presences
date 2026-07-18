@@ -77,19 +77,18 @@ app.get("/health", (req, res) => {
  API Présencia
 
  Sessions
-   POST /sessions *
-   GET /sessions/:id ?
+   POST api//sessions 
 
  Présences
-   POST /api/presences *
-   GET /presences/:sessionId *
+   POST /api/presences 
+   GET /api/presences/:sessionId 
 
  Groupes
-   GET /groupes *
+   GET /api/groupes 
 
  Apprenants
-   GET /apprenants *
-   POST /apprenants *
+   GET /api/apprenants 
+   POST /api/apprenants 
 */
 
 // ===============================
@@ -214,7 +213,7 @@ res.json({
 //
 // Utilisateur concerné :
 // Formateur
-app.get("/presences/:sessionId", async (req, res) => {
+app.get("/api/presences/:sessionId", async (req, res) => {
 
   const { sessionId } = req.params;
 
