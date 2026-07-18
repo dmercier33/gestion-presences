@@ -432,7 +432,9 @@ app.post("/api/presences", async (req, res) => {
 
     if (existing) {
       return res.status(409).json({
-        error: "Already registered"
+        "status":"error",
+        "code":"PRESENCE_ALREADY_EXISTS",
+        "message":"Présence déjà enregistrée"
       });
 
     }

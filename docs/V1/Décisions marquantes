@@ -72,3 +72,21 @@ L'émargement ne modifie jamais la liste des apprenants attendus.
 
 Conséquence :
 La feuille d'émargement est figée avant le début de la séance.
+
+
+DP-00X — La présence ne crée jamais l'attendu
+
+Décision :
+
+La table session_apprenants est la référence des apprenants autorisés à émarger une séance.
+
+La création d'une présence ne modifie jamais cette liste.
+
+Raison :
+
+Garantir une preuve fiable entre :
+
+personnes prévues ;
+personnes présentes.
+
+Décision V0.8.1 : une présence n'est valide que si l'apprenant est attendu dans la séance.

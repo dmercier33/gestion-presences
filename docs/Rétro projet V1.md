@@ -25,3 +25,7 @@ choisir la simplicité ;
 ne pas partir sur une application mobile native ;
 garder QR apprenant imprimable ;
 créer un vrai modèle d'émargement.
+
+"Le moteur de Presencia n'a pas été terminé quand le scan fonctionnait. Il a été terminé quand il a su expliquer pourquoi un scan ne devait pas fonctionner."
+
+Les releases Presencia ne correspondent pas à des lots de code. Elles correspondent à des décisions métier stabilisées.

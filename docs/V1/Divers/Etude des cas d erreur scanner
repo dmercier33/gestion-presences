@@ -1,0 +1,220 @@
+Scanner : état actuel et chantiers
+1) Parcours nominal ✅
+Situation
+
+Formateur :
+
+ouvre une séance ;
+affiche QR séance ;
+scanne QR apprenant.
+
+Flux :
+
+QR SESSION
+      ↓
+sessionId mémorisé
+      ↓
+QR APPRENANT
+      ↓
+POST /api/presences
+      ↓
+présence créée
+
+Affichage actuel probablement :
+
+Apprenant reconnu
+APP_xxxxx
+Session : SESSION_xxxxx
+
+puis :
+
+Présence enregistrée
+À améliorer
+
+Afficher du métier :
+
+✅ Présence enregistrée
+
+Denis Mercier
+Séance : FLE G1
+14:00
+2) Présence déjà enregistrée ⚠️ (traité partiellement)
+
+Actuellement :
+
+API :
+
+409
+Already registered
+
+Scanner :
+
+probablement :
+
+❌ Already registered
+
+Problème :
+
+Le formateur ne sait pas quoi faire.
+
+Cible :
+
+ℹ️ Présence déjà enregistrée
+
+Denis Mercier
+a déjà émargé cette séance
+
+Priorité : haute.
+
+3) QR apprenant inconnu ❌
+
+Cas :
+
+Un QR :
+
+ancien ;
+supprimé ;
+mal généré ;
+appartenant à un autre système.
+
+API :
+
+Apprenant introuvable
+
+Cible :
+
+❌ QR apprenant inconnu
+
+Badge non reconnu par Presencia
+
+Priorité : haute.
+
+4) Apprenant non prévu dans la séance ⭐
+
+C'est le cas qu'on vient justement de créer.
+
+Exemple :
+
+Denis G1 scanne sur séance G2.
+
+Aujourd'hui :
+
+API :
+
+Apprenant non prévu pour cette séance
+
+Mais l'affichage doit être très clair :
+
+⚠️ Apprenant non inscrit à cette séance
+
+Denis Mercier
+
+Cette personne n'est pas prévue
+dans le groupe de cette séance.
+
+C'est un cas FSE important.
+
+Priorité : très haute.
+
+5) Séance inconnue ❌
+
+Cas :
+
+QR séance périmé ou mauvais.
+
+API :
+
+Session not found
+
+Cible :
+
+❌ Séance inconnue
+
+Veuillez générer une nouvelle séance.
+6) Séance expirée ⏰
+
+Aujourd'hui :
+
+Session expired
+
+Cible :
+
+⚠️ Cette séance est terminée
+
+Veuillez ouvrir une nouvelle séance.
+7) Pas de QR séance avant QR apprenant
+
+Côté scanner :
+
+On a déjà :
+
+Scannez d'abord le QR séance
+
+Mais c'est un message important.
+
+Je ferais :
+
+1️⃣ Scannez d'abord
+le QR de séance
+8) QR invalide
+
+Actuel :
+
+QR invalide
+
+Cible :
+
+❌ QR non reconnu
+
+Ce badge n'est pas un QR Presencia.
+9) Problèmes caméra
+
+Actuel :
+
+Erreur caméra : undefined
+
+Là c'est vraiment mauvais 😅
+
+Il faut traiter :
+
+refus autorisation ;
+caméra absente ;
+caméra déjà utilisée.
+
+Exemple :
+
+📷 Impossible d'utiliser la caméra
+
+Vérifiez l'autorisation caméra
+dans votre navigateur.
+10) État permanent du scanner
+
+Autre point que je trouve important :
+
+Après chaque scan, il faut savoir où on en est.
+
+Aujourd'hui :
+
+En attente du QR...
+
+n'est pas assez précis.
+
+Je verrais :
+
+Au démarrage :
+
+📷 Prêt
+
+Scannez le QR séance
+
+Après séance :
+
+✅ Séance reconnue
+
+Scannez les badges apprenants
+
+Après succès :
+
+✅ Denis Mercier enregistré
+
+Prêt pour le prochain apprenant
