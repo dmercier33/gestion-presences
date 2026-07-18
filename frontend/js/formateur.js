@@ -1,6 +1,8 @@
 import { API_URL } from "./config.js";
 import { openSession } from "./api.js";
 
+console.log("FORMATEUR.JS CHARGE");
+
 let sessionCourante = null;
 let refreshTimer = null;
 
@@ -18,7 +20,6 @@ async function chargerGroupes() {
         const res = await fetch(`${API_URL}/api/groupes`);
 
         if (!res.ok) {
-
             throw new Error("Erreur chargement groupes");
         }
 
@@ -41,15 +42,20 @@ async function chargerGroupes() {
             select.appendChild(option);
         });
 
-
     } catch (error) {
+
         console.error(
             "Erreur chargement groupes :",
             error
         );
+
     }
 
 }
+
+// ===============================
+// OUVERTURE D'UNE SEANCE
+// ===============================
 
 async function ouvrirSeance() {
 
@@ -87,6 +93,7 @@ async function ouvrirSeance() {
             );
 
         }
+
         localStorage.setItem(
             "sessionId",
             session.sessionId
@@ -101,12 +108,14 @@ async function ouvrirSeance() {
 
         sessionCourante = session;
 
-        // éviter plusieurs timers si on recrée une session
         if (refreshTimer) {
             clearInterval(refreshTimer);
         }
 
-        refreshTimer = setInterval(refreshPresences, 5000);
+        refreshTimer = setInterval(
+            refreshPresences,
+            5000
+        );
 
         localStorage.setItem(
             "session",
@@ -114,16 +123,24 @@ async function ouvrirSeance() {
         );
 
         let message;
-        if (resultat.status === "existing") {
-            message =
-            `Séance existante reprise pour le groupe : ${groupe_id}`;
-        } else {
-            message =
-            `Séance ouverte pour le groupe : ${groupe_id}`;
-        }
-        document.getElementById("sessionInfo").innerText = message;
 
-        const qrContainer = document.getElementById("qrCanvas");
+        if (resultat.status === "existing") {
+
+            message =
+                `Séance existante reprise pour le groupe : ${groupe_id}`;
+
+        } else {
+
+            message =
+                `Séance ouverte pour le groupe : ${groupe_id}`;
+
+        }
+
+        document.getElementById("sessionInfo").innerText =
+            message;
+
+        const qrContainer =
+            document.getElementById("qrCanvas");
 
         qrContainer.innerHTML = "";
 
@@ -139,21 +156,32 @@ async function ouvrirSeance() {
             height: 250
         });
 
-        console.log("QR SESSION généré :", qrData);
+        console.log(
+            "QR SESSION généré :",
+            qrData
+        );
 
     } catch (error) {
 
-        console.error("Erreur ouverture séance :", error);
+        console.error(
+            "Erreur ouverture séance :",
+            error
+        );
 
         document.getElementById("sessionInfo").innerText =
             "Erreur ouverture séance";
+
     }
+
 }
+
+// ===============================
+// RAFRAICHISSEMENT DES PRESENCES
+// ===============================
 
 async function refreshPresences() {
 
     if (!sessionCourante) return;
-
 
     try {
 
@@ -161,19 +189,21 @@ async function refreshPresences() {
             "RAFRAICHISSEMENT PRESENCES SEANCE :",
             sessionCourante.id
         );
+
         const res = await fetch(
             `${API_URL}/api/presences/${sessionCourante.id}`
         );
-        console.log(
-            "PRESENCES RECUES :",
-            sessionCourante.id
-        );
+
         const presences = await res.json();
 
-        console.log("PRESENCES RECUES :", presences);
+        console.log(
+            "PRESENCES RECUES :",
+            presences
+        );
 
         document.getElementById("presenceCount").innerText =
             `${presences.length} apprenant(s)`;
+
         document.getElementById("presenceList").innerHTML =
             presences.map(p => `
                 <p>
@@ -186,22 +216,30 @@ async function refreshPresences() {
             `).join("");
 
     } catch (err) {
+
         console.error(
             "Erreur chargement présences",
             err
         );
+
     }
 
 }
 
+// ===============================
+// INITIALISATION
+// ===============================
+
 window.ouvrirSeance = ouvrirSeance;
 
-// bouton ouvrir séance
-document
-    .getElementById("btnNewSession")
-    .addEventListener(
-        "click",
-        ouvrirSeance
-    );
+const bouton =
+    document.getElementById("btnNewSession");
+
+bouton.addEventListener(
+    "click",
+    ouvrirSeance
+);
 
 chargerGroupes();
+
+console.log("FIN FORMATEUR.JS ATTEINTE");

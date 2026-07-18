@@ -1,0 +1,68 @@
+Le découpage propre devient :
+1) index.htm
+
+Le support visuel
+
+Responsabilité :
+
+"Voici les éléments disponibles à l'écran."
+
+Contient :
+
+<button id="btnNewSession">
+<select id="selectGroupe">
+<div id="qrCanvas">
+<div id="presenceList">
+
+C'est tout.
+
+2) formateur.js
+
+Le chef d'orchestre de l'écran formateur
+
+Responsabilité :
+
+récupérer les actions utilisateur
+appeler l'API
+afficher les résultats
+
+Exemple :
+
+clic bouton
+    ↓
+formateur.js
+    ↓
+POST /sessions
+    ↓
+server.js
+    ↓
+Supabase
+
+3) scanner.html
+
+L'écran de saisie
+
+Responsabilité :
+
+"Je transforme un QR en événement de présence."
+
+4) scanner.js
+
+Le lecteur
+
+Responsabilité :
+
+caméra
+lecture QR
+appel API présence
+
+
+Contrat des écrans Presencia v0.8.2
+
+Élément	Responsabilité
+index.htm	interface formateur
+formateur.js	pilotage séance
+scanner.html	interface scan
+scanner.js	acquisition QR
+api.js	communication backend
+server.js	règles métier

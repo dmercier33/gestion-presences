@@ -45,52 +45,55 @@ export async function openSession({
 /**
  * Enregistrement d'une présence après scan QR
  */
-export async function validatePresence(sessionId, apprenantId) {
+export async function validatePresence(
+    sessionId,
+    apprenantId
+) {
 
-    console.log("ENVOI PRESENCE :", {
-        sessionId,
-        apprenantId
-    });
+    console.log(
+        "ENVOI PRESENCE :",
+        {
+            sessionId,
+            apprenantId
+        }
+    );
+
 
     const res = await fetch(`${API_URL}/api/presences`, {
+
         method: "POST",
+
         headers: {
             "Content-Type": "application/json"
         },
+
         body: JSON.stringify({
             sessionId,
             apprenantId
         })
+
     });
 
-    const data = await res.json();
+
     const data = await res.json();
 
+
     if (res.ok) {
+
         return {
             status: "ok",
             presence: data.presence
         };
-    }
 
-    return {
-        status: "error",
-        code: res.status,
-        error: data.error
-    };
-
-    if (res.ok) {
-        return {
-            status: "ok",
-            presence: data.presence
-        };
     }
 
 
     return {
+
         status: "error",
         code: res.status,
         error: data.error
+
     };
 
 }
