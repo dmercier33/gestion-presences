@@ -43,10 +43,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// servir frontend
-const frontendPath = path.resolve(process.cwd(), "../frontend");
-app.use(express.static(frontendPath));
-
 
 
 // SUPABASE
@@ -613,6 +609,10 @@ app.get("/groupes", async (req, res) => {
 });
 
 
+
+// servir frontend
+const frontendPath = path.resolve(process.cwd(), "../frontend");
+app.use(express.static(frontendPath));
 
 
 // START
