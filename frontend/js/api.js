@@ -64,7 +64,20 @@ export async function validatePresence(sessionId, apprenantId) {
     });
 
     const data = await res.json();
+    const data = await res.json();
 
+    if (res.ok) {
+        return {
+            status: "ok",
+            presence: data.presence
+        };
+    }
+
+    return {
+        status: "error",
+        code: res.status,
+        error: data.error
+    };
 
     if (res.ok) {
         return {

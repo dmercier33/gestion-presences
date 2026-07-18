@@ -69,14 +69,25 @@ async function enregistrerPresence() {
 
         if (result.status === "ok") {
 
-            document.getElementById("status").innerText =
-                "✅ Présence enregistrée";
+            succès
 
         }
+
+        else if (result.error === "Already registered") {
+
+            doublon
+
+        }
+
+        else if (result.error === "Apprenant introuvable") {
+
+            QR inconnu
+
+        }
+
         else {
 
-            document.getElementById("status").innerText =
-                "ℹ️ Présence déjà enregistrée";
+            erreur générale
 
         }
 
