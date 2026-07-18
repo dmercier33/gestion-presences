@@ -25,3 +25,19 @@ curl -X POST https://gestion-presences-56vd.onrender.com/api/presences -H "Conte
 curl.exe -X POST http://localhost:3000/api/sessions -H "Content-Type: application/json" -d '{"groupe_id":"G1","duration_minutes":120}'
 
 curl.exe -X POST http://localhost:3000/api/presences -H "Content-Type: application/json" -d '{"sessionId":"SESSION_1784209287130","apprenantId":"APP-0001"}'
+
+
+INSERT INTO session_apprenants
+(
+    id,
+    session_id,
+    apprenant_id,
+    created_at
+)
+VALUES
+(
+    'SA_TEST_001',
+    'SESSION_1784384537927',
+    'APP_1784310922743',
+    NOW()
+);
