@@ -1,0 +1,69 @@
+Concept central : la boucle d'émargement
+
+Presencia transforme une liste papier d'émargement en un processus numérique traçable.
+
+Avant :
+
+Liste papier
+    ↓
+Signature manuscrite
+    ↓
+Archivage
+
+Avec Presencia :
+
+Groupe
+    ↓
+Séance
+    ↓
+Liste attendue
+(session_apprenants)
+    ↓
+Validation présence
+    ↓
+Historique numérique
+
+
+Presencia
+L'émargement numérique simple et fiable pour les organismes de formation
+Le problème
+
+Aujourd'hui, l'émargement papier :
+
+prend du temps ;
+peut générer des erreurs ;
+nécessite une gestion documentaire importante ;
+complique les contrôles a posteriori.
+La réponse Presencia
+
+Presencia permet de :
+
+créer une séance de formation ;
+identifier les apprenants attendus ;
+enregistrer les présences simplement ;
+conserver une preuve numérique structurée.
+Comment ça fonctionne ?
+Groupe d'apprenants
+        ↓
+Création séance
+        ↓
+Liste d'émargement numérique
+        ↓
+Scan QR
+        ↓
+Présences enregistrées
+        ↓
+Historique exploitable
+Les bénéfices
+
+Pour le formateur :
+
+moins de papier ;
+moins de manipulation ;
+suivi immédiat.
+
+Pour l'organisme :
+
+meilleure traçabilité ;
+données structurées ;
+préparation facilitée des audits.

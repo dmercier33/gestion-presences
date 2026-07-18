@@ -82,6 +82,18 @@ Et j'ai aussi une petite idée pour "torcher" la v1 rapidement : on devrait prob
 
 Pas un document administratif, juste :
 
+
+V0.9 — Préparer une rentrée réelle :
+
+importer les apprenants ;
+affecter aux groupes ;
+générer les QR ;
+ouvrir une séance ;
+créer automatiquement la fiche d'émargement (session_apprenants) ;
+scanner ;
+produire la preuve.
+
+
 V1 - Objectif
 ------------
 Un formateur peut :
@@ -94,7 +106,3 @@ Un administrateur peut :
 1. importer les apprenants
 2. générer les QR
 3. imprimer les planches
-
-Tout ce qui n'est pas là attend.
-
-C'est probablement ce qui évitera le piège classique : améliorer encore le prototype au lieu de livrer le produit.

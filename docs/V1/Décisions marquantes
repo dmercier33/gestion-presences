@@ -1,0 +1,60 @@
+Décision DP-001
+Date : juillet 2026
+
+Sujet :
+QR apprenant fixe ou QR séance uniquement ?
+
+Décision :
+Conserver QR apprenant imprimable.
+
+Raison :
+Compatible terrain, pas de smartphone nécessaire,
+facilite la rentrée.
+
+Impact :
+Le scanner formateur valide session + apprenant.
+
+
+Décision V0.9.0 — DP-xxx à ajouter
+
+Je mettrais dans ton document "Décisions importantes" :
+
+Décision : création automatique de session_apprenants
+
+Date : juillet 2026
+Version : V0.9.0
+
+Sujet
+
+Définition du moment où sont créés les apprenants attendus d'une séance.
+
+Décision
+
+La table session_apprenants est générée automatiquement lors de l'ouverture d'une séance par le formateur.
+
+La liste est issue de groupe_apprenants.
+
+Raisons
+correspond à la feuille papier d'émargement avant signatures ;
+fige la situation réelle au moment de la séance ;
+permet de distinguer :
+apprenant attendu ;
+apprenant présent ;
+apprenant absent.
+Impact
+
+Le parcours devient :
+
+Groupe
+  |
+  v
+groupe_apprenants
+  |
+  v
+Création séance
+  |
+  v
+session_apprenants
+  |
+  v
+presences

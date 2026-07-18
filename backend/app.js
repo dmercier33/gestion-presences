@@ -1,3 +1,21 @@
+/*
+ API Présencia
+
+ Sessions
+   POST api//sessions 
+
+ Présences
+   POST /api/presences 
+   GET /api/presences/:sessionId 
+
+ Groupes
+   GET /api/groupes 
+
+ Apprenants
+   GET /api/apprenants 
+   POST /api/apprenants 
+*/
+
 import express from "express";
 import cors from "cors";
 import { createClient } from "@supabase/supabase-js";
@@ -7,7 +25,6 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 
 dotenv.config({
@@ -73,24 +90,6 @@ app.get("/health", (req, res) => {
 });
 
 
-/*
- API Présencia
-
- Sessions
-   POST api//sessions 
-
- Présences
-   POST /api/presences 
-   GET /api/presences/:sessionId 
-
- Groupes
-   GET /api/groupes 
-
- Apprenants
-   GET /api/apprenants 
-   POST /api/apprenants 
-*/
-
 // ===============================
 // OUVERTURE D'UNE SESSION
 // ===============================
@@ -115,13 +114,13 @@ app.post("/api/sessions", async (req, res) => {
     });
   }
 
-// Rechercher une séance déjà ouverte pour ce groupe.
-// Une séance existante est reprise afin d'éviter la création de doublons.
+  // Rechercher une séance déjà ouverte pour ce groupe.
+  // Une séance existante est reprise afin d'éviter la création de doublons.
   const now = new Date();
   const { data: existingSession, error: existingError } =
-  await supabase
-    .from("sessions")
-    .select(`
+    await supabase
+      .from("sessions")
+      .select(`
       id,
       token,
       groupe_id,
@@ -130,25 +129,25 @@ app.post("/api/sessions", async (req, res) => {
       expires_at,
       duration_minutes
     `)
-    .eq("groupe_id", groupe_id)
-    .eq("active", true)
-    .is("ended_at", null)
-    .gt("expires_at", now.toISOString())
-    .maybeSingle();
+      .eq("groupe_id", groupe_id)
+      .eq("active", true)
+      .is("ended_at", null)
+      .gt("expires_at", now.toISOString())
+      .maybeSingle();
 
 
-if (existingError) {
-  return res.status(500).json({
-    error: existingError.message
-  });
-}
+  if (existingError) {
+    return res.status(500).json({
+      error: existingError.message
+    });
+  }
 
-if (existingSession) {
-  return res.status(200).json({
-    status: "existing",
-    session: existingSession
-  });
-}
+  if (existingSession) {
+    return res.status(200).json({
+      status: "existing",
+      session: existingSession
+    });
+  }
 
   // Création nouvelle session
   const sessionId = "SESSION_" + Date.now();
@@ -195,10 +194,59 @@ if (existingSession) {
     });
   }
 
-res.json({
-  status: "created",
-  session: data
-});
+  //
+  // =====================================================
+  // Création de la liste d'émargement théorique
+  // session_apprenants
+  // =====================================================
+
+  const { data: membresGroupe, error: membresError } =
+    await supabase
+      .from("groupe_apprenants")
+      .select("apprenant_id")
+      .eq("groupe_id", groupe_id);
+
+
+  if (membresError) {
+    return res.status(500).json({
+      error: membresError.message
+    });
+  }
+
+
+  if (membresGroupe && membresGroupe.length > 0) {
+
+    const lignesSessionApprenants =
+      membresGroupe.map((membre) => ({
+        id: "SA_" + Date.now() + "_" + Math.random()
+          .toString(36)
+          .substring(2, 8),
+
+        session_id: sessionId,
+
+        apprenant_id: membre.apprenant_id
+      }));
+
+
+    const { error: sessionApprenantsError } =
+      await supabase
+        .from("session_apprenants")
+        .insert(lignesSessionApprenants);
+
+
+    if (sessionApprenantsError) {
+      return res.status(500).json({
+        error: sessionApprenantsError.message
+      });
+    }
+
+  }
+  //
+
+  res.json({
+    status: "created",
+    session: data
+  });
 });
 
 
@@ -482,7 +530,7 @@ app.post("/api/apprenants", async (req, res) => {
     ])
     .select()
     .single();
-    
+
 
   if (error) {
     return res.status(500).json({

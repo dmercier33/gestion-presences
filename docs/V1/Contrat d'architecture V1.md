@@ -135,6 +135,7 @@ id
 session_id
 apprenant_id
 Cette table garantit l'historique.
+Décision v0.8.0
 
 Table presences
 Rôle :
@@ -201,6 +202,28 @@ Faire scanner les apprenants
         ↓
 Obtenir une liste fiable des présents
 
+et
+
+Administrateur
+      |
+      v
+crée apprenants
+      |
+      v
+génère QR
+      |
+      v
+Formateur
+      |
+      v
+fait séance
+      |
+      v
+obtient présences
+      |
+      v
+exporte preuve
+
 avec :
 plusieurs groupes simultanés possibles ;
 aucune ambiguïté de rattachement ;
@@ -218,6 +241,27 @@ Décision d'architecture finale V1
 
 Statut : ARCHITECTURE V1 VALIDÉE — passage possible au développement.
 
-3. Comment distinguer V1 et Vi (i>1) ?
-Toute nouvelle idée devra répondre à une question simple :
-"Est-ce indispensable pour fermer la boucle V1, ou est-ce une évolution V2 ?"
+TODO (Draft) : integrer 
+session_apprenants représente la liste d'émargement théorique d'une séance. Elle fige les apprenants attendus au moment de la réalisation de la formation et constitue la base de comparaison avec les présences effectivement enregistrées.
+
+Organisme
+   |
+   v
+Apprenants
+   |
+   v
+Groupes pédagogiques
+   |
+   v
+Séance réelle
+   |
+   v
+Liste attendue de séance
+(session_apprenants)
+   |
+   v
+Émargement
+(presences)
+   |
+   v
+Preuve exploitable
