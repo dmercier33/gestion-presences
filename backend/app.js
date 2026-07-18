@@ -295,9 +295,6 @@ app.post("/api/presences", async (req, res) => {
         .eq("id", sessionId)
         .maybeSingle();
 
-    console.log("APPRENANT TROUVE :", apprenant);
-    console.log("ERREUR APPRENANT :", apprenantError);
-
     if (sessionError || !session) {
       return res.status(404).json({
         error: "Session not found"
@@ -332,6 +329,9 @@ app.post("/api/presences", async (req, res) => {
         .select("id")
         .eq("qr_code", qrCode)
         .maybeSingle();
+
+    console.log("APPRENANT TROUVE :", apprenant);
+    console.log("ERREUR APPRENANT :", apprenantError);
 
     // Si l'apprenant n'existe pas, renvoyer une erreur
     if (apprenantError || !apprenant) {
