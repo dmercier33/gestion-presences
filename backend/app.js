@@ -275,6 +275,10 @@ app.post("/api/presences", async (req, res) => {
 
   const { sessionId, apprenantId: qrCode } = req.body;
 
+  console.log("===== API PRESENCES =====");
+  console.log("sessionId :", sessionId);
+  console.log("qrCode    :", qrCode);
+  
   if (!sessionId || !qrCode) {
     return res.status(400).json({
       error: "Missing sessionId or apprenantId"
