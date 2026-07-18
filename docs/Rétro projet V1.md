@@ -29,3 +29,14 @@ créer un vrai modèle d'émargement.
 "Le moteur de Presencia n'a pas été terminé quand le scan fonctionnait. Il a été terminé quand il a su expliquer pourquoi un scan ne devait pas fonctionner."
 
 Les releases Presencia ne correspondent pas à des lots de code. Elles correspondent à des décisions métier stabilisées.
+
+Je trouve aussi intéressant que chaque difficulté passée nous a donné une règle :
+
+Difficulté	Leçon gardée
+Logs partout	logs temporaires identifiés
+Suppositions pendant debug	"on ne joue pas au poker"
+Changements mélangés	une étape = un objectif
+Refactor pendant panne	réparer puis améliorer
+Modèle métier flou	documenter avant de coder
+
+Et maintenant on applique ces règles sans même y penser.

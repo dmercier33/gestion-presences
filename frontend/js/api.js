@@ -63,5 +63,21 @@ export async function validatePresence(sessionId, apprenantId) {
         })
     });
 
-    return await res.json();
+    const data = await res.json();
+
+
+    if (res.ok) {
+        return {
+            status: "ok",
+            presence: data.presence
+        };
+    }
+
+
+    return {
+        status: "error",
+        code: res.status,
+        error: data.error
+    };
+
 }

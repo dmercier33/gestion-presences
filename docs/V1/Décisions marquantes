@@ -90,3 +90,7 @@ personnes prévues ;
 personnes présentes.
 
 Décision V0.8.1 : une présence n'est valide que si l'apprenant est attendu dans la séance.
+
+Décision : Presencia dispose d'une documentation séparée selon son public. Les documents techniques expliquent la construction du produit ; les notices expliquent son utilisation.
+
+V0.8.2 confirme une séparation claire entre le moteur métier Presencia et son interface utilisateur : les règles restent côté serveur, l'écran traduit les résultats en langage
