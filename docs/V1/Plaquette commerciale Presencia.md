@@ -1,3 +1,5 @@
+Presencia n'enregistre pas des scans. Il documente une séance de formation.
+
 Concept central : la boucle d'émargement
 
 Presencia transforme une liste papier d'émargement en un processus numérique traçable.
@@ -67,3 +69,25 @@ Pour l'organisme :
 meilleure traçabilité ;
 données structurées ;
 préparation facilitée des audits.
+
+
+Ouverture séance
+        │
+        ▼
+Création session
+        │
+        ▼
+Création session_apprenants
+        │
+        ▼
+──────────────
+        │
+Scan QR
+        │
+        ▼
+session_apprenants ?
+        │
+    oui │ non
+        │
+        ▼
+Création présence      Refus

@@ -58,3 +58,17 @@ session_apprenants
   |
   v
 presences
+
+
+DP-00X — Verrouillage du moteur métier
+
+Décision :
+session_apprenants est désormais exclusivement créé à l'ouverture d'une séance.
+
+/api/presences ne crée plus d'inscription implicite.
+
+Raison :
+L'émargement ne modifie jamais la liste des apprenants attendus.
+
+Conséquence :
+La feuille d'émargement est figée avant le début de la séance.

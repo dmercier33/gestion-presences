@@ -412,29 +412,13 @@ app.post("/api/presences", async (req, res) => {
       });
     }
 
-    // Si l'apprenant n'est pas encore inscrit à la session, l'inscrire
+    // Si l'apprenant n'est pas encore inscrit à la session, l'inscrire (c'est fini : cf.lignes suivantes)
+    // V0.9.0 decision métier : cette table est generee par le formateur lors de la creation de session
+    // en se basant sur la constitution des groupes
     if (!participation) {
-      const participationId =
-        "SA_" + Date.now();
-
-      const { error: insertParticipationError } =
-        await supabase
-          .from("session_apprenants")
-          .insert([
-            {
-              id: participationId,
-              session_id: sessionId,
-              apprenant_id: vraiApprenantId
-            }
-          ]);
-
-      if (insertParticipationError) {
-        return res.status(500).json({
-          error: insertParticipationError.message
+        return res.status(403).json({
+            error: "Apprenant non prévu pour cette séance"
         });
-
-      }
-
     }
 
     // Vérifier doublon présence
