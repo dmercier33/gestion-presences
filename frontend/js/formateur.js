@@ -15,7 +15,7 @@ async function chargerGroupes() {
 
     try {
 
-        const res = await fetch(`${API_URL}/groupes`);
+        const res = await fetch(`${API_URL}/api/groupes`);
 
         if (!res.ok) {
 
@@ -162,7 +162,7 @@ async function refreshPresences() {
             sessionCourante.id
         );
         const res = await fetch(
-            `${API_URL}/presences/${sessionCourante.id}`
+            `${API_URL}/api/presences/${sessionCourante.id}`
         );
         console.log(
             "PRESENCES RECUES :",

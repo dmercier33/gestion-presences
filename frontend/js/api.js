@@ -4,9 +4,6 @@ import { API_URL } from "./config.js";
 /**
  * Ouverture d'une séance côté formateur
  */
-/**
- * Ouverture d'une séance côté formateur
- */
 export async function openSession({
     groupe_id,
     duration_minutes
@@ -55,7 +52,7 @@ export async function validatePresence(sessionId, apprenantId) {
         apprenantId
     });
 
-    const res = await fetch(`${API_URL}/presences`, {
+    const res = await fetch(`${API_URL}/api/presences`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -65,7 +62,6 @@ export async function validatePresence(sessionId, apprenantId) {
             apprenantId
         })
     });
-
 
     return await res.json();
 }
