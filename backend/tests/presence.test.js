@@ -58,7 +58,7 @@ describe("Presences API", () => {
     // 1 - créer une session
 
     const sessionResponse = await request(app)
-      .post("/sessions")
+      .post("/api/sessions")
       .send({
         groupe_id: TEST_GROUP_ID,
         duration_minutes: 120
@@ -166,7 +166,7 @@ test("un QR apprenant inconnu est refusé", async () => {
   // Créer une session valide
 
   const sessionResponse = await request(app)
-    .post("/sessions")
+    .post("/api/sessions")
     .send({
       groupe_id: TEST_GROUP_ID,
       duration_minutes: 120
@@ -200,7 +200,7 @@ test("refuse une présence sur une session expirée", async () => {
 
   // création session
   const sessionResponse = await request(app)
-    .post("/sessions")
+    .post("/api/sessions")
     .send({
       groupe_id: TEST_GROUP_ID,
       duration_minutes: 120

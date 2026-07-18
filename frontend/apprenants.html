@@ -161,7 +161,7 @@
 
       try {
         const response = await fetch(
-          `${API_URL}/apprenants`,
+          `${API_URL}/api/apprenants`,
           {
             method: "POST",
             headers: {
@@ -218,7 +218,7 @@
       try {
         console.log("ID ENVOYE AU BACKEND :", apprenantId);
         const response = await fetch(
-          `${API_URL}/apprenants/${apprenantId}/qr`,
+          `${API_URL}/api/apprenants/${apprenantId}/qr`,
           {
             method: "POST"
           }
@@ -256,7 +256,7 @@
     async function chargerApprenants() {
       try {
         const response =
-          await fetch(`${API_URL}/apprenants`);
+          await fetch(`${API_URL}/api/apprenants`);
 
         const apprenants =
           await response.json();

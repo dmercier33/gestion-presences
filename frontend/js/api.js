@@ -9,7 +9,7 @@ export async function openSession({
     duration_minutes
 }) {
 
-    const res = await fetch(`${API_URL}/sessions`, {
+    const res = await fetch(`${API_URL}/api/sessions`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

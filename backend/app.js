@@ -102,7 +102,7 @@ app.get("/health", (req, res) => {
 //
 // Cette route est appelée par l'écran formateur.
 // Elle retourne les informations nécessaires au formateur
-app.post("/sessions", async (req, res) => {
+app.post("/api/sessions", async (req, res) => {
 
   const {
     groupe_id,
@@ -457,7 +457,7 @@ app.post("/api/presences", async (req, res) => {
 //
 // Utilisateur concerné :
 // Administrateur
-app.post("/apprenants", async (req, res) => {
+app.post("/api/apprenants", async (req, res) => {
 
   const { nom, prenom, groupe_id } = req.body;
 
@@ -497,7 +497,7 @@ app.post("/apprenants", async (req, res) => {
 // =================================
 // LISTE DES APPRENANTS
 // =================================
-app.get("/apprenants", async (req, res) => {
+app.get("/api/apprenants", async (req, res) => {
 
   const { data, error } = await supabase
     .from("apprenants")
@@ -533,7 +533,7 @@ app.get("/apprenants", async (req, res) => {
 // Utilisateur concerné :
 // Administrateur
 // =================================
-app.post("/apprenants/:id/qr", async (req, res) => {
+app.post("/api/apprenants/:id/qr", async (req, res) => {
 
   const id = req.params.id;
 
