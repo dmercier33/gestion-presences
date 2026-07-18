@@ -55,7 +55,7 @@ export async function validatePresence(sessionId, apprenantId) {
         apprenantId
     });
 
-    const res = await fetch(`${API_URL}/api/presences`, {
+    const res = await fetch(`${API_URL}/presences`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
