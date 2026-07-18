@@ -583,7 +583,7 @@ app.post("/apprenants/:id/qr", async (req, res) => {
 // ===================
 // LISTE DES GROUPES
 // ===================
-app.get("/groupes", async (req, res) => {
+app.get("/api/groupes", async (req, res) => {
 
   try {
     const { data, error } = await supabase
