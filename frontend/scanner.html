@@ -130,30 +130,18 @@
         console.log("SESSION AVANT ENVOI :", sessionId);
         async function enregistrerPresence() {
 
-
-            debug(
-                "CONTROLE PRESENCE\n" +
-                "sessionId = " + sessionId +
-                "\nqrApprenant = " + qrApprenant
-            );
-
-
-            if (!sessionId || !qrApprenant) {
-
-                debug(
-                    "PRESENCE ABANDONNEE : donnée manquante"
-                );
-
+            if (presenceEnCours) {
                 return;
-
             }
 
+            if (!sessionId || !qrApprenant) {
+                return;
+            }
 
+            presenceEnCours = true;
 
             try {
 
-console.log("ENREGISTREMENT -> sessionId =", sessionId);
-console.log("ENREGISTREMENT -> qrApprenant =", qrApprenant);
                 const result =
                     await validatePresence(
                         sessionId,
@@ -161,56 +149,38 @@ console.log("ENREGISTREMENT -> qrApprenant =", qrApprenant);
                     );
 
 
-
-                debug(
-                    "REPONSE SERVEUR :\n" +
-                    JSON.stringify(result)
-                );
-
-
-
                 if (result.status === "ok") {
-
 
                     document.getElementById("status").innerText =
                         "✅ Présence enregistrée";
 
-
                 }
                 else {
 
-
                     document.getElementById("status").innerText =
-                        "❌ " + JSON.stringify(result);
-
+                        "ℹ️ Présence déjà enregistrée";
 
                 }
 
 
-
                 qrApprenant = null;
-
-
 
             }
 
             catch (error) {
 
-
-                debug(
-                    "ERREUR : " + error.message
-                );
-
-
-                console.error(error);
-
+                document.getElementById("status").innerText =
+                    "❌ " + error.message;
 
             }
 
+            finally {
+
+                presenceEnCours = false;
+
+            }
 
         }
-
-
 
 
         // ======================================
