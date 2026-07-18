@@ -1,0 +1,74 @@
+Dictionnaire produit Presencia
+Objectif du document
+
+Définir les termes métier et techniques utilisés dans Presencia afin de garantir une compréhension commune entre :
+
+métier ;
+développement ;
+utilisateurs ;
+évolutions futures.
+Termes métier
+Apprenant
+
+Définition :
+À compléter.
+
+Utilisation dans Presencia :
+À compléter.
+
+Table(s) associée(s) :
+
+apprenants
+Séance
+
+Définition :
+À compléter.
+
+Utilisation dans Presencia :
+À compléter.
+
+Table(s) associée(s) :
+
+sessions
+Présence
+
+Définition :
+À compléter.
+
+Utilisation dans Presencia :
+À compléter.
+
+Table(s) associée(s) :
+
+presences
+Émargement
+
+Définition :
+À compléter.
+
+Utilisation dans Presencia :
+À compléter.
+
+Termes techniques
+QR apprenant
+
+À compléter.
+
+QR séance
+
+À compléter.
+
+Session
+
+À compléter.
+
+Groupe
+
+À compléter.
+
+Règles de vocabulaire
+Un même terme doit garder le même sens dans :
+l'interface ;
+la base de données ;
+l'API ;
+la documentation.
