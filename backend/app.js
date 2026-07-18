@@ -278,7 +278,7 @@ app.post("/api/presences", async (req, res) => {
   console.log("===== API PRESENCES =====");
   console.log("sessionId :", sessionId);
   console.log("qrCode    :", qrCode);
-  
+
   if (!sessionId || !qrCode) {
     return res.status(400).json({
       error: "Missing sessionId or apprenantId"
@@ -293,6 +293,9 @@ app.post("/api/presences", async (req, res) => {
         .select("id, expires_at, ended_at, active")
         .eq("id", sessionId)
         .maybeSingle();
+
+    console.log("APPRENANT TROUVE :", apprenant);
+    console.log("ERREUR APPRENANT :", apprenantError);
 
     if (sessionError || !session) {
       return res.status(404).json({
