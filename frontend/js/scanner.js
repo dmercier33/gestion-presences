@@ -1,120 +1,118 @@
 import { validatePresence } from "./api.js";
 
-    console.log("scanner v0.8.0");
+console.log("scanner v0.8.0");
 
-    // ======================================
-    // ETAT APPLICATION
-    // ======================================
+// ======================================
+// ETAT APPLICATION
+// ======================================
 
-    let sessionId = null;
-    let qrApprenant = null;
-    let isScanning = true;
+let sessionId = null;
+let qrApprenant = null;
+let isScanning = true;
+let presenceEnCours = false;
 
-    // secours mémoire locale
+// secours mémoire locale
 
-    const ancienneSession =
+const ancienneSession =
     localStorage.getItem("sessionId");
 
-    if (
+if (
     ancienneSession &&
     ancienneSession !== "undefined" &&
     ancienneSession !== "null"
-    ) {
-        sessionId = ancienneSession;
-        }
+) {
+    sessionId = ancienneSession;
+}
 
 
-    debug(
+debug(
     "SESSION AU CHARGEMENT :\n" +
     sessionId
-    );
+);
 
-    // ======================================
-    // DEBUG
-    // ======================================
+// ======================================
+// DEBUG
+// ======================================
 
-    function debug(message) {
+function debug(message) {
 
-        document.getElementById("debug").innerText +=
+    document.getElementById("debug").innerText +=
         "\n" + message;
 
-    }
+}
 
-    // ======================================
-    // PRESENCE
-    // ======================================
+// ======================================
+// PRESENCE
+// ======================================
 
-    console.log("SESSION AVANT ENVOI :", sessionId);
-    async function enregistrerPresence() {
-
-
-        let presenceEnCours = false;
+console.log("SESSION AVANT ENVOI :", sessionId);
+async function enregistrerPresence() {
 
     if (presenceEnCours) {
-                return;
-            }
+        return;
+    }
 
     if (!sessionId || !qrApprenant) {
-                return;
-            }
+        return;
+    }
 
     presenceEnCours = true;
 
     try {
 
-                const result =
-    await validatePresence(
-    sessionId,
-    qrApprenant
-    );
+        const result =
+            await validatePresence(
+                sessionId,
+                qrApprenant
+            );
 
 
-    if (result.status === "ok") {
+        if (result.status === "ok") {
 
-        document.getElementById("status").innerText =
-        "✅ Présence enregistrée";
+            document.getElementById("status").innerText =
+                "✅ Présence enregistrée";
 
-                }
-    else {
+        }
+        else {
 
-        document.getElementById("status").innerText =
-        "ℹ️ Présence déjà enregistrée";
+            document.getElementById("status").innerText =
+                "ℹ️ Présence déjà enregistrée";
 
-                }
+        }
 
 
-    qrApprenant = null;
+        qrApprenant = null;
 
-            }
+    }
 
     catch (error) {
 
         document.getElementById("status").innerText =
-        "❌ " + error.message;
+            "❌ " + error.message;
 
-            }
+    }
 
     finally {
 
         presenceEnCours = false;
 
-            }
+    }
 
-        }
-
-
-    // ======================================
-    // SCAN QR
-    // ======================================
+}
 
 
-    function onScanSuccess(decodedText) {
+// ======================================
+// SCAN QR
+// ======================================
 
 
-            if (!isScanning) {
-                return;
+function onScanSuccess(decodedText) {
 
-            }
+
+    if (!isScanning) {
+        return;
+
+    }
 
 
     isScanning = false;
@@ -128,47 +126,47 @@ import { validatePresence } from "./api.js";
 
     try {
         data = JSON.parse(decodedText);
-        }
+    }
 
     catch (e) {
 
 
-            // ======================================
-            // Compatibilité anciens QR apprenant
-            // ======================================
+        // ======================================
+        // Compatibilité anciens QR apprenant
+        // ======================================
 
-            if (decodedText.startsWith("APP_")) {
+        if (decodedText.startsWith("APP_")) {
 
 
-        data = {
-            type: "APPRENANT",
-            version: 1,
-            qrCode: decodedText
-        };
-                }
-    else {
+            data = {
+                type: "APPRENANT",
+                version: 1,
+                qrCode: decodedText
+            };
+        }
+        else {
 
-        debug(
-            "QR INVALIDE :\n" +
-            decodedText
-        );
+            debug(
+                "QR INVALIDE :\n" +
+                decodedText
+            );
 
-    document.getElementById("status").innerText =
-    "❌ QR invalide";
-    isScanning = true;
-    return;
-                }
-            }
+            document.getElementById("status").innerText =
+                "❌ QR invalide";
+            isScanning = true;
+            return;
+        }
+    }
 
     debug(
-    "QR LU :\n" +
-    JSON.stringify(data)
+        "QR LU :\n" +
+        JSON.stringify(data)
     );
 
 
     console.log(
-    "QR LU :",
-    data
+        "QR LU :",
+        data
     );
 
 
@@ -188,16 +186,16 @@ import { validatePresence } from "./api.js";
         );
 
 
-    document.getElementById("status").innerText =
-    "❌ QR sans type";
+        document.getElementById("status").innerText =
+            "❌ QR sans type";
 
 
-    isScanning = true;
+        isScanning = true;
 
-    return;
+        return;
 
 
-            }
+    }
 
 
     // ======================================
@@ -209,68 +207,68 @@ import { validatePresence } from "./api.js";
 
 
 
-                if (!data.sessionId) {
+        if (!data.sessionId) {
 
 
-        debug(
-            "SESSION INVALIDE"
+            debug(
+                "SESSION INVALIDE"
+            );
+
+
+            document.getElementById("status").innerText =
+                "❌ Session invalide";
+
+
+            isScanning = true;
+
+            return;
+
+
+        }
+
+
+
+        sessionId =
+            data.sessionId;
+
+
+
+        localStorage.setItem(
+            "sessionId",
+            sessionId
         );
 
 
-    document.getElementById("status").innerText =
-    "❌ Session invalide";
 
-
-    isScanning = true;
-
-    return;
-
-
-                }
+        document.getElementById("status").innerText =
+            "✅ Session reconnue\n" +
+            sessionId;
 
 
 
-    sessionId =
-    data.sessionId;
+        debug(
+            "SESSION ACTIVE : " +
+            sessionId
+        );
 
 
 
-    localStorage.setItem(
-    "sessionId",
-    sessionId
-    );
+        if (qrApprenant) {
+
+
+            enregistrerPresence();
+
+
+        }
 
 
 
-    document.getElementById("status").innerText =
-    "✅ Session reconnue\n" +
-    sessionId;
+        isScanning = true;
+
+        return;
 
 
-
-    debug(
-    "SESSION ACTIVE : " +
-    sessionId
-    );
-
-
-
-    if (qrApprenant) {
-
-
-        enregistrerPresence();
-
-
-                }
-
-
-
-    isScanning = true;
-
-    return;
-
-
-            }
+    }
 
 
 
@@ -285,84 +283,84 @@ import { validatePresence } from "./api.js";
     if (data.type === "APPRENANT") {
 
 
-                if (!sessionId) {
+        if (!sessionId) {
+
+            document.getElementById("status").innerText =
+                "⚠️ Scannez d'abord le QR séance";
+
+            isScanning = true;
+
+            return;
+
+        }
+
+
+        if (!data.qrCode && !data.id) {
+
+
+            debug(
+                "APPRENANT SANS IDENTITE"
+            );
+
+
+            document.getElementById("status").innerText =
+                "❌ QR apprenant invalide";
+
+
+            isScanning = true;
+
+            return;
+
+
+        }
+
+
+
+        qrApprenant =
+            data.qrCode || data.id;
+
+
 
         document.getElementById("status").innerText =
-        "⚠️ Scannez d'abord le QR séance";
+            "✅ Apprenant reconnu\n" +
+            qrApprenant +
+            "\nSession : " +
+            sessionId;
 
-    isScanning = true;
-
-    return;
-
-                }
-
-
-    if (!data.qrCode && !data.id) {
 
 
         debug(
-            "APPRENANT SANS IDENTITE"
+            "QR APPRENANT : " +
+            qrApprenant
         );
 
 
-    document.getElementById("status").innerText =
-    "❌ QR apprenant invalide";
+
+        if (sessionId) {
 
 
-    isScanning = true;
-
-    return;
+            enregistrerPresence();
 
 
-                }
+        }
+
+        else {
 
 
-
-    qrApprenant =
-    data.qrCode || data.id;
-
+            document.getElementById("status").innerText +=
+                "\n⚠️ En attente de la session";
 
 
-    document.getElementById("status").innerText =
-    "✅ Apprenant reconnu\n" +
-    qrApprenant +
-    "\nSession : " +
-    sessionId;
+        }
 
 
 
-    debug(
-    "QR APPRENANT : " +
-    qrApprenant
-    );
+        isScanning = true;
+
+        return;
 
 
-
-    if (sessionId) {
-
-
-        enregistrerPresence();
-
-
-                }
-
-    else {
-
-
-        document.getElementById("status").innerText +=
-        "\n⚠️ En attente de la session";
-
-
-                }
-
-
-
-    isScanning = true;
-
-    return;
-
-
-            }
+    }
 
 
 
@@ -375,57 +373,57 @@ import { validatePresence } from "./api.js";
 
 
     debug(
-    "TYPE QR INCONNU : " +
-    data.type
+        "TYPE QR INCONNU : " +
+        data.type
     );
 
 
     document.getElementById("status").innerText =
-    "❌ Type QR inconnu";
+        "❌ Type QR inconnu";
 
 
     isScanning = true;
 
 
 
-        }
+}
 
 
 
 
 
-    // ======================================
-    // CAMERA
-    // ======================================
+// ======================================
+// CAMERA
+// ======================================
 
 
-    const html5QrCode =
+const html5QrCode =
     new Html5Qrcode("reader");
 
 
 
-    html5QrCode.start(
+html5QrCode.start(
 
     {
 
         facingMode: "environment"
 
-            },
+    },
 
     {
 
         fps: 10,
 
-    qrbox: 250
+        qrbox: 250
 
-            },
+    },
 
     onScanSuccess
 
-    )
+)
 
 
-            .catch(err => {
+    .catch(err => {
 
 
         console.error(
@@ -434,9 +432,9 @@ import { validatePresence } from "./api.js";
         );
 
 
-    document.getElementById("status").innerText =
-    "Erreur caméra : " + err;
+        document.getElementById("status").innerText =
+            "Erreur caméra : " + err;
 
 
-            });
+    });
 
