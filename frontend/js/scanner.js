@@ -295,12 +295,6 @@ async function onScanSuccess(decodedText) {
             sessionId
         );
 
-        if (qrApprenant) {
-
-            enregistrerPresence();
-
-        }
-
         isScanning = true;
 
         setTimeout(() => {

@@ -36,8 +36,8 @@ INSERT INTO session_apprenants
 )
 VALUES
 (
-    'SA_TEST_001',
-    'SESSION_1784384537927',
+    'SA_1784465081684_test02',
+    'SESSION_1784472830553',
     'APP_1784310922743',
     NOW()
 );
