@@ -352,7 +352,7 @@ function onScanSuccess(decodedText) {
 
         setTimeout(() => {
             enregistrerPresence();
-        }, 800);
+        }, 1500);
 
         isScanning = true;
 
