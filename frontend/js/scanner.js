@@ -82,11 +82,11 @@ async function enregistrerPresence() {
         }
 
         else if (
-            result.error === "Already registered"
+            result.code === "PRESENCE_ALREADY_EXISTS"
         ) {
 
-            document.getElementById("status").innerText =
-                "ℹ️ Présence déjà enregistrée";
+        document.getElementById("status").innerText =
+            "ℹ️ Présence déjà enregistrée";
 
         }
 

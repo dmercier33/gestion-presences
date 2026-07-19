@@ -87,13 +87,12 @@ export async function validatePresence(
 
     }
 
-
     return {
 
         status: "error",
-        code: res.status,
-        error: data.error
-
+        code: data.code || res.status,
+        error: data.error,
+        message: data.message
     };
 
 }

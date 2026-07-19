@@ -197,11 +197,11 @@ app.post("/api/sessions", async (req, res) => {
   // session_apprenants
   // =====================================================
 
-  const { data: membresGroupe, error: membresError } =
-    await supabase
-      .from("groupe_apprenants")
-      .select("apprenant_id")
-      .eq("groupe_id", groupe_id);
+const { data: membresGroupe, error: membresError } =
+  await supabase
+    .from("apprenants")
+    .select("id")
+    .eq("groupe_id", groupe_id);
 
 
   if (membresError) {
@@ -221,7 +221,7 @@ app.post("/api/sessions", async (req, res) => {
 
         session_id: sessionId,
 
-        apprenant_id: membre.apprenant_id
+        apprenant_id: membre.id
       }));
 
 
