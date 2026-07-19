@@ -33,13 +33,9 @@ if (
 // ======================================
 // DEBUG
 // ======================================
-
 function debug(message) {
-
-    // desactiver en production
-    //document.getElementById("debug").innerText +=
-    //    "\n" + message;
-
+    document.getElementById("debug").innerText +=
+        "\n" + message;
 }
 
 
@@ -266,53 +262,20 @@ function onScanSuccess(decodedText) {
     // QR APPRENANT
     // ======================================
 
-    if (data.type === "APPRENANT") {
+qrApprenant =
+    data.qrCode || data.id;
 
-        if (!sessionId) {
+document.getElementById("status").innerText =
+    "📷 QR apprenant détecté\n" +
+    qrApprenant +
+    "\nValidation en cours...";
 
-            document.getElementById("status").innerText =
-                "⚠️ Scannez d'abord le QR séance";
+debug(
+    "QR APPRENANT : " +
+    qrApprenant
+);
 
-
-            isScanning = true;
-
-            return;
-
-        }
-
-        if (!data.qrCode && !data.id) {
-
-            document.getElementById("status").innerText =
-                "❌ QR apprenant invalide";
-
-            isScanning = true;
-
-            return;
-
-        }
-
-        qrApprenant =
-            data.qrCode || data.id;
-
-        document.getElementById("status").innerText =
-            "✅ Apprenant reconnu\n" +
-            qrApprenant +
-            "\nSession : " +
-            sessionId;
-
-        debug(
-            "QR APPRENANT : " +
-            qrApprenant
-        );
-
-        enregistrerPresence();
-
-        isScanning = true;
-
-        return;
-
-    }
-
+enregistrerPresence();
     debug(
         "TYPE QR INCONNU : " +
         data.type
