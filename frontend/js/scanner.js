@@ -37,8 +37,8 @@ if (
 function debug(message) {
 
     // desactiver en production
-    document.getElementById("debug").innerText +=
-        "\n" + message;
+    //document.getElementById("debug").innerText +=
+    //    "\n" + message;
 
 }
 
