@@ -49,6 +49,17 @@ ou :
 ou :
 ⚠️ Séance expirée
 
+4) DT-02
+Reprise session formateur
+vérifier qu'une session existante recharge aussi :
+le QR session ;
+la liste des présents ;
+le compteur éventuel.
+Test à faire avec une session contenant déjà au moins 1 présence.
+
+La 0.9 commence vraiment à ressembler à une vraie phase de durcissement. 😎
+
+
 V1 - Objectif
 ------------
 Un formateur peut :
@@ -61,7 +72,6 @@ Un administrateur peut :
 1. importer les apprenants
 2. générer les QR
 3. imprimer les planches
-
 4) Finaliser les docs
 Notice d'utilsation Presencia.
 
@@ -69,3 +79,8 @@ Après la V1 :
 Rétro projet
 Dictionnaire
 Plaquette commerciale.
+
+durée de séance configurable 
+fermeture manuelle de séance 
+reprise de séance améliorée ?
+affichage plus riche du groupe (texte plutot que code)
