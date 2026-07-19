@@ -36,7 +36,7 @@ if (
 
 function debug(message) {
 
-    // descativer en production
+    // desactiver en production
     //document.getElementById("debug").innerText +=
     //    "\n" + message;
 
@@ -55,22 +55,17 @@ debug(
 
 async function enregistrerPresence() {
 
-
     if (presenceEnCours) {
         return;
     }
-
 
     if (!sessionId || !qrApprenant) {
         return;
     }
 
-
     presenceEnCours = true;
 
-
     try {
-
 
         const result =
             await validatePresence(
@@ -78,19 +73,15 @@ async function enregistrerPresence() {
                 qrApprenant
             );
 
-
         console.log(
             "REPONSE PRESENCE :",
             result
         );
 
-
         if (result.status === "ok") {
-
 
             document.getElementById("status").innerText =
                 "✅ Présence enregistrée";
-
 
         }
 
@@ -98,10 +89,8 @@ async function enregistrerPresence() {
             result.error === "Already registered"
         ) {
 
-
             document.getElementById("status").innerText =
                 "ℹ️ Présence déjà enregistrée";
-
 
         }
 
@@ -109,53 +98,40 @@ async function enregistrerPresence() {
             result.error === "Apprenant introuvable"
         ) {
 
-
             document.getElementById("status").innerText =
                 "❌ Apprenant inconnu";
-
 
         }
 
         else {
 
-
             document.getElementById("status").innerText =
                 "❌ Erreur lors de l'enregistrement";
 
-
         }
 
-
         qrApprenant = null;
-
 
     }
 
 
     catch (error) {
 
-
         console.error(
             "Erreur présence :",
             error
         );
 
-
         document.getElementById("status").innerText =
             "❌ " + error.message;
 
-
     }
-
 
     finally {
 
-
         presenceEnCours = false;
 
-
     }
-
 
 }
 
@@ -167,33 +143,23 @@ async function enregistrerPresence() {
 
 function onScanSuccess(decodedText) {
 
-
     if (!isScanning) {
         return;
     }
 
-
     isScanning = false;
-
 
     let data = null;
 
-
-
     try {
-
 
         data = JSON.parse(decodedText);
 
-
     }
-
 
     catch (e) {
 
-
         if (decodedText.startsWith("APP_")) {
-
 
             data = {
 
@@ -203,54 +169,41 @@ function onScanSuccess(decodedText) {
 
             };
 
-
         }
 
         else {
-
 
             debug(
                 "QR INVALIDE :\n" +
                 decodedText
             );
 
-
             document.getElementById("status").innerText =
                 "❌ QR invalide";
-
 
             isScanning = true;
 
             return;
 
-
         }
 
-
     }
-
-
 
     debug(
         "QR LU :\n" +
         JSON.stringify(data)
     );
 
-
     console.log(
         "QR LU :",
         data
     );
 
-
-
     if (!data.type) {
-
 
         debug(
             "QR SANS TYPE"
         );
-
 
         document.getElementById("status").innerText =
             "❌ QR sans type";
@@ -260,53 +213,41 @@ function onScanSuccess(decodedText) {
 
         return;
 
-
     }
-
 
 
     // ======================================
     // QR SESSION
     // ======================================
 
-
     if (data.type === "SESSION") {
-
 
         if (!data.sessionId) {
 
-
             document.getElementById("status").innerText =
                 "❌ Session invalide";
-
 
             isScanning = true;
 
             return;
 
-
         }
 
-
         sessionId = data.sessionId;
-
 
         localStorage.setItem(
             "sessionId",
             sessionId
         );
 
-
         document.getElementById("status").innerText =
             "✅ Session reconnue\n" +
             sessionId;
-
 
         debug(
             "SESSION ACTIVE : " +
             sessionId
         );
-
 
         if (qrApprenant) {
 
@@ -314,26 +255,20 @@ function onScanSuccess(decodedText) {
 
         }
 
-
         isScanning = true;
 
         return;
 
-
     }
-
 
 
     // ======================================
     // QR APPRENANT
     // ======================================
 
-
     if (data.type === "APPRENANT") {
 
-
         if (!sessionId) {
-
 
             document.getElementById("status").innerText =
                 "⚠️ Scannez d'abord le QR séance";
@@ -343,30 +278,21 @@ function onScanSuccess(decodedText) {
 
             return;
 
-
         }
-
 
         if (!data.qrCode && !data.id) {
 
-
             document.getElementById("status").innerText =
                 "❌ QR apprenant invalide";
-
 
             isScanning = true;
 
             return;
 
-
         }
-
-
 
         qrApprenant =
             data.qrCode || data.id;
-
-
 
         document.getElementById("status").innerText =
             "✅ Apprenant reconnu\n" +
@@ -374,40 +300,28 @@ function onScanSuccess(decodedText) {
             "\nSession : " +
             sessionId;
 
-
-
         debug(
             "QR APPRENANT : " +
             qrApprenant
         );
 
-
-
         enregistrerPresence();
-
-
 
         isScanning = true;
 
         return;
 
-
     }
-
-
 
     debug(
         "TYPE QR INCONNU : " +
         data.type
     );
 
-
     document.getElementById("status").innerText =
         "❌ Type QR inconnu";
 
-
     isScanning = true;
-
 
 }
 
@@ -417,11 +331,8 @@ function onScanSuccess(decodedText) {
 // CAMERA
 // ======================================
 
-
 const html5QrCode =
     new Html5Qrcode("reader");
-
-
 
 html5QrCode.start(
 
@@ -438,18 +349,14 @@ html5QrCode.start(
 
 )
 
-
 .catch(err => {
-
 
     console.error(
         "Erreur caméra",
         err
     );
 
-
     document.getElementById("status").innerText =
         "Erreur caméra : " + err;
-
 
 });
