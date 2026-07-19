@@ -277,7 +277,7 @@ app.get("/api/presences/:sessionId", async (req, res) => {
         apprenants!presences_apprenant_id_fkey (
           nom,
           prenom,
-          groupe
+          groupe_id
         )
       `)
       .eq("session_id", sessionId);

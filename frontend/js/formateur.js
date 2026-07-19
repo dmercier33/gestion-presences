@@ -209,7 +209,7 @@ async function refreshPresences() {
                 <p>
                     ✅ ${p.apprenants.prenom}
                     ${p.apprenants.nom}
-                    (${p.apprenants.groupe})
+                    (${p.apprenants.groupe_id})
                     -
                     ${new Date(p.created_at).toLocaleTimeString()}
                 </p>
