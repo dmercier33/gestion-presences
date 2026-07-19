@@ -106,6 +106,8 @@ async function enregistrerPresence() {
 
         }
 
+        await stopperCamera();
+
         qrApprenant = null;
 
     }
@@ -192,10 +194,6 @@ function onScanSuccess(decodedText) {
     }
 
     isScanning = false;
-
-    setTimeout(() => {
-        stopperCamera();
-    }, 500);
 
     let data = null;
 
