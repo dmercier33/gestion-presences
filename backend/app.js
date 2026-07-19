@@ -117,7 +117,7 @@ app.post("/api/sessions", async (req, res) => {
   // Rechercher une séance déjà ouverte pour ce groupe.
   // Une séance existante est reprise afin d'éviter la création de doublons.
   const now = new Date();
-  const { data: existingSession, error: existingError } =const { data: existingSession, error: existingError } =
+  const { data: existingSession, error: existingError } =
     await supabase
       .from("sessions")
       .select(`
