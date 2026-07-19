@@ -337,20 +337,22 @@ function onScanSuccess(decodedText) {
 
         }
 
-qrApprenant =
-    data.qrCode || data.id;
+        qrApprenant =
+            data.qrCode || data.id;
 
-document.getElementById("status").innerText =
-    "📷 QR apprenant détecté\n" +
-    qrApprenant +
-    "\nValidation en cours...";
+        document.getElementById("status").innerText =
+            "📷 QR apprenant détecté\n" +
+            qrApprenant +
+            "\nValidation en cours...";
 
-debug(
-    "QR APPRENANT : " +
-    qrApprenant
-);
+        debug(
+            "QR APPRENANT : " +
+            qrApprenant
+        );
 
-enregistrerPresence();
+        setTimeout(() => {
+            enregistrerPresence();
+        }, 800);
 
         isScanning = true;
 
