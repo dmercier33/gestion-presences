@@ -262,6 +262,31 @@ function onScanSuccess(decodedText) {
     // QR APPRENANT
     // ======================================
 
+    if (data.type === "APPRENANT") {
+
+        if (!sessionId) {
+
+            document.getElementById("status").innerText =
+                "⚠️ Scannez d'abord le QR séance";
+
+
+            isScanning = true;
+
+            return;
+
+        }
+
+        if (!data.qrCode && !data.id) {
+
+            document.getElementById("status").innerText =
+                "❌ QR apprenant invalide";
+
+            isScanning = true;
+
+            return;
+
+        }
+
 qrApprenant =
     data.qrCode || data.id;
 
@@ -276,13 +301,20 @@ debug(
 );
 
 enregistrerPresence();
+
+        isScanning = true;
+
+        return;
+
+    }
+
     debug(
         "TYPE QR INCONNU : " +
         data.type
     );
 
     document.getElementById("status").innerText =
-        "❌ Type QR inconnu";
+        "❌ Type QR inconnu : " + data.type;
 
     isScanning = true;
 
