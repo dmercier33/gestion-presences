@@ -9,19 +9,11 @@ informations suivantes manquantes.
 structure JSON de /api/presences/:sessionId
 adaptation de l'affichage côté formateur.js.
 
-2) Message "Apprenant reconnu"
-Améliorer le découpage :
-"QR apprenant détecté" avant validation ;
-"Apprenant reconnu" seulement après validation backend.
-
-3) Délai du premier enregistrement
-À re-tester après correction du point 2.
-Hypothèse actuelle :
-probablement lié au chemin de premier enregistrement / erreur JS qui perturbait le flux.
-
-4) Variable active
+2) Variable active
 Objectif :
 ne plus dépendre de active ;
 considérer une session active avec :
 maintenant < started_at + duration
 Puis nettoyage SQL plus tard.
+
+3) UX formateur : éviter le faux "0 présent" pendant le chargement
