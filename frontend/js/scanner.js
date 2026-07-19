@@ -36,8 +36,9 @@ if (
 
 function debug(message) {
 
-    document.getElementById("debug").innerText +=
-        "\n" + message;
+    // descativer en production
+    //document.getElementById("debug").innerText +=
+    //    "\n" + message;
 
 }
 

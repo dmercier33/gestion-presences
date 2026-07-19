@@ -1,0 +1,39 @@
+🔍 Corriger affichage liste présents (structure JSON)
+🧹 Corriger message "Apprenant reconnu" trop tôt
+🕒 Refaire un test délai
+🔧 S'attaquer à active
+
+À faire demain
+1) Affichage liste des présents
+
+Problème :
+
+nom/prénom affichés ;
+informations suivantes manquantes.
+
+À vérifier :
+
+structure JSON de /api/presences/:sessionId
+adaptation de l'affichage côté formateur.js.
+2) Message "Apprenant reconnu"
+
+Améliorer le découpage :
+
+"QR apprenant détecté" avant validation ;
+"Apprenant reconnu" seulement après validation backend.
+3) Délai du premier enregistrement
+
+À re-tester après correction du point 2.
+
+Hypothèse actuelle :
+
+probablement lié au chemin de premier enregistrement / erreur JS qui perturbait le flux.
+4) Variable active
+
+Objectif :
+
+ne plus dépendre de active ;
+considérer une session active avec :
+maintenant < started_at + duration
+
+Puis nettoyage SQL plus tard.
