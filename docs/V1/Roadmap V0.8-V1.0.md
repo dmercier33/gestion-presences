@@ -22,19 +22,13 @@ Render ;
 environnement proche d'une vraie mise en production.
 Ce n'est plus "un essai". C'est une base exploitable.
 
-Pour la v1, je vois maintenant trois axes (dans l'ordre)
+Pour la v0.9 on a fait :
 
-1) Finaliser le métier rentrée (priorité absolue)
-génération massive des QR apprenants depuis un export CSV de fichier Excel;
-export PDF des planches ;
-    nom/prénom sous le QR ;
-    groupe ;
-    date de génération.
-l'administrateur imprime et distribue les QR aux apprenants.
-le formateur scanne les QR apprenants et exporte les présences.
-Et en septembre ça roule.
+1) DT01 active
 
-2) Nettoyage low cost Express
+2) DT01 groupe
+
+3) Nettoyage low cost Express
 Sans révolution :
     routes séparées ;
     services métier ;
@@ -42,14 +36,14 @@ Sans révolution :
     gestion d'erreurs propre.
 Pas pour faire joli : pour éviter que la prochaine évolution transforme server.js en jungle.
 
-3) UX
+4) UX  (messages & timers camera)
 ✅ Présence déjà enregistrée pour cet apprenant
 ou :
 ❌ QR apprenant inconnu
 ou :
 ⚠️ Séance expirée
 
-4) DT-02
+5) Test reprise session (gestion des présents)
 Reprise session formateur
 vérifier qu'une session existante recharge aussi :
 le QR session ;
@@ -75,6 +69,16 @@ Un administrateur peut :
 4) Finaliser les docs
 Notice d'utilsation Presencia.
 
+1) Finaliser le métier rentrée (priorité absolue)
+génération massive des QR apprenants depuis un export CSV de fichier Excel;
+export PDF des planches ;
+    nom/prénom sous le QR ;
+    groupe ;
+    date de génération.
+l'administrateur imprime et distribue les QR aux apprenants.
+le formateur scanne les QR apprenants et exporte les présences.
+Et en septembre ça roule.
+
 Après la V1 :
 Rétro projet
 Dictionnaire
@@ -82,5 +86,4 @@ Plaquette commerciale.
 
 durée de séance configurable 
 fermeture manuelle de séance 
-reprise de séance améliorée ?
 affichage plus riche du groupe (texte plutot que code)

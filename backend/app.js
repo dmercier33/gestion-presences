@@ -117,24 +117,21 @@ app.post("/api/sessions", async (req, res) => {
   // Rechercher une séance déjà ouverte pour ce groupe.
   // Une séance existante est reprise afin d'éviter la création de doublons.
   const now = new Date();
-  const { data: existingSession, error: existingError } =
+  const { data: existingSession, error: existingError } =const { data: existingSession, error: existingError } =
     await supabase
       .from("sessions")
       .select(`
       id,
       token,
       groupe_id,
-      active,
       started_at,
       expires_at,
       duration_minutes
     `)
       .eq("groupe_id", groupe_id)
-      .eq("active", true)
       .is("ended_at", null)
       .gt("expires_at", now.toISOString())
       .maybeSingle();
-
 
   if (existingError) {
     return res.status(500).json({
@@ -338,7 +335,7 @@ app.post("/api/presences", async (req, res) => {
     const { data: session, error: sessionError } =
       await supabase
         .from("sessions")
-        .select("id, expires_at, ended_at, active")
+        .select("id, expires_at, ended_at")
         .eq("id", sessionId)
         .maybeSingle();
 
@@ -350,7 +347,6 @@ app.post("/api/presences", async (req, res) => {
 
     console.log("VERIFICATION SESSION :", {
       id: session.id,
-      active: session.active,
       ended_at: session.ended_at,
       expires_at: session.expires_at,
       maintenant: new Date().toISOString(),
@@ -360,7 +356,6 @@ app.post("/api/presences", async (req, res) => {
 
     // Vérifier que la session est active et non expirée
     if (
-      !session.active ||
       session.ended_at ||
       new Date(session.expires_at) < new Date()
     ) {
