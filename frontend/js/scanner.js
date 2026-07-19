@@ -193,7 +193,9 @@ function onScanSuccess(decodedText) {
 
     isScanning = false;
 
-    stopperCamera();
+    setTimeout(() => {
+        stopperCamera();
+    }, 500);
 
     let data = null;
 
