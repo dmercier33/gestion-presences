@@ -1,0 +1,24 @@
+Aujourd'hui, on n'a pas seulement "fait passer des tests". On a consolidé des choix structurants :
+le groupe est devenu une vraie notion métier ;
+l'apprenant porte son appartenance ;
+la session fige ses participants attendus ;
+session_apprenants joue son vrai rôle de snapshot ;
+presences devient la trace de la réalité terrain ;
+le QR n'est plus un gadget, il est intégré dans un workflow cohérent.
+
+Et surtout, on a fait quelque chose qui est souvent plus difficile que coder une fonctionnalité : on a éliminé des ambiguïtés.
+
+Les deux gros moments de la journée resteront pour moi :
+Le workflow scanner :
+"Attends, je pensais qu'on avait validé scan session → scan apprenant → présence."
+Excellent réflexe. On a arrêté la dérive avant qu'elle devienne une usine.
+session_apprenants :
+"Attention, on décide une chose et tu codes autre chose parfois."
+😄 Celle-là était parfaitement légitime. C'est exactement le genre de rappel qui garde une architecture propre.
+Et tu as raison pour la suite : mon intuition est aussi qu'on ne va probablement pas découvrir une montagne de loups. Il restera sûrement des petites bêtes :
+🐺 un message utilisateur pas assez propre ;
+🐺 un vieux chemin oublié ;
+🐺 une petite incohérence UX ;
+🐺 une latence d'environnement.
+Mais les gros prédateurs — les problèmes de modèle métier — on les a déjà chassés.
+La v0.9.1 sera probablement une version de polissage, pas une reconstruction.

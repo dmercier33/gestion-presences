@@ -1,5 +1,12 @@
 Contrat UX Scanner Formateur — Draft V0.8.2
 
+succès	✅ Présence enregistrée	✅ Présence enregistrée + nom
+doublon	ℹ️ Présence déjà enregistrée (supposé)	ℹ️ Déjà émargé
+QR invalide	❌ QR invalide	❌ QR non reconnu
+QR sans type	❌ QR sans type	❌ Badge invalide
+session absente	⚠️ Scannez d'abord le QR séance	✅ Scannez d'abord la séance
+caméra	Erreur caméra brut	📷 Autorisez la caméra
+
 1. Principes
 Principe 1
 Le formateur ne doit jamais voir une erreur technique.
@@ -89,9 +96,7 @@ Message :
 Autorisez l'accès caméra
 dans votre navigateur
 
-5. Informations utiles à afficher
-
-Après validation :
+5. Informations utiles à afficher après validation :
 Priorité :
 prénom + nom ;
 heure ;
