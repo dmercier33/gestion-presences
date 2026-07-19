@@ -187,7 +187,7 @@ async function demarrerCamera() {
 // SCAN QR
 // ======================================
 
-function onScanSuccess(decodedText) {
+async function onScanSuccess(decodedText) {
 
     if (!isScanning) {
         return;
@@ -303,6 +303,8 @@ function onScanSuccess(decodedText) {
 
         isScanning = true;
 
+        await stopperCamera();
+        
         return;
 
     }
