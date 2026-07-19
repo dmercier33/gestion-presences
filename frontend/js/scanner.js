@@ -303,7 +303,9 @@ async function onScanSuccess(decodedText) {
 
         isScanning = true;
 
-        await stopperCamera();
+        setTimeout(() => {
+           stopperCamera();
+        }, 1500);
         
         return;
 
