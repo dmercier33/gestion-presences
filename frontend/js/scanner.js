@@ -132,10 +132,58 @@ async function enregistrerPresence() {
 }
 
 
+async function stopperCamera() {
+
+    try {
+
+        await html5QrCode.stop();
+
+        console.log("CAMERA ARRETEE");
+
+    } catch (error) {
+
+        console.error(
+            "Erreur arrêt caméra :",
+            error
+        );
+
+    }
+
+}
+
+
+async function demarrerCamera() {
+
+    try {
+
+        await html5QrCode.start(
+            {
+                facingMode: "environment"
+            },
+            {
+                fps: 10,
+                qrbox: 250
+            },
+            onScanSuccess
+        );
+
+        console.log("CAMERA DEMARREE");
+
+    } catch (error) {
+
+        console.error(
+            "Erreur démarrage caméra",
+            error
+        );
+
+    }
+
+}
+
+
 // ======================================
 // SCAN QR
 // ======================================
-
 
 function onScanSuccess(decodedText) {
 
@@ -144,6 +192,8 @@ function onScanSuccess(decodedText) {
     }
 
     isScanning = false;
+
+    stopperCamera();
 
     let data = null;
 
@@ -320,38 +370,29 @@ enregistrerPresence();
 
 }
 
-
-
 // ======================================
 // CAMERA
+// START
 // ======================================
 
 const html5QrCode =
     new Html5Qrcode("reader");
 
-html5QrCode.start(
+demarrerCamera();
 
-    {
-        facingMode: "environment"
-    },
+document
+    .getElementById("btnScanner")
+    .addEventListener(
+        "click",
+        () => {
 
-    {
-        fps: 10,
-        qrbox: 250
-    },
+            isScanning = true;
+            qrApprenant = null;
 
-    onScanSuccess
+            document.getElementById("status").innerText =
+                "En attente du QR...";
 
-)
+            demarrerCamera();
 
-.catch(err => {
-
-    console.error(
-        "Erreur caméra",
-        err
+        }
     );
-
-    document.getElementById("status").innerText =
-        "Erreur caméra : " + err;
-
-});
