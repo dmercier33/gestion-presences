@@ -592,48 +592,73 @@ app.post("/api/apprenants/:id/qr", async (req, res) => {
 
   const id = req.params.id;
 
-  const qrCode =
-    "APP_" +
-    Date.now() +
-    "_" +
-    Math.random()
-      .toString(36)
-      .substring(2, 8);
+  // Récupérer l'apprenant existant
+  const { data: apprenant, error: apprenantError } =
+    await supabase
+      .from("apprenants")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-  const { data, error } = await supabase
-    .from("apprenants")
-    .update({
-      qr_code: qrCode
-    })
-    .eq("id", id)
-    .select();
 
-  if (error) {
+  if (apprenantError) {
     return res.status(500).json({
-      error: error.message
+      error: apprenantError.message
     });
   }
 
-  if (!data || data.length === 0) {
+
+  if (!apprenant) {
     return res.status(404).json({
       error: "Apprenant introuvable"
     });
+  }
+
+
+  let qrCode = apprenant.qr_code;
+
+
+  // Création du QR uniquement s'il n'existe pas encore
+  if (!qrCode) {
+
+    qrCode =
+      "APP_" +
+      Date.now() +
+      "_" +
+      Math.random()
+        .toString(36)
+        .substring(2, 8);
+
+
+    const { error: updateError } =
+      await supabase
+        .from("apprenants")
+        .update({
+          qr_code: qrCode
+        })
+        .eq("id", id);
+
+
+    if (updateError) {
+      return res.status(500).json({
+        error: updateError.message
+      });
+    }
 
   }
 
-  // Le payload QR contient les informations nécessaires
-  // au scanner pour identifier le type de QR
-  // et retrouver l'apprenant correspondant.
+
   const qrPayload = {
     type: "APPRENANT",
     version: 1,
     qrCode: qrCode
   };
 
+
   res.json({
     qr_code: qrCode,
     qr_payload: qrPayload,
-    apprenant: data[0]
+    apprenant
   });
 
 });
