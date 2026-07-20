@@ -54,7 +54,7 @@ export async function validatePresence(
         "ENVOI PRESENCE :",
         {
             sessionId,
-            apprenantId
+            qrCode
         }
     );
 
@@ -69,7 +69,7 @@ export async function validatePresence(
 
         body: JSON.stringify({
             sessionId,
-            apprenantId
+            qrCode
         })
 
     });
