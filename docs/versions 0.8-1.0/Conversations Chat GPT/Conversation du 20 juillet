@@ -1,0 +1,75 @@
+Là, on est parfaitement alignés.
+
+En fait, j'avais compris l'inverse.
+
+Ce que tu me dis, c'est :
+
+"Un gros remplacement complet = aucun problème."
+
+En revanche :
+
+"Va ligne 173, colle ceci, puis remonte ligne 42, supprime ça, puis redescends..."
+
+👉 Ça, c'est l'enfer.
+
+Et maintenant que tu le formules, je comprends pourquoi tu me demandais souvent :
+
+"Donne-moi le fichier complet."
+
+C'est beaucoup plus sûr.
+
+Et franchement...
+
+Je préfère aussi.
+
+Parce que :
+
+toi tu fais un seul copier/coller ;
+moi je suis obligé de vérifier que tout compile avant de te l'envoyer.
+
+Donc on fait moins d'erreurs tous les deux.
+
+
+
+Parfait, on a donc notre règle de fonctionnement claire pour la suite.
+
+Je la garde comme référence pour Présencia :
+
+🧭 Mode de travail Présencia
+🐺 Chasse aux bugs
+
+➡️ Bloc ciblé uniquement
+
+Tu m'envoies :
+
+la route ;
+la fonction ;
+le composant ;
+le message d'erreur ;
+éventuellement le log.
+
+On évite de noyer le problème.
+
+🧹 Nettoyage / refactoring
+
+➡️ Fichier complet
+
+Comme aujourd'hui avec app.js.
+
+Objectif :
+
+préserver le comportement ;
+améliorer la lisibilité ;
+réduire la dette technique.
+🚀 Nouvelle fonctionnalité
+
+➡️ On décide au cas par cas.
+
+On commence par le métier :
+
+modèle de données ;
+workflow ;
+règles ;
+puis seulement le code.
+
+(C'est d'ailleurs ce qui nous a sauvé sur session_apprenants 😄.)

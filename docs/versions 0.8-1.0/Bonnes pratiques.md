@@ -64,3 +64,5 @@ ajouter au maximum une observation ciblée ;
 retirer les tests temporaires après résolution.
 
 Le problème du bouton nous a rappelé qu'on peut facilement polluer l'environnement avec des traces de debug.
+
+Un fichier complet vaut mieux que dix micro-modifications.
