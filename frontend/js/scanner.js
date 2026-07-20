@@ -98,7 +98,14 @@ async function enregistrerPresence() {
                 "❌ Apprenant inconnu";
 
         }
+        else if (
+            result.error === "Apprenant non prévu pour cette séance"
+        ) {
 
+            document.getElementById("status").innerText =
+                "❌ Apprenant non prévu pour cette séance";
+
+        }
         else {
 
             document.getElementById("status").innerText =
