@@ -1,8 +1,5 @@
 import { validatePresence } from "./api.js";
 
-console.log("scanner v0.9.0");
-
-
 // ======================================
 // ETAT APPLICATION
 // ======================================
@@ -71,9 +68,9 @@ async function enregistrerPresence() {
 
         console.log(
             "REPONSE PRESENCE :",
-            result
+            result.status,
+            result.code || ""
         );
-
 
         if (result.status === "ok") {
 
@@ -254,11 +251,6 @@ async function onScanSuccess(decodedText) {
     debug(
         "QR LU :\n" +
         JSON.stringify(data)
-    );
-
-    console.log(
-        "QR LU :",
-        data
     );
 
     if (!data.type) {
