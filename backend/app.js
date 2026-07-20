@@ -301,7 +301,10 @@ app.post("/api/presences", async (req, res) => {
 
   console.log("===== API PRESENCES =====");
   console.log("sessionId :", sessionId);
-  console.log("qrCode    :", qrCode);
+  console.log(
+    "qrCode reçu :",
+    qrCode ? "présent" : "absent"
+  );
 
   if (!sessionId || !qrCode) {
     return res.status(400).json({
@@ -355,8 +358,17 @@ app.post("/api/presences", async (req, res) => {
         .eq("qr_code", qrCode)
         .maybeSingle();
 
-    console.log("APPRENANT TROUVE :", apprenant);
-    console.log("ERREUR APPRENANT :", apprenantError);
+    console.log(
+        "APPRENANT TROUVE :",
+        apprenant?.id
+    );
+
+    if (apprenantError) {
+        console.error(
+            "ERREUR RECHERCHE APPRENANT :",
+            apprenantError
+        );
+    }
 
     // Si l'apprenant n'existe pas, renvoyer une erreur
     if (apprenantError || !apprenant) {
