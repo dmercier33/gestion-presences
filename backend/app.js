@@ -329,11 +329,9 @@ app.post("/api/presences", async (req, res) => {
 
     console.log("VERIFICATION SESSION :", {
       id: session.id,
-      ended_at: session.ended_at,
       expires_at: session.expires_at,
-      maintenant: new Date().toISOString(),
-      expiration_depassee: new Date(session.expires_at) < new Date(),
-      now: new Date().toISOString()
+      expiration_depassee:
+        new Date(session.expires_at) < new Date()
     });
 
     // Vérifier que la séance est toujours ouverte.
@@ -359,15 +357,15 @@ app.post("/api/presences", async (req, res) => {
         .maybeSingle();
 
     console.log(
-        "APPRENANT TROUVE :",
-        apprenant?.id
+      "APPRENANT TROUVE :",
+      apprenant?.id
     );
 
     if (apprenantError) {
-        console.error(
-            "ERREUR RECHERCHE APPRENANT :",
-            apprenantError
-        );
+      console.error(
+        "ERREUR RECHERCHE APPRENANT :",
+        apprenantError
+      );
     }
 
     // Si l'apprenant n'existe pas, renvoyer une erreur
