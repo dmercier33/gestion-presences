@@ -47,7 +47,7 @@ export async function openSession({
  */
 export async function validatePresence(
     sessionId,
-    apprenantId
+    qrCode
 ) {
 
     console.log(
