@@ -1,0 +1,35 @@
+mdp supabase prod & test : sortirdetableavaclafaim
+
+dump prod : 
+& "C:\Program Files\PostgreSQL\18\bin\pg_dump.exe" `
+"postgresql://postgres.wnftrhgbinqwijxskzkw@aws-0-eu-central-1.pooler.supabase.com:6543/postgres" `
+> presencia_prod_backup.sql
+
+dump prod schema seul : 
+& "C:\Program Files\PostgreSQL\18\bin\pg_dump.exe" `
+--schema-only `
+"postgresql://postgres.wnftrhgbinqwijxskzkw@aws-0-eu-central-1.pooler.supabase.com:6543/postgres" `
+> presencia_schema_only.sql
+
+sql select 1 TEST : 
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" `
+"postgresql://postgres.wxfwhyopndwrgehimogo:[YOUR-PASSWORD]@aws-0-eu-west-3.pooler.supabase.com:6543/postgres" `
+-c "select 1;"
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" `
+"postgresql://postgres.wxfwhyopndwrgehimogo:sortirdetableaveclafaim@aws-0-eu-west-3.pooler.supabase.com:6543/postgres" `
+-c "select 1;"
+
+erase TEST : 
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" `
+>> "postgresql://postgres.wxfwhyopndwrgehimogo@aws-0-eu-west-3.pooler.supabase.com:6543/postgres" `
+>> -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+
+alim prod dans test ne marche pas (pas de < ici sic !!!!!!!!): 
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" `
+"postgresql://postgres.wxfwhyopndwrgehimogo@aws-0-eu-west-3.pooler.supabase.com:6543/postgres" `
+< presencia_prod_backup.sql
+
+Get-Content .\presencia_prod_backup_20072026.sql | & "C:\Program Files\PostgreSQL\18\bin\psql.exe" `
+"postgresql://postgres.wxfwhyopndwrgehimogo@aws-0-eu-west-3.pooler.supabase.com:6543/postgres"
+
+puis 

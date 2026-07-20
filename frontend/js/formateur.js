@@ -5,6 +5,7 @@ console.log("FORMATEUR.JS CHARGE");
 
 let sessionCourante = null;
 let refreshTimer = null;
+let ouvertureEnCours = null;
 
 // formateur.js pilote l'interface du formateur pendant le déroulement d'une session.
 // formateur.js ne contient que la logique de l'écran formateur.
@@ -59,6 +60,15 @@ async function chargerGroupes() {
 
 async function ouvrirSeance() {
 
+    if (ouvertureEnCours) {
+        console.log(
+            "Ouverture séance déjà en cours"
+        );
+        return;
+    }
+
+    ouvertureEnCours = true;
+
     try {
 
         const groupe_id =
@@ -96,7 +106,7 @@ async function ouvrirSeance() {
 
         localStorage.setItem(
             "sessionId",
-            session.sessionId
+            session.id
         );
 
         localStorage.setItem(
@@ -170,6 +180,10 @@ async function ouvrirSeance() {
 
         document.getElementById("sessionInfo").innerText =
             "Erreur ouverture séance";
+
+    } finally {
+
+        ouvertureEnCours = false;
 
     }
 
