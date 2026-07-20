@@ -323,7 +323,7 @@ app.get("/api/presences/:sessionId", async (req, res) => {
 // Formateur
 app.post("/api/presences", async (req, res) => {
 
-  const { sessionId, apprenantId: qrCode } = req.body;
+  const { sessionId, qrCode } = req.body;
 
   console.log("===== API PRESENCES =====");
   console.log("sessionId :", sessionId);
