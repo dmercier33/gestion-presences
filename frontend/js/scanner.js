@@ -74,6 +74,7 @@ async function enregistrerPresence() {
             result
         );
 
+
         if (result.status === "ok") {
 
             document.getElementById("status").innerText =
@@ -81,14 +82,16 @@ async function enregistrerPresence() {
 
         }
 
+
         else if (
             result.code === "PRESENCE_ALREADY_EXISTS"
         ) {
 
-        document.getElementById("status").innerText =
-            "ℹ️ Présence déjà enregistrée";
+            document.getElementById("status").innerText =
+                "ℹ️ Présence déjà enregistrée";
 
         }
+
 
         else if (
             result.error === "Apprenant introuvable"
@@ -98,6 +101,8 @@ async function enregistrerPresence() {
                 "❌ Apprenant inconnu";
 
         }
+
+
         else if (
             result.error === "Apprenant non prévu pour cette séance"
         ) {
@@ -106,12 +111,15 @@ async function enregistrerPresence() {
                 "❌ Apprenant non prévu pour cette séance";
 
         }
+
+
         else {
 
             document.getElementById("status").innerText =
                 "❌ Erreur lors de l'enregistrement";
 
         }
+
 
         await stopperCamera();
 
@@ -131,6 +139,7 @@ async function enregistrerPresence() {
             "❌ " + error.message;
 
     }
+
 
     finally {
 
