@@ -1,6 +1,6 @@
 import { validatePresence } from "./api.js";
 
-console.log("scanner v0.8.0");
+console.log("scanner v0.9.0");
 
 
 // ======================================
