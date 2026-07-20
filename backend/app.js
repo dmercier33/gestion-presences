@@ -378,12 +378,10 @@ app.post("/api/presences", async (req, res) => {
     const vraiApprenantId = apprenant.id;
 
     console.log(
-      "QR apprenant :",
-      qrCode,
-      "=> ID interne :",
+      "QR apprenant validé, ID interne :",
       vraiApprenantId
     );
-
+    
     // Vérifier que l'apprenant fait partie des participants attendus
     // pour cette séance.
     const { data: participation, error: participationError } =
