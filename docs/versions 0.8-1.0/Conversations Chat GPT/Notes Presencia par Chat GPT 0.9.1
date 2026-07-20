@@ -1,0 +1,120 @@
+🏆 Classement express Présencia — état v0.9.1
+🥇 1 — Le workflow métier : 9,5/10
+
+C'est clairement le gros gagnant.
+
+Pourquoi :
+
+le formateur ouvre une séance ;
+les apprenants sont rattachés à la séance ;
+le QR apprenant sert de preuve d'identification ;
+la présence est enregistrée ;
+les contrôles métier bloquent les incohérences.
+
+Le cœur du produit est là.
+
+Le petit -0,5 :
+
+pas encore d'export / exploitation FSE complète.
+🥈 2 — Architecture technique : 8,5/10
+
+Franchement très correcte pour une V0.9.
+
+Points forts :
+
+frontend séparé ;
+backend Express ;
+Supabase PostgreSQL ;
+déploiement Render ;
+API REST simple ;
+modèle de données cohérent.
+
+Le petit - :
+
+quelques conventions ont dérivé en cours de route (qrCode, apprenantId 😄) ;
+documentation technique encore à faire.
+🥉 3 — Robustesse métier : 8,5/10
+
+Très bonne progression.
+
+Validé :
+✅ doublon
+✅ apprenant inconnu
+✅ apprenant hors séance
+✅ session expirée
+
+À renforcer :
+
+tests automatisés plus systématiques ;
+gestion des cas réseau (perte connexion pendant scan).
+🏅 4 — Déploiement : 8/10
+
+On a vécu des moments difficiles 😂 mais le résultat est bon.
+
+Validé :
+
+GitHub ;
+Render ;
+variables d'environnement ;
+connexion Supabase ;
+frontend servi correctement.
+
+Le - :
+
+la chaîne de déploiement doit être documentée.
+🏅 5 — Expérience utilisateur : 7/10
+
+C'est là qu'on va "repeindre" 😄.
+
+Ça fonctionne, mais il y a de la marge :
+
+messages ;
+ergonomie mobile ;
+feedback visuel ;
+historique.
+🏅 6 — Dette technique : descendue de 8/10 à 4/10 🎉
+
+Et ça c'est peut-être le plus important.
+
+Avant :
+
+plusieurs couches en évolution ;
+Google Apps Script abandonné ;
+migrations ;
+noms variables ;
+debug permanent.
+
+Maintenant :
+
+une architecture claire ;
+un flux stabilisé ;
+une release.
+Note globale v0.9.1 :
+⭐ 8,5 / 10
+
+Pour une application développée progressivement avec validation terrain, c'est franchement un très bon score.
+
+Le passage à 1.0 n'est plus un saut dans l'inconnu. C'est surtout :
+
+transformer une application solide en produit fini.
+
+Et le classement des "ennemis vaincus" 😂 :
+
+🥇 PEBKAC du fichier app.js non sauvegardé
+→ boss final surprise
+
+🥈 Supabase / Render / environnements parallèles imaginaires
+→ gros boss de mi-parcours
+
+🥉 apprenantId vs qrCode
+→ petit gobelin vicieux
+
+🏅 création de sessions en boucle
+→ faux boss (mais grosse frayeur 😄)
+
+Mention spéciale :
+🏆 Dennis : persévérance 10/10
+
+Parce que beaucoup de projets meurent exactement au moment où on était hier soir : "j'en ai marre, j'arrête". Là tu as fait l'inverse : on a consolidé.
+
+Allez, maintenant on peut sortir le pinceau 🎨😄.
