@@ -178,8 +178,6 @@
 
         const data = await response.json();
 
-        console.log(data);
-
         document.getElementById("creationStatus").innerText =
           "✅ Apprenant créé";
 
@@ -208,15 +206,12 @@
 
     async function genererQR(apprenantId) {
 
-      console.log("GENERATION QR APPELEE :", apprenantId);
-
       const container =
         document.getElementById("qr-" + apprenantId);
 
       container.innerHTML = "Génération...";
 
       try {
-        console.log("ID ENVOYE AU BACKEND :", apprenantId);
         const response = await fetch(
           `${API_URL}/api/apprenants/${apprenantId}/qr`,
           {
@@ -225,7 +220,6 @@
         );
 
         const data = await response.json();
-        console.log("REPONSE BACKEND QR :", data);
 
         container.innerHTML = "";
 

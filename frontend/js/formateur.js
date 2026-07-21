@@ -1,8 +1,6 @@
 import { API_URL } from "./config.js";
 import { openSession } from "./api.js";
 
-console.log("FORMATEUR.JS CHARGE");
-
 let sessionCourante = null;
 let refreshTimer = null;
 let ouvertureEnCours = null;
@@ -26,7 +24,10 @@ async function chargerGroupes() {
 
         const groupes = await res.json();
 
-        console.log("GROUPES RECUS :", groupes);
+        console.log(
+            "GROUPES RECUS :",
+            groupes.length
+        );
 
         const select = document.getElementById("selectGroupe");
 
@@ -84,10 +85,11 @@ async function ouvrirSeance() {
             return;
         }
 
-        console.log("Ouvrir séance :", {
+        console.log(
+            "Ouverture séance :",
             groupe_id,
-            duration_minutes
-        });
+            duration_minutes + " min"
+        );
 
         const resultat = await openSession({
             groupe_id,
@@ -114,7 +116,10 @@ async function ouvrirSeance() {
             session.token
         );
 
-        console.log("Session reçue :", session);
+        console.log(
+            "Session reçue :",
+            session.id
+        );
 
         sessionCourante = session;
 
@@ -167,8 +172,8 @@ async function ouvrirSeance() {
         });
 
         console.log(
-            "QR SESSION généré :",
-            qrData
+            "QR SESSION généré pour session :",
+            session.id
         );
 
     } catch (error) {
@@ -199,21 +204,11 @@ async function refreshPresences() {
 
     try {
 
-        console.log(
-            "RAFRAICHISSEMENT PRESENCES SEANCE :",
-            sessionCourante.id
-        );
-
         const res = await fetch(
             `${API_URL}/api/presences/${sessionCourante.id}`
         );
 
         const presences = await res.json();
-
-        console.log(
-            "PRESENCES RECUES :",
-            presences
-        );
 
         document.getElementById("presenceCount").innerText =
             `${presences.length} apprenant(s)`;

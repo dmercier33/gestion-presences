@@ -1,8 +1,5 @@
 import { validatePresence } from "./api.js";
 
-console.log("scanner v0.9.0");
-
-
 // ======================================
 // ETAT APPLICATION
 // ======================================
@@ -33,9 +30,12 @@ if (
 // ======================================
 // DEBUG
 // ======================================
+
 function debug(message) {
+
     document.getElementById("debug").innerText +=
         "\n" + message;
+
 }
 
 
@@ -68,11 +68,6 @@ async function enregistrerPresence() {
                 sessionId,
                 qrApprenant
             );
-
-        console.log(
-            "REPONSE PRESENCE :",
-            result
-        );
 
 
         if (result.status === "ok") {
@@ -150,15 +145,19 @@ async function enregistrerPresence() {
 }
 
 
+// ======================================
+// CAMERA
+// ======================================
+
 async function stopperCamera() {
 
     try {
 
         await html5QrCode.stop();
 
-        console.log("CAMERA ARRETEE");
+    }
 
-    } catch (error) {
+    catch (error) {
 
         console.error(
             "Erreur arrêt caméra :",
@@ -168,6 +167,7 @@ async function stopperCamera() {
     }
 
 }
+
 
 
 async function demarrerCamera() {
@@ -185,9 +185,9 @@ async function demarrerCamera() {
             onScanSuccess
         );
 
-        console.log("CAMERA DEMARREE");
+    }
 
-    } catch (error) {
+    catch (error) {
 
         console.error(
             "Erreur démarrage caméra",
@@ -213,11 +213,13 @@ async function onScanSuccess(decodedText) {
 
     let data = null;
 
+
     try {
 
         data = JSON.parse(decodedText);
 
     }
+
 
     catch (e) {
 
@@ -233,6 +235,7 @@ async function onScanSuccess(decodedText) {
 
         }
 
+
         else {
 
             debug(
@@ -240,8 +243,10 @@ async function onScanSuccess(decodedText) {
                 decodedText
             );
 
+
             document.getElementById("status").innerText =
                 "❌ QR invalide";
+
 
             isScanning = true;
 
@@ -251,21 +256,19 @@ async function onScanSuccess(decodedText) {
 
     }
 
+
     debug(
         "QR LU :\n" +
         JSON.stringify(data)
     );
 
-    console.log(
-        "QR LU :",
-        data
-    );
 
     if (!data.type) {
 
         debug(
             "QR SANS TYPE"
         );
+
 
         document.getElementById("status").innerText =
             "❌ QR sans type";
@@ -278,16 +281,19 @@ async function onScanSuccess(decodedText) {
     }
 
 
+
     // ======================================
     // QR SESSION
     // ======================================
 
     if (data.type === "SESSION") {
 
+
         if (!data.sessionId) {
 
             document.getElementById("status").innerText =
                 "❌ Session invalide";
+
 
             isScanning = true;
 
@@ -295,31 +301,39 @@ async function onScanSuccess(decodedText) {
 
         }
 
+
         sessionId = data.sessionId;
+
 
         localStorage.setItem(
             "sessionId",
             sessionId
         );
 
+
         document.getElementById("status").innerText =
             "✅ Session reconnue\n" +
             sessionId;
+
 
         debug(
             "SESSION ACTIVE : " +
             sessionId
         );
 
+
         isScanning = true;
 
+
         setTimeout(() => {
-           stopperCamera();
+            stopperCamera();
         }, 1500);
-        
+
+
         return;
 
     }
+
 
 
     // ======================================
@@ -327,6 +341,7 @@ async function onScanSuccess(decodedText) {
     // ======================================
 
     if (data.type === "APPRENANT") {
+
 
         if (!sessionId) {
 
@@ -340,32 +355,28 @@ async function onScanSuccess(decodedText) {
 
         }
 
-        if (!data.qrCode && !data.id) {
-
-            document.getElementById("status").innerText =
-                "❌ QR apprenant invalide";
-
-            isScanning = true;
-
-            return;
-
-        }
-
         if (!data.qrCode) {
+
             document.getElementById("status").innerText =
                 "❌ QR apprenant invalide";
 
             isScanning = true;
 
             return;
+
         }
 
         qrApprenant = data.qrCode;
+
+        qrApprenant =
+            data.qrCode;
 
         document.getElementById("status").innerText =
             "📷 QR apprenant détecté\n" +
             qrApprenant +
             "\nValidation en cours...";
+
+
 
         debug(
             "QR APPRENANT : " +
@@ -373,8 +384,12 @@ async function onScanSuccess(decodedText) {
         );
 
         setTimeout(() => {
+
             enregistrerPresence();
+
         }, 1500);
+
+
 
         isScanning = true;
 
@@ -382,27 +397,34 @@ async function onScanSuccess(decodedText) {
 
     }
 
+
+
     debug(
         "TYPE QR INCONNU : " +
         data.type
     );
 
+
     document.getElementById("status").innerText =
         "❌ Type QR inconnu : " + data.type;
+
 
     isScanning = true;
 
 }
 
+
 // ======================================
-// CAMERA
-// START
+// CAMERA START
 // ======================================
 
 const html5QrCode =
     new Html5Qrcode("reader");
 
+
 demarrerCamera();
+
+
 
 document
     .getElementById("btnScanner")
@@ -410,11 +432,15 @@ document
         "click",
         () => {
 
+
             isScanning = true;
+
             qrApprenant = null;
+
 
             document.getElementById("status").innerText =
                 "En attente du QR...";
+
 
             demarrerCamera();
 

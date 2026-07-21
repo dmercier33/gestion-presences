@@ -39,7 +39,6 @@ app.use(express.json());
 // Middleware de journalisation des requêtes.
 // Utile pour le diagnostic en environnement de déploiement.
 app.use((req, res, next) => {
-  console.log("REQUETE RECUE :", req.method, req.url);
   next();
 });
 
@@ -49,22 +48,6 @@ app.use((req, res, next) => {
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
-);
-
-console.log(
-  "SUPABASE_URL OK :",
-  process.env.SUPABASE_URL
-);
-
-
-console.log(
-  "SUPABASE_KEY présente :",
-  !!process.env.SUPABASE_KEY
-);
-
-console.log(
-  "SUPABASE_KEY début :",
-  process.env.SUPABASE_KEY?.substring(0, 10)
 );
 
 // HEALTH
@@ -150,15 +133,6 @@ app.post("/api/sessions", async (req, res) => {
   const expiresAt = new Date(
     createdAt.getTime() + duration_minutes * 60000
   );
-
-  console.log("OBJET ENVOYE A SUPABASE :", {
-    id: sessionId,
-    token,
-    groupe_id,
-    duration_minutes,
-    started_at: createdAt.toISOString(),
-    expires_at: expiresAt.toISOString(),
-  });
 
   const { data, error } = await supabase
     .from("sessions")
@@ -327,7 +301,10 @@ app.post("/api/presences", async (req, res) => {
 
   console.log("===== API PRESENCES =====");
   console.log("sessionId :", sessionId);
-  console.log("qrCode    :", qrCode);
+  console.log(
+    "qrCode reçu :",
+    qrCode ? "présent" : "absent"
+  );
 
   if (!sessionId || !qrCode) {
     return res.status(400).json({
@@ -352,11 +329,9 @@ app.post("/api/presences", async (req, res) => {
 
     console.log("VERIFICATION SESSION :", {
       id: session.id,
-      ended_at: session.ended_at,
       expires_at: session.expires_at,
-      maintenant: new Date().toISOString(),
-      expiration_depassee: new Date(session.expires_at) < new Date(),
-      now: new Date().toISOString()
+      expiration_depassee:
+        new Date(session.expires_at) < new Date()
     });
 
     // Vérifier que la séance est toujours ouverte.
@@ -381,8 +356,17 @@ app.post("/api/presences", async (req, res) => {
         .eq("qr_code", qrCode)
         .maybeSingle();
 
-    console.log("APPRENANT TROUVE :", apprenant);
-    console.log("ERREUR APPRENANT :", apprenantError);
+    console.log(
+      "APPRENANT TROUVE :",
+      apprenant?.id
+    );
+
+    if (apprenantError) {
+      console.error(
+        "ERREUR RECHERCHE APPRENANT :",
+        apprenantError
+      );
+    }
 
     // Si l'apprenant n'existe pas, renvoyer une erreur
     if (apprenantError || !apprenant) {
@@ -394,12 +378,10 @@ app.post("/api/presences", async (req, res) => {
     const vraiApprenantId = apprenant.id;
 
     console.log(
-      "QR apprenant :",
-      qrCode,
-      "=> ID interne :",
+      "QR apprenant validé, ID interne :",
       vraiApprenantId
     );
-
+    
     // Vérifier que l'apprenant fait partie des participants attendus
     // pour cette séance.
     const { data: participation, error: participationError } =
