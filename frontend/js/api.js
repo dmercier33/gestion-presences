@@ -33,11 +33,6 @@ export async function openSession({
 
     const result = await res.json();
 
-    console.log(
-        "REPONSE OUVERTURE SEANCE :",
-        result
-    );
-
     return result;
 }
 
@@ -49,15 +44,6 @@ export async function validatePresence(
     sessionId,
     qrCode
 ) {
-
-    console.log(
-        "ENVOI PRESENCE :",
-        {
-            sessionId,
-            qrCode
-        }
-    );
-
 
     const res = await fetch(`${API_URL}/api/presences`, {
 
