@@ -351,8 +351,16 @@ async function onScanSuccess(decodedText) {
 
         }
 
-        qrApprenant =
-            data.qrCode || data.id;
+        if (!data.qrCode) {
+            document.getElementById("status").innerText =
+                "❌ QR apprenant invalide";
+
+            isScanning = true;
+
+            return;
+        }
+
+        qrApprenant = data.qrCode;
 
         document.getElementById("status").innerText =
             "📷 QR apprenant détecté\n" +
