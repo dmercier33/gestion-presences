@@ -1,30 +1,18 @@
-Le projet : Presence360 (nom de travail)
+Gestion présences FLE
 
-Sprint 0 – Mise en place (1 soirée)
-Objectif : obtenir une base saine.
-Dépôt GitHub
-gestion-presences/
-Supabase
-Projet créé
-Base PostgreSQL
-Tables créées
-Render
-API Node.js déployée
-GitHub Pages
-Frontend accessible
+Architecture :
+- frontend
+- backend
+- Supabase
 
-Nous utiliserons :
-GitHub → code source
-GitHub Pages → frontend
-Render → API
-Supabase → base de données
-Visual Studio Code → développement local
+Flux QR :
+1. Création séance
+2. Génération session_apprenants
+3. Scan QR apprenant
+4. Validation backend
+5. Création présence
 
-LOGIQUE MÉTIER (très important)
-- Une session :1 QR formateur, token sécurisé, durée limitée
-- Un apprenant :QR permanent (Option A validée), pas de login : Une présence = session + apprenant + timestamp unique
-
-SÉCURITÉ (MINIMUM VIABLE)
-API publique Render
-validation token côté backend
-Supabase non exposé au frontend directement
+Règle QR :
+- un apprenant possède un QR durable
+- le QR n'est pas régénéré lors d'un affichage
+- le QR identifie l'apprenant dans le référentiel
