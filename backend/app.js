@@ -40,7 +40,7 @@ app.use(express.json());
 app.use("/api/groupes", groupeRoutes);
 app.use("/api/apprenants", apprenantRoutes);
 app.use("/api/presences", presenceRoutes);
-app.use("/api/sesions", sessionRoutes);
+app.use("/api/sessions", sessionRoutes);
 
 // Middleware de journalisation des requêtes.
 // Utile pour le diagnostic en environnement de déploiement.
