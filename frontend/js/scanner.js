@@ -1,4 +1,5 @@
 import { validatePresence } from "./api.js";
+import { API_URL } from "./config.js";
 
 // ======================================
 // ETAT APPLICATION
