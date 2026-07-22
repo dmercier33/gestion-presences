@@ -23,6 +23,8 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import groupeRoutes from "./routes/groupes.js";
+import apprenantRoutes from "./routes/apprenants.js";
 
 dotenv.config({
   path: process.env.NODE_ENV === "test"
@@ -30,11 +32,13 @@ dotenv.config({
     : ".env"
 });
 
-
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/apprenants", apprenantRoutes);
+app.use("/api/groupes", groupeRoutes);
+
 
 // Middleware de journalisation des requêtes.
 // Utile pour le diagnostic en environnement de déploiement.
@@ -458,215 +462,6 @@ app.post("/api/presences", async (req, res) => {
 
 });
 
-
-
-// =====================================================
-// CRÉATION D'UN APPRENANT
-// =====================================================
-//
-// Rôle :
-// Crée un apprenant dans le référentiel Présencia.
-//
-// Version actuelle :
-// Création simple nom/prénom/groupe_id.
-//
-// Évolution prévue :
-// - gestion avancée du cycle de vie apprenant
-// - gestion des changements de groupe
-// - automatisation complète de l'administration apprenant
-//
-// Utilisateur concerné :
-// Administrateur
-app.post("/api/apprenants", async (req, res) => {
-
-  const { nom, prenom, groupe_id } = req.body;
-
-  if (!nom || !prenom || !groupe_id) {
-    return res.status(400).json({
-      error: "nom, prenom et groupe_id obligatoires"
-    });
-  }
-
-  // Génération d'un identifiant interne unique.
-  // L'identifiant QR sera géré séparément.
-  const id = "APP_" + Date.now();
-
-  const { data, error } = await supabase
-    .from("apprenants")
-    .insert([
-      {
-        id,
-        nom,
-        prenom,
-        groupe_id,
-        actif: true
-      }
-    ])
-    .select()
-    .single();
-
-
-  if (error) {
-    return res.status(500).json({
-      error: error.message
-    });
-  }
-
-  res.json(data);
-
-});
-
-// =================================
-// LISTE DES APPRENANTS
-// =================================
-//
-// Retourne le référentiel des apprenants
-// avec leurs informations de groupe.
-// Utilisé par les écrans d'administration.
-app.get("/api/apprenants", async (req, res) => {
-
-  const { data, error } = await supabase
-    .from("apprenants")
-    .select(`
-      id,
-      nom,
-      prenom,
-      qr_code,
-      actif,
-      created_at,
-      groupe_id,
-      groupes (
-      id,
-      code,
-      libelle
-      )
-    `)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    return res.status(500).json({
-      error: error.message
-    });
-  }
-
-  res.json(data);
-
-});
-
-// Rôle :
-// Générer ou régénérer le QR d'identification
-// associé à un apprenant.
-//
-// Le QR est utilisé lors du scan de présence
-// afin de retrouver l'apprenant concerné.
-//
-// Utilisateur concerné :
-// Administrateur
-app.post("/api/apprenants/:id/qr", async (req, res) => {
-
-  const id = req.params.id;
-
-  // Récupérer l'apprenant existant
-  const { data: apprenant, error: apprenantError } =
-    await supabase
-      .from("apprenants")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-
-  if (apprenantError) {
-    return res.status(500).json({
-      error: apprenantError.message
-    });
-  }
-
-
-  if (!apprenant) {
-    return res.status(404).json({
-      error: "Apprenant introuvable"
-    });
-  }
-
-
-  let qrCode = apprenant.qr_code;
-
-
-  // Création du QR uniquement s'il n'existe pas encore
-  if (!qrCode) {
-
-    qrCode =
-      "APP_" +
-      Date.now() +
-      "_" +
-      Math.random()
-        .toString(36)
-        .substring(2, 8);
-
-
-    const { error: updateError } =
-      await supabase
-        .from("apprenants")
-        .update({
-          qr_code: qrCode
-        })
-        .eq("id", id);
-
-
-    if (updateError) {
-      return res.status(500).json({
-        error: updateError.message
-      });
-    }
-
-  }
-
-
-  const qrPayload = {
-    type: "APPRENANT",
-    version: 1,
-    qrCode: qrCode
-  };
-
-
-  res.json({
-    qr_code: qrCode,
-    qr_payload: qrPayload,
-    apprenant
-  });
-
-});
-
-// ===================
-// LISTE DES GROUPES
-// ===================
-//
-// Retourne les groupes disponibles
-// pour les écrans d'administration
-// et d'affectation des apprenants.
-app.get("/api/groupes", async (req, res) => {
-
-  try {
-    const { data, error } = await supabase
-      .from("groupes")
-      .select("id, libelle")
-      .order("id");
-
-    if (error) {
-      return res.status(500).json({
-        error: error.message
-      });
-    }
-
-    res.json(data);
-
-  } catch (err) {
-    res.status(500).json({
-      error: err.message
-    });
-  }
-
-});
 
 // Servir le frontend statique.
 // Le backend Express expose également l'application web.

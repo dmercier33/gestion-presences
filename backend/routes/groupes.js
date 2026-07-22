@@ -1,3 +1,8 @@
+import express from "express";
+import supabase from "../database/supabase.js";
+
+const router = express.Router();
+
 // ===================
 // LISTE DES GROUPES
 // ===================
@@ -5,7 +10,7 @@
 // Retourne les groupes disponibles
 // pour les écrans d'administration
 // et d'affectation des apprenants.
-app.get("/api/groupes", async (req, res) => {
+router.get("/", async (req, res) => {
 
   try {
     const { data, error } = await supabase
@@ -28,3 +33,5 @@ app.get("/api/groupes", async (req, res) => {
   }
 
 });
+
+export default router;
