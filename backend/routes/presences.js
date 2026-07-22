@@ -13,7 +13,7 @@ const router = express.Router();
 //
 // Utilisateur concerné :
 // Formateur
-router.get("/api/presences/:sessionId", async (req, res) => {
+router.get("/:sessionId", async (req, res) => {
 
   const { sessionId } = req.params;
 
@@ -69,7 +69,7 @@ router.get("/api/presences/:sessionId", async (req, res) => {
 //
 // Utilisateur concerné :
 // Formateur
-router.post("/api/presences", async (req, res) => {
+router.post("/", async (req, res) => {
 
   const { sessionId, qrCode } = req.body;
 
