@@ -18,7 +18,7 @@
 
 import express from "express";
 import cors from "cors";
-import { createClient } from "@supabase/supabase-js";
+import supabase from "./database/supabase.js";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -41,14 +41,6 @@ app.use(express.json());
 app.use((req, res, next) => {
   next();
 });
-
-
-// Client Supabase utilisé par les routes API.
-// La clé serveur est chargée depuis les variables d'environnement.
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
 
 // HEALTH
 app.get("/health", (req, res) => {
