@@ -6,8 +6,10 @@ import { validatePresence } from "./api.js";
 
 let sessionId = null;
 let qrApprenant = null;
-let isScanning = true;
-let presenceEnCours = false;
+
+// Un seul verrou :
+// true = un QR est en cours de traitement
+let scanBloque = false;
 
 
 // ======================================
@@ -33,8 +35,12 @@ if (
 
 function debug(message) {
 
-    document.getElementById("debug").innerText +=
-        "\n" + message;
+    const zone =
+        document.getElementById("debug");
+
+    if (zone) {
+        zone.innerText += "\n" + message;
+    }
 
 }
 
@@ -51,15 +57,11 @@ debug(
 
 async function enregistrerPresence() {
 
-    if (presenceEnCours) {
-        return;
-    }
-
     if (!sessionId || !qrApprenant) {
+        scanBloque = false;
         return;
     }
 
-    presenceEnCours = true;
 
     try {
 
@@ -99,7 +101,8 @@ async function enregistrerPresence() {
 
 
         else if (
-            result.error === "Apprenant non prévu pour cette séance"
+            result.error ===
+            "Apprenant non prévu pour cette séance"
         ) {
 
             document.getElementById("status").innerText =
@@ -130,6 +133,7 @@ async function enregistrerPresence() {
             error
         );
 
+
         document.getElementById("status").innerText =
             "❌ " + error.message;
 
@@ -138,7 +142,10 @@ async function enregistrerPresence() {
 
     finally {
 
-        presenceEnCours = false;
+        // Le scanner redevient disponible
+        // uniquement après la fin complète
+        // du traitement.
+        scanBloque = false;
 
     }
 
@@ -205,11 +212,15 @@ async function demarrerCamera() {
 
 async function onScanSuccess(decodedText) {
 
-    if (!isScanning) {
+
+    // Un seul traitement à la fois
+    if (scanBloque) {
         return;
     }
 
-    isScanning = false;
+
+    scanBloque = true;
+
 
     let data = null;
 
@@ -222,6 +233,7 @@ async function onScanSuccess(decodedText) {
 
 
     catch (e) {
+
 
         if (decodedText.startsWith("APP_")) {
 
@@ -248,7 +260,7 @@ async function onScanSuccess(decodedText) {
                 "❌ QR invalide";
 
 
-            isScanning = true;
+            scanBloque = false;
 
             return;
 
@@ -257,24 +269,21 @@ async function onScanSuccess(decodedText) {
     }
 
 
+
     debug(
         "QR LU :\n" +
         JSON.stringify(data)
     );
 
 
+
     if (!data.type) {
-
-        debug(
-            "QR SANS TYPE"
-        );
-
 
         document.getElementById("status").innerText =
             "❌ QR sans type";
 
 
-        isScanning = true;
+        scanBloque = false;
 
         return;
 
@@ -295,7 +304,7 @@ async function onScanSuccess(decodedText) {
                 "❌ Session invalide";
 
 
-            isScanning = true;
+            scanBloque = false;
 
             return;
 
@@ -322,13 +331,10 @@ async function onScanSuccess(decodedText) {
         );
 
 
-        isScanning = true;
+        await stopperCamera();
 
 
-        setTimeout(() => {
-            stopperCamera();
-        }, 1500);
-
+        scanBloque = false;
 
         return;
 
@@ -349,27 +355,28 @@ async function onScanSuccess(decodedText) {
                 "⚠️ Scannez d'abord le QR séance";
 
 
-            isScanning = true;
+            scanBloque = false;
 
             return;
 
         }
+
 
         if (!data.qrCode) {
 
             document.getElementById("status").innerText =
                 "❌ QR apprenant invalide";
 
-            isScanning = true;
+
+            scanBloque = false;
 
             return;
 
         }
 
+
         qrApprenant = data.qrCode;
 
-        qrApprenant =
-            data.qrCode;
 
         document.getElementById("status").innerText =
             "📷 QR apprenant détecté\n" +
@@ -377,21 +384,16 @@ async function onScanSuccess(decodedText) {
             "\nValidation en cours...";
 
 
-
         debug(
             "QR APPRENANT : " +
             qrApprenant
         );
 
-        setTimeout(() => {
 
-            enregistrerPresence();
+        // Validation immédiate.
+        // Le verrou empêche les doubles lectures.
+        await enregistrerPresence();
 
-        }, 1500);
-
-
-
-        isScanning = true;
 
         return;
 
@@ -399,17 +401,11 @@ async function onScanSuccess(decodedText) {
 
 
 
-    debug(
-        "TYPE QR INCONNU : " +
-        data.type
-    );
-
-
     document.getElementById("status").innerText =
-        "❌ Type QR inconnu : " + data.type;
+        "❌ Type QR inconnu";
 
 
-    isScanning = true;
+    scanBloque = false;
 
 }
 
@@ -426,14 +422,18 @@ demarrerCamera();
 
 
 
+// ======================================
+// BOUTON SCANNER
+// ======================================
+
 document
     .getElementById("btnScanner")
     .addEventListener(
         "click",
-        () => {
+        async () => {
 
 
-            isScanning = true;
+            scanBloque = false;
 
             qrApprenant = null;
 
@@ -442,7 +442,7 @@ document
                 "En attente du QR...";
 
 
-            demarrerCamera();
+            await demarrerCamera();
 
         }
     );
