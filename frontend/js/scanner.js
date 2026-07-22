@@ -298,7 +298,7 @@ async function onScanSuccess(decodedText) {
     if (data.type === "SESSION") {
 
 
-        if (!data.activeSessionId) {
+        if (!data.sessionId) {
 
             document.getElementById("status").innerText =
                 "❌ Session invalide";
@@ -311,7 +311,7 @@ async function onScanSuccess(decodedText) {
         }
 
 
-        activeSessionId = data.activeSessionId;
+        activeSessionId = data.sessionId;
 
 
         localStorage.setItem(
