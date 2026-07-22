@@ -17,16 +17,16 @@ let scanBloque = false;
 // SESSION LOCALE
 // ======================================
 
-const ancienneSession =
+const storedSession =
     localStorage.getItem("activeSessionId");
 
 
 if (
-    ancienneSession &&
-    ancienneSession !== "undefined" &&
-    ancienneSession !== "null"
+    storedSession &&
+    storedSession !== "undefined" &&
+    storedSession !== "null"
 ) {
-    activeSessionId = ancienneSession;
+    activeSessionId = storedSession;
 }
 
 
