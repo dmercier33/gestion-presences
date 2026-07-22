@@ -4,7 +4,7 @@ import { validatePresence } from "./api.js";
 // ETAT APPLICATION
 // ======================================
 
-let sessionId = null;
+let activeSessionId = null;
 let qrApprenant = null;
 
 // Un seul verrou :
@@ -17,7 +17,7 @@ let scanBloque = false;
 // ======================================
 
 const ancienneSession =
-    localStorage.getItem("sessionId");
+    localStorage.getItem("activeSessionId");
 
 
 if (
@@ -25,7 +25,7 @@ if (
     ancienneSession !== "undefined" &&
     ancienneSession !== "null"
 ) {
-    sessionId = ancienneSession;
+    activeSessionId = ancienneSession;
 }
 
 
@@ -47,7 +47,7 @@ function debug(message) {
 
 debug(
     "SESSION AU CHARGEMENT :\n" +
-    sessionId
+    activeSessionId
 );
 
 
@@ -57,7 +57,7 @@ debug(
 
 async function enregistrerPresence() {
 
-    if (!sessionId || !qrApprenant) {
+    if (!activeSessionId || !qrApprenant) {
         scanBloque = false;
         return;
     }
@@ -67,7 +67,7 @@ async function enregistrerPresence() {
 
         const result =
             await validatePresence(
-                sessionId,
+                activeSessionId,
                 qrApprenant
             );
 
@@ -298,7 +298,7 @@ async function onScanSuccess(decodedText) {
     if (data.type === "SESSION") {
 
 
-        if (!data.sessionId) {
+        if (!data.activeSessionId) {
 
             document.getElementById("status").innerText =
                 "❌ Session invalide";
@@ -311,23 +311,23 @@ async function onScanSuccess(decodedText) {
         }
 
 
-        sessionId = data.sessionId;
+        activeSessionId = data.activeSessionId;
 
 
         localStorage.setItem(
-            "sessionId",
-            sessionId
+            "activeSessionId",
+            activeSessionId
         );
 
 
         document.getElementById("status").innerText =
             "✅ Session reconnue\n" +
-            sessionId;
+            activeSessionId;
 
 
         debug(
             "SESSION ACTIVE : " +
-            sessionId
+            activeSessionId
         );
 
 
@@ -349,7 +349,7 @@ async function onScanSuccess(decodedText) {
     if (data.type === "APPRENANT") {
 
 
-        if (!sessionId) {
+        if (!activeSessionId) {
 
             document.getElementById("status").innerText =
                 "⚠️ Scannez d'abord le QR séance";

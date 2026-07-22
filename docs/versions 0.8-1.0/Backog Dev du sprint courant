@@ -1,0 +1,16 @@
+SPRINT — Durcissement moteur de session
+
+SESSION-01
+Créer un état scanner explicite
+
+SESSION-02
+Renommer sessionId → activeSessionId
+
+SESSION-03
+Valider activeSessionId auprès du backend au démarrage
+
+SESSION-04
+Supprimer automatiquement une session locale invalide
+
+SESSION-05
+Préparer endpoint de consultation session active

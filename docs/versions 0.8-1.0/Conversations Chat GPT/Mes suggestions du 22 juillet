@@ -1,0 +1,11 @@
+j'ai fait un test en créant la session puis en scannant le qr apprenant 
+
+resultat msg "erreur lors de l'enreg.." / erreur interne "Session expired"
+
+mon diagnostic : 
+
+niveau UX : mauvaise traduction du message interne
+
+niveau metier : ce n'est pas le bon diagnostic vu que la session N'EST PAS EXPIREE !
+
+niveau workflow :  je voudrais, pour faciliter le travail du formateur, que lorsque la session est créée le qrsession soit connu du scanner et son état soit mis à "ok scan session".  
