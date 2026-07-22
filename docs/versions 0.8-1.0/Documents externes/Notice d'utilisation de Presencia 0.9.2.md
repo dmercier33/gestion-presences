@@ -72,10 +72,7 @@ que la présence n'a pas déjà été enregistrée.
 
 La décision d'enregistrer une présence est réalisée par Presencia.
 
-Le scanner sert uniquement à lire les QR Codes et afficher le résultat.
-<<<<<<
 À chaque QR Code présenté, Presencia vérifie automatiquement la situation (séance, apprenant, présence) puis affiche immédiatement le résultat de cette vérification.
->>>>>>
 
 5. Résultats possibles
 ✅ Présence enregistrée
