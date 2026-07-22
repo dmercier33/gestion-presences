@@ -15,7 +15,7 @@ const router = express.Router();
 // Cette route est appelée par l'écran formateur.
 // Elle retourne les informations nécessaires à l'ouverture
 // de la séance et à l'affichage du QR de session.
-routes.post("/", async (req, res) => {
+router.post("/", async (req, res) => {
 
   const {
     groupe_id,
