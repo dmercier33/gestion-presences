@@ -409,6 +409,130 @@ async function onScanSuccess(decodedText) {
 
 }
 
+async function verifierSessionLocale() {
+
+    if (!activeSessionId) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/sessions/${activeSessionId}`
+        );
+
+
+        if (!response.ok) {
+
+            localStorage.removeItem(
+                "activeSessionId"
+            );
+
+            activeSessionId = null;
+
+            return;
+        }
+
+
+        const session = await response.json();
+
+
+        if (
+            new Date(session.expires_at) < new Date()
+            ||
+            session.ended_at
+        ) {
+
+            localStorage.removeItem(
+                "activeSessionId"
+            );
+
+            activeSessionId = null;
+
+            return;
+
+        }
+
+
+        document.getElementById("status").innerText =
+            "🟢 Session active OK\n\n📷 Scanner un apprenant";
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Erreur validation session locale :",
+            error
+        );
+
+    }
+
+}
+
+async function verifierSessionLocale() {
+
+    if (!activeSessionId) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/api/sessions/${activeSessionId}`
+        );
+
+
+        if (!response.ok) {
+
+            localStorage.removeItem(
+                "activeSessionId"
+            );
+
+            activeSessionId = null;
+
+            return;
+        }
+
+
+        const session = await response.json();
+
+
+        if (
+            new Date(session.expires_at) < new Date()
+            ||
+            session.ended_at
+        ) {
+
+            localStorage.removeItem(
+                "activeSessionId"
+            );
+
+            activeSessionId = null;
+
+            return;
+
+        }
+
+
+        document.getElementById("status").innerText =
+            "🟢 Session active OK\n\n📷 Scanner un apprenant";
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Erreur validation session locale :",
+            error
+        );
+
+    }
+
+}
+
 
 // ======================================
 // CAMERA START
@@ -418,9 +542,10 @@ const html5QrCode =
     new Html5Qrcode("reader");
 
 
-demarrerCamera();
-
-
+verifierSessionLocale()
+    .then(() => {
+        demarrerCamera();
+    });
 
 // ======================================
 // BOUTON SCANNER
