@@ -26,6 +26,7 @@ import { fileURLToPath } from "url";
 import groupeRoutes from "./routes/groupes.js";
 import apprenantRoutes from "./routes/apprenants.js";
 import presenceRoutes from "./routes/presences.js";
+import sessionRoutes from "./routes/sessions.js";
 
 dotenv.config({
   path: process.env.NODE_ENV === "test"
